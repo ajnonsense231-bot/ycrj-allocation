@@ -1,0 +1,2373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YCRJ &amp; Co. — Staff Allocation System</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0f1f3d;
+    --navy-light: #1a3060;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --cream: #faf7f2;
+    --white: #ffffff;
+    --text: #1a1a2e;
+    --text-muted: #6b7280;
+    --border: #e5e0d8;
+    --success: #166534;
+    --success-bg: #dcfce7;
+    --error: #991b1b;
+    --error-bg: #fee2e2;
+    --warning: #92400e;
+    --warning-bg: #fef3c7;
+    --shadow: 0 4px 24px rgba(15,31,61,0.10);
+    --shadow-lg: 0 8px 40px rgba(15,31,61,0.15);
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── LOGIN SCREEN ── */
+  #login-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 60%, #2a4a8a 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  #login-screen::before {
+    content: '';
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%);
+    top: -200px; right: -150px;
+  }
+
+  #login-screen::after {
+    content: '';
+    position: absolute;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+    bottom: -100px; left: -100px;
+  }
+
+  .login-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 48px 44px;
+    width: 420px;
+    max-width: 95vw;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    z-index: 1;
+    animation: fadeUp 0.5s ease;
+  }
+
+  @keyframes fadeUp {
+    from { opacity:0; transform: translateY(20px); }
+    to { opacity:1; transform: translateY(0); }
+  }
+
+  .login-logo {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .login-logo .firm-initials {
+    width: 64px; height: 64px;
+    background: var(--navy);
+    border-radius: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+
+  .login-logo .firm-initials span {
+    font-family: 'DM Serif Display', serif;
+    color: var(--gold);
+    font-size: 22px;
+    letter-spacing: 1px;
+  }
+
+  .login-logo h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--navy);
+    line-height: 1.2;
+  }
+
+  .login-logo p {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+  }
+
+  .login-tabs {
+    display: flex;
+    background: var(--cream);
+    border-radius: var(--radius-sm);
+    padding: 4px;
+    margin-bottom: 28px;
+  }
+
+  .login-tab {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text-muted);
+    border: none;
+    background: transparent;
+  }
+
+  .login-tab.active {
+    background: var(--navy);
+    color: var(--white);
+    box-shadow: 0 2px 8px rgba(15,31,61,0.2);
+  }
+
+  .form-group { margin-bottom: 20px; }
+
+  .form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 8px;
+  }
+
+  .form-group input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    background: var(--white);
+    transition: border-color 0.2s;
+    outline: none;
+  }
+
+  .form-group input:focus {
+    border-color: var(--navy);
+  }
+
+  .btn-primary {
+    width: 100%;
+    padding: 14px;
+    background: var(--navy);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+  }
+
+  .btn-primary:hover {
+    background: var(--navy-light);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(15,31,61,0.25);
+  }
+
+  .error-msg {
+    background: var(--error-bg);
+    color: var(--error);
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    margin-top: 12px;
+    display: none;
+  }
+
+  /* ── TL SELECTION SCREEN ── */
+  #tl-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--cream);
+    display: none;
+  }
+
+  .tl-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 48px 44px;
+    width: 480px;
+    max-width: 95vw;
+    box-shadow: var(--shadow);
+    animation: fadeUp 0.4s ease;
+  }
+
+  .tl-card h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px;
+    color: var(--navy);
+    margin-bottom: 8px;
+  }
+
+  .tl-card p {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 32px;
+    line-height: 1.6;
+  }
+
+  .form-group select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    background: var(--white);
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+  }
+
+  .form-group select:focus { border-color: var(--navy); }
+
+  /* ── MAIN APP ── */
+  #app {
+    display: none;
+    min-height: 100vh;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: 240px;
+    background: var(--navy);
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    transition: transform 0.3s;
+  }
+
+  .sidebar-logo {
+    padding: 24px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .sidebar-logo .firm-name {
+    font-family: 'DM Serif Display', serif;
+    color: var(--white);
+    font-size: 17px;
+    line-height: 1.3;
+  }
+
+  .sidebar-logo .firm-sub {
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .sidebar-user {
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .user-avatar {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--navy);
+    flex-shrink: 0;
+  }
+
+  .user-info .name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--white);
+  }
+
+  .user-info .role {
+    font-size: 11px;
+    color: rgba(255,255,255,0.45);
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    padding: 16px 12px;
+    overflow-y: auto;
+  }
+
+  .nav-section-title {
+    font-size: 10px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 12px 8px 6px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    color: rgba(255,255,255,0.6);
+    font-size: 14px;
+    font-weight: 400;
+    transition: all 0.15s;
+    margin-bottom: 2px;
+    border: none;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+  }
+
+  .nav-item:hover {
+    background: rgba(255,255,255,0.07);
+    color: var(--white);
+  }
+
+  .nav-item.active {
+    background: rgba(201,168,76,0.15);
+    color: var(--gold-light);
+    font-weight: 500;
+  }
+
+  .nav-item .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+
+  .nav-item.admin-only { display: none; }
+
+  .sidebar-bottom {
+    padding: 12px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .btn-logout {
+    width: 100%;
+    padding: 10px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius-sm);
+    color: rgba(255,255,255,0.5);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-logout:hover {
+    background: rgba(255,255,255,0.1);
+    color: var(--white);
+  }
+
+  /* Main content */
+  .main-content {
+    margin-left: 240px;
+    min-height: 100vh;
+    padding: 32px;
+  }
+
+  /* Page header */
+  .page-header {
+    margin-bottom: 28px;
+  }
+
+  .page-header h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    color: var(--navy);
+  }
+
+  .page-header p {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .card-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .card-header h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--navy);
+  }
+
+  .card-body { padding: 24px; }
+
+  /* Stats row */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .stat-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    border-left: 4px solid var(--navy);
+  }
+
+  .stat-card.green { border-left-color: #16a34a; }
+  .stat-card.amber { border-left-color: #d97706; }
+  .stat-card.red { border-left-color: #dc2626; }
+
+  .stat-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px;
+    color: var(--navy);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 6px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Table */
+  .table-wrap { overflow-x: auto; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  thead th {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    background: var(--cream);
+    border-bottom: 1px solid var(--border);
+  }
+
+  tbody td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: middle;
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+
+  tbody tr:hover td { background: #fafaf8; }
+
+  /* Badges */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+
+  .badge-active { background: var(--success-bg); color: var(--success); }
+  .badge-inactive { background: #f3f4f6; color: #6b7280; }
+  .badge-yes { background: #dbeafe; color: #1e40af; }
+  .badge-no { background: #f3f4f6; color: #6b7280; }
+  .badge-at { background: #fce7f3; color: #9d174d; }
+  .badge-ja { background: #dbeafe; color: #1e40af; }
+  .badge-sa { background: #d1fae5; color: #065f46; }
+  .badge-am { background: #fef3c7; color: #92400e; }
+  .badge-ca { background: #ede9fe; color: #4c1d95; }
+
+  /* Buttons */
+  .btn {
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn-navy {
+    background: var(--navy);
+    color: var(--white);
+  }
+
+  .btn-navy:hover {
+    background: var(--navy-light);
+    transform: translateY(-1px);
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--navy);
+    border: 1.5px solid var(--navy);
+  }
+
+  .btn-outline:hover { background: var(--navy); color: var(--white); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+  }
+
+  .btn-ghost:hover { background: var(--cream); color: var(--text); }
+
+  .btn-danger {
+    background: #fee2e2;
+    color: #991b1b;
+    border: none;
+  }
+
+  .btn-danger:hover { background: #fecaca; }
+
+  /* Search & filter bar */
+  .filter-bar {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .search-input {
+    padding: 9px 14px 9px 36px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    width: 240px;
+    background: var(--cream) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat 10px center;
+    transition: border-color 0.2s;
+  }
+
+  .search-input:focus { border-color: var(--navy); background-color: var(--white); }
+
+  .filter-select {
+    padding: 9px 32px 9px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    background: var(--cream);
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    transition: border-color 0.2s;
+  }
+
+  .filter-select:focus { border-color: var(--navy); }
+
+  /* Modal */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15,31,61,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    display: none;
+  }
+
+  .modal-overlay.open { display: flex; animation: fadeIn 0.2s ease; }
+
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+  .modal {
+    background: var(--white);
+    border-radius: 16px;
+    width: 520px;
+    max-width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+    animation: slideUp 0.25s ease;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .modal-header {
+    padding: 24px 24px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .modal-header h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    color: var(--navy);
+  }
+
+  .modal-close {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: var(--cream);
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    transition: all 0.15s;
+  }
+
+  .modal-close:hover { background: var(--border); }
+
+  .modal-body { padding: 20px 24px 24px; }
+
+  .modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    background: var(--white);
+  }
+
+  .form-group input:focus,
+  .form-group select:focus { border-color: var(--navy); }
+
+  .form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 6px;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    padding: 14px 20px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: var(--shadow-lg);
+    z-index: 2000;
+    display: none;
+    animation: toastIn 0.3s ease;
+  }
+
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .toast.success { background: var(--navy); color: var(--white); }
+  .toast.error { background: #991b1b; color: var(--white); }
+
+  /* Pages */
+  .page { display: none; }
+  .page.active { display: block; animation: fadeUp 0.3s ease; }
+
+  /* Dashboard welcome */
+  .welcome-banner {
+    background: linear-gradient(120deg, var(--navy) 0%, #1e3a6e 100%);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    color: var(--white);
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .welcome-banner::after {
+    content: '';
+    position: absolute;
+    right: -30px; top: -30px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(201,168,76,0.1);
+  }
+
+  .welcome-banner h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    margin-bottom: 6px;
+  }
+
+  .welcome-banner p {
+    font-size: 14px;
+    opacity: 0.7;
+  }
+
+  .coming-soon {
+    background: var(--cream);
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 60px;
+    text-align: center;
+    color: var(--text-muted);
+  }
+
+  .coming-soon .icon { font-size: 40px; margin-bottom: 16px; }
+  .coming-soon h3 { font-size: 18px; color: var(--navy); margin-bottom: 8px; }
+  .coming-soon p { font-size: 14px; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; padding: 20px; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+
+  .mobile-menu-btn {
+    display: none;
+    position: fixed;
+    top: 16px; right: 16px;
+    z-index: 200;
+    background: var(--navy);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 14px;
+    cursor: pointer;
+    font-size: 18px;
+    box-shadow: var(--shadow);
+  }
+
+  @media (max-width: 768px) { 
+    .mobile-menu-btn { display: block; }
+    .main-content { padding-top: 60px; }
+  }
+
+  .inline-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    background: var(--gold);
+    color: var(--navy);
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     LOGIN SCREEN
+══════════════════════════════════════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="firm-initials"><span>YCRJ</span></div>
+      <h1>YCRJ &amp; Associates</h1>
+      <p>Staff Allocation System</p>
+    </div>
+
+    <div class="login-tabs">
+      <button class="login-tab active" onclick="switchTab('tl')">Team Leader</button>
+      <button class="login-tab" onclick="switchTab('admin')">Admin</button>
+    </div>
+
+    <div id="tl-form">
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="tl-username" placeholder="Enter username" value="allocation">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="tl-password" placeholder="Enter password">
+      </div>
+      <button class="btn-primary" onclick="loginTL()">Continue as Team Leader →</button>
+      <div class="error-msg" id="tl-error">Incorrect username or password. Please try again.</div>
+    </div>
+
+    <div id="admin-form" style="display:none;">
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="admin-username" placeholder="Enter admin username" value="admin">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="admin-password" placeholder="Enter admin password">
+      </div>
+      <button class="btn-primary" onclick="loginAdmin()">Login as Admin →</button>
+      <div class="error-msg" id="admin-error">Incorrect admin credentials. Please try again.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TL SELECTION SCREEN
+══════════════════════════════════════ -->
+<div id="tl-screen">
+  <div class="tl-card">
+    <h2>Welcome 👋</h2>
+    <p>Please select your name to continue. Your name will be used to attribute all assignments you raise in this session.</p>
+
+    <div class="form-group">
+      <label>Select Your Name</label>
+      <select id="tl-select">
+        <option value="">— Choose your name —</option>
+        <option value="Rahul K">Rahul K</option>
+        <option value="Priya S">Priya S</option>
+        <option value="Amit M">Amit M</option>
+        <option value="Sunita R">Sunita R</option>
+        <option value="Deepak V">Deepak V</option>
+      </select>
+    </div>
+
+    <button class="btn-primary" onclick="selectTL()" style="margin-top:8px;">Continue →</button>
+    <div class="error-msg" id="tl-select-error" style="display:block; display:none;">Please select your name to continue.</div>
+
+    <p style="margin-top:20px; font-size:12px; color:var(--text-muted); text-align:center;">
+      Acting on behalf of a TL? Select their name from the list above.
+    </p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MAIN APP
+══════════════════════════════════════ -->
+<div id="app">
+  <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="firm-name">YCRJ &amp; Co.</div>
+      <div class="firm-sub">Staff Allocation</div>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="user-avatar" id="user-avatar">?</div>
+      <div class="user-info">
+        <div class="name" id="user-name">Loading...</div>
+        <div class="role" id="user-role">Team Leader</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Main</div>
+      <button class="nav-item active" onclick="showPage('dashboard', event)">
+        <span class="nav-icon">🏠</span> Dashboard
+      </button>
+      <button class="nav-item" onclick="showPage('calendar', event)">
+        <span class="nav-icon">📅</span> Calendar
+      </button>
+      <button class="nav-item" onclick="showPage('assignment', event)">
+        <span class="nav-icon">📋</span> New Assignment
+      </button>
+      <button class="nav-item" onclick="showPage('log', event)">
+        <span class="nav-icon">📁</span> Assignment Log
+      </button>
+
+      <div class="nav-section-title" style="margin-top:8px;">My Team</div>
+      <button class="nav-item" onclick="showPage('tl-dashboard', event)">
+        <span class="nav-icon">👥</span> TL Dashboard
+      </button>
+
+      <div class="nav-section-title admin-only" style="margin-top:8px;">Admin</div>
+      <button class="nav-item admin-only" onclick="showPage('staff-master', event)">
+        <span class="nav-icon">👤</span> Staff Master
+      </button>
+      <button class="nav-item admin-only" onclick="showPage('tl-master', event)">
+        <span class="nav-icon">🎯</span> TL Master
+      </button>
+      <button class="nav-item admin-only" onclick="showPage('leave-register', event)">
+        <span class="nav-icon">🗓️</span> Leave Register
+      </button>
+      <button class="nav-item admin-only" onclick="showPage('admin-dashboard', event)">
+        <span class="nav-icon">📊</span> Admin Dashboard
+      </button>
+      <button class="nav-item admin-only" onclick="showPage('settings', event)">
+        <span class="nav-icon">⚙️</span> Settings
+      </button>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <button class="btn-logout" onclick="logout()">← Logout</button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-header">
+        <h2>Dashboard</h2>
+        <p id="dashboard-date"></p>
+      </div>
+
+      <div class="welcome-banner">
+        <h3 id="welcome-msg">Welcome back!</h3>
+        <p>Here's a quick overview of your firm's current allocation status.</p>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card green">
+          <div class="stat-value" id="stat-active">8</div>
+          <div class="stat-label">Active Assignments</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-staff">12</div>
+          <div class="stat-label">Total Active Staff</div>
+        </div>
+        <div class="stat-card amber">
+          <div class="stat-value" id="stat-pending">3</div>
+          <div class="stat-label">Pending Notifications</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-value" id="stat-overdue">1</div>
+          <div class="stat-label">Overdue Assignments</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>Recent Activity</h3>
+        </div>
+        <div class="card-body">
+          <p style="color:var(--text-muted); font-size:14px; line-height:1.8;">
+            ✅ <strong>ABC Ltd — Statutory Audit</strong> assigned to 4 staff by Rahul K<br>
+            📧 <strong>XYZ Ltd — GST Filing</strong> notification pending<br>
+            ⚠️ <strong>PQR Ltd — Tax Audit</strong> due date extended by Priya S<br>
+            🔴 <strong>DEF Ltd — ROC Filing</strong> is overdue — not marked complete
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- STAFF MASTER -->
+    <div class="page" id="page-staff-master">
+      <div class="page-header">
+        <h2>Staff Master <span class="inline-badge">Admin</span></h2>
+        <p>Manage all staff members — add, edit, activate or deactivate.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="filter-bar">
+            <input type="text" class="search-input" placeholder="Search by name..." oninput="filterStaff()" id="staff-search">
+            <select class="filter-select" onchange="filterStaff()" id="filter-level">
+              <option value="">All Levels</option>
+              <option value="Article Trainee">Article Trainee</option>
+              <option value="Junior Associate">Junior Associate</option>
+              <option value="Senior Associate">Senior Associate</option>
+              <option value="Assistant Manager">Assistant Manager</option>
+              <option value="Chartered Accountant">Chartered Accountant</option>
+            </select>
+            <select class="filter-select" onchange="filterStaff()" id="filter-status">
+              <option value="">All Status</option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+            <select class="filter-select" onchange="filterStaff()" id="filter-gender">
+              <option value="">All Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </div>
+          <button class="btn btn-navy" onclick="openAddStaffModal()">+ Add Staff</button>
+        </div>
+        <div class="table-wrap">
+          <table id="staff-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Gender</th>
+                <th>Experience Level</th>
+                <th>Email</th>
+                <th>Primary TL</th>
+                <th>Travel</th>
+                <th>Capacity</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="staff-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TL MASTER -->
+    <div class="page" id="page-tl-master">
+      <div class="page-header">
+        <h2>TL Master <span class="inline-badge">Admin</span></h2>
+        <p>Manage all Team Leaders — add, edit, activate or deactivate.</p>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="filter-bar">
+            <input type="text" class="search-input" placeholder="Search by name..." oninput="filterTLs()" id="tl-search">
+            <select class="filter-select" onchange="filterTLs()" id="filter-tl-status">
+              <option value="">All Status</option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+          <button class="btn btn-navy" onclick="openAddTLModal()">+ Add TL</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Initials</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Team Size</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tl-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMING SOON pages -->
+    <div class="page" id="page-calendar">
+      <div class="page-header"><h2>Calendar / Gantt View</h2></div>
+      <div class="coming-soon">
+        <div class="icon">📅</div>
+        <h3>Calendar View — Coming in Phase 3</h3>
+        <p>Staff View, TL View and Client View with month picker will be available here.</p>
+      </div>
+    </div>
+
+    <!-- ASSIGNMENT FORM + FILTER PANEL (Phase 2) -->
+    <div class="page" id="page-assignment">
+
+      <!-- STEP 1: ASSIGNMENT FORM -->
+      <div id="assignment-form-section">
+        <div class="page-header">
+          <h2>New Assignment</h2>
+          <p>Fill assignment details and team requirement, then find available staff.</p>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:start;">
+
+          <!-- LEFT COLUMN -->
+          <div>
+            <!-- Assignment Details -->
+            <div class="card" style="margin-bottom:20px;">
+              <div class="card-header"><h3>Assignment Details</h3></div>
+              <div class="card-body">
+
+                <div class="form-group" style="margin-bottom:16px;">
+                  <label>Raising TL</label>
+                  <input type="text" id="af-tl" readonly style="background:var(--cream);color:var(--navy);font-weight:600;">
+                </div>
+
+                <div class="form-group" style="margin-bottom:16px;">
+                  <label>Client Name *</label>
+                  <input type="text" id="af-client" placeholder="e.g. ABC Enterprises Ltd" oninput="updateSummary()">
+                </div>
+
+                <div class="form-group" style="margin-bottom:16px;">
+                  <label>Assignment Description *</label>
+                  <textarea id="af-desc" placeholder="Describe the work e.g. Statutory Audit FY 2024-25" rows="2"
+                    style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);
+                    font-family:DM Sans,sans-serif;font-size:14px;outline:none;resize:vertical;transition:border-color 0.2s;"
+                    onfocus="this.style.borderColor='var(--navy)'" onblur="this.style.borderColor='var(--border)'"
+                    oninput="updateSummary()"></textarea>
+                </div>
+
+                <div class="form-row" style="margin-bottom:16px;">
+                  <div class="form-group">
+                    <label>Overall Start Date *</label>
+                    <input type="date" id="af-start" onchange="calcDays();updateAvailability();updateSummary()">
+                  </div>
+                  <div class="form-group">
+                    <label>Overall End Date *</label>
+                    <input type="date" id="af-end" onchange="calcDays();updateAvailability();updateSummary()">
+                  </div>
+                </div>
+
+                <div class="form-row" style="margin-bottom:16px;">
+                  <div style="background:var(--cream);border-radius:var(--radius-sm);padding:14px 18px;">
+                    <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:4px;">Working Days</div>
+                    <div id="af-days" style="font-family:DM Serif Display,serif;font-size:26px;color:var(--navy);">—</div>
+                  </div>
+                  <div style="background:var(--cream);border-radius:var(--radius-sm);padding:14px 18px;">
+                    <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:4px;">Total Hours</div>
+                    <div id="af-hours" style="font-family:DM Serif Display,serif;font-size:26px;color:var(--navy);">—</div>
+                  </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom:16px;">
+                  <label>Travel Required *</label>
+                  <select id="af-travel" onchange="toggleTravel();updateSummary()">
+                    <option value="">Select</option>
+                    <option value="No">No</option>
+                    <option value="Yes">Yes</option>
+                  </select>
+                </div>
+
+                <div id="travel-details-group" style="display:none;margin-bottom:16px;">
+                  <div class="form-group">
+                    <label>Travel Details</label>
+                    <input type="text" id="af-travel-details" placeholder="e.g. Travel to Mumbai, 2 nights stay">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>Special Notes <span style="font-weight:300;text-transform:none;letter-spacing:0;font-size:11px;">(max 200 chars)</span></label>
+                  <textarea id="af-notes" placeholder="Any specific instructions for the team..." rows="2" maxlength="200"
+                    style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);
+                    font-family:DM Sans,sans-serif;font-size:14px;outline:none;resize:none;transition:border-color 0.2s;"
+                    onfocus="this.style.borderColor='var(--navy)'" onblur="this.style.borderColor='var(--border)'"
+                    oninput="updateCharCount()"></textarea>
+                  <div style="text-align:right;font-size:11px;color:var(--text-muted);margin-top:3px;"><span id="char-count">0</span>/200</div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Team Requirement -->
+            <div class="card">
+              <div class="card-header"><h3>Team Requirement</h3></div>
+              <div class="card-body">
+                <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px;">
+                  Enter how many staff of each level are needed. Select dates above to see live availability counts.
+                </p>
+                <div id="team-requirement-rows"></div>
+                <div style="border-top:2px solid var(--border);padding-top:14px;margin-top:4px;display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-size:14px;font-weight:600;color:var(--text-muted);">Total Team Size</span>
+                  <span id="total-team-size" style="font-family:DM Serif Display,serif;font-size:28px;color:var(--navy);">0</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT COLUMN: Preferences + Summary -->
+          <div>
+            <div class="card" style="margin-bottom:20px;">
+              <div class="card-header"><h3>Preferences</h3></div>
+              <div class="card-body">
+                <div class="form-group">
+                  <label>Gender Preference</label>
+                  <select id="af-gender" onchange="updateAvailability()">
+                    <option value="">No Preference</option>
+                    <option value="Male">Male Only</option>
+                    <option value="Female">Female Only</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="card" style="position:sticky;top:20px;">
+              <div class="card-header"><h3>Assignment Summary</h3></div>
+              <div class="card-body">
+                <div style="font-size:13px;">
+                  <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);">
+                    <span style="color:var(--text-muted);">ID</span>
+                    <strong id="sum-id" style="color:var(--navy);">Auto-generated</strong>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);">
+                    <span style="color:var(--text-muted);">Client</span>
+                    <strong id="sum-client" style="color:var(--navy);max-width:160px;text-align:right;">—</strong>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);">
+                    <span style="color:var(--text-muted);">Period</span>
+                    <strong id="sum-period" style="color:var(--navy);">—</strong>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);">
+                    <span style="color:var(--text-muted);">Duration</span>
+                    <strong id="sum-duration" style="color:var(--navy);">—</strong>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);">
+                    <span style="color:var(--text-muted);">Travel</span>
+                    <strong id="sum-travel" style="color:var(--navy);">—</strong>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;padding:7px 0;">
+                    <span style="color:var(--text-muted);">Team Size</span>
+                    <strong id="sum-team" style="color:var(--navy);">0 staff</strong>
+                  </div>
+                </div>
+
+                <button class="btn btn-navy" id="find-staff-btn" onclick="proceedToFilter()"
+                  style="width:100%;margin-top:20px;padding:14px;font-size:15px;opacity:0.4;cursor:not-allowed;" disabled>
+                  Find Available Staff &rarr;
+                </button>
+                <p id="form-incomplete-msg" style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:8px;">
+                  Fill all required fields and add at least 1 staff slot.
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- STEP 2: FILTER & ALLOCATION PANEL -->
+      <div id="filter-panel-section" style="display:none;">
+        <div class="page-header" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+          <button class="btn btn-ghost" onclick="backToForm()">&#8592; Back to Form</button>
+          <div>
+            <h2>Filter &amp; Allocate Staff</h2>
+            <p>Select staff for each slot — set individual dates per slot within the overall period.</p>
+          </div>
+        </div>
+
+        <!-- Recap banner -->
+        <div style="background:var(--navy);color:var(--white);border-radius:var(--radius);padding:18px 24px;margin-bottom:24px;display:flex;flex-wrap:wrap;gap:28px;">
+          <div>
+            <div style="font-size:10px;opacity:0.5;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;">Client</div>
+            <div style="font-weight:600;font-size:15px;" id="recap-client">—</div>
+          </div>
+          <div>
+            <div style="font-size:10px;opacity:0.5;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;">Assignment</div>
+            <div style="font-weight:600;font-size:15px;" id="recap-desc">—</div>
+          </div>
+          <div>
+            <div style="font-size:10px;opacity:0.5;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;">Overall Period</div>
+            <div style="font-weight:600;font-size:15px;" id="recap-period">—</div>
+          </div>
+          <div>
+            <div style="font-size:10px;opacity:0.5;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;">Travel</div>
+            <div style="font-weight:600;font-size:15px;" id="recap-travel">—</div>
+          </div>
+          <div>
+            <div style="font-size:10px;opacity:0.5;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;">Raising TL</div>
+            <div style="font-weight:600;font-size:15px;" id="recap-tl">—</div>
+          </div>
+        </div>
+
+        <!-- Slot cards -->
+        <div id="slots-container"></div>
+
+        <!-- Confirm Team -->
+        <div class="card" id="confirm-team-card" style="display:none;margin-top:24px;">
+          <div class="card-header">
+            <h3>&#10003; All Slots Filled — Review &amp; Confirm</h3>
+          </div>
+          <div class="card-body">
+            <div id="confirmed-team-summary" style="margin-bottom:24px;"></div>
+            <button class="btn btn-navy" onclick="confirmAssignment()" style="padding:14px 32px;font-size:15px;">
+              Confirm Assignment &amp; Proceed to Notifications &rarr;
+            </button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="page" id="page-log">
+      <div class="page-header"><h2>Assignment Log</h2></div>
+      <div class="coming-soon">
+        <div class="icon">📁</div>
+        <h3>Assignment Log — Coming in Phase 3</h3>
+        <p>Full history of all assignments with date range filters will be available here.</p>
+      </div>
+    </div>
+
+    <div class="page" id="page-tl-dashboard">
+      <div class="page-header"><h2>TL Dashboard</h2></div>
+      <div class="coming-soon">
+        <div class="icon">👥</div>
+        <h3>TL Dashboard — Coming in Phase 3</h3>
+        <p>Your team status, active assignments and needs attention panel will be here.</p>
+      </div>
+    </div>
+
+    <div class="page" id="page-leave-register">
+      <div class="page-header"><h2>Leave Register <span class="inline-badge">Admin</span></h2></div>
+      <div class="coming-soon">
+        <div class="icon">🗓️</div>
+        <h3>Leave Register — Coming in Phase 4</h3>
+        <p>Manage approved staff leaves that block availability in the calendar.</p>
+      </div>
+    </div>
+
+    <div class="page" id="page-admin-dashboard">
+      <div class="page-header"><h2>Admin Dashboard <span class="inline-badge">Admin</span></h2></div>
+      <div class="coming-soon">
+        <div class="icon">📊</div>
+        <h3>Admin Dashboard — Coming in Phase 3</h3>
+        <p>Firm-wide ongoing assignments tracker, overdue alerts and full visibility.</p>
+      </div>
+    </div>
+
+    <div class="page" id="page-settings">
+      <div class="page-header"><h2>System Settings <span class="inline-badge">Admin</span></h2></div>
+      <div class="coming-soon">
+        <div class="icon">⚙️</div>
+        <h3>Settings — Coming in Phase 4</h3>
+        <p>Manage login credentials, office manager emails and system configuration.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     ADD STAFF MODAL
+══════════════════════════════════════ -->
+<div class="modal-overlay" id="add-staff-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="staff-modal-title">Add New Staff</h3>
+      <button class="modal-close" onclick="closeModal('add-staff-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-staff-index" value="-1">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Full Name *</label>
+          <input type="text" id="s-name" placeholder="e.g. Anita Sharma">
+        </div>
+        <div class="form-group">
+          <label>Gender *</label>
+          <select id="s-gender">
+            <option value="">Select</option>
+            <option>Male</option>
+            <option>Female</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Experience Level *</label>
+          <select id="s-level">
+            <option value="">Select level</option>
+            <option>Article Trainee</option>
+            <option>Junior Associate</option>
+            <option>Senior Associate</option>
+            <option>Assistant Manager</option>
+            <option>Chartered Accountant</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Travel Willing *</label>
+          <select id="s-travel">
+            <option value="">Select</option>
+            <option>Yes</option>
+            <option>No</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Firm Email *</label>
+        <input type="email" id="s-email" placeholder="name@ycrjca.com">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="text" id="s-phone" placeholder="Optional">
+        </div>
+        <div class="form-group">
+          <label>Primary TL *</label>
+          <select id="s-tl">
+            <option value="">Select TL</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Weekly Capacity (Days)</label>
+          <input type="number" id="s-capacity" value="6" min="1" max="6">
+        </div>
+        <div class="form-group">
+          <label>Status *</label>
+          <select id="s-status">
+            <option>Active</option>
+            <option>Inactive</option>
+          </select>
+        </div>
+      </div>
+      <div id="staff-form-error" class="error-msg" style="display:none; margin-top:4px;">
+        Please fill all required fields marked with *.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('add-staff-modal')">Cancel</button>
+      <button class="btn btn-navy" onclick="saveStaff()">Save Staff</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD TL MODAL -->
+<div class="modal-overlay" id="add-tl-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="tl-modal-title">Add New Team Leader</h3>
+      <button class="modal-close" onclick="closeModal('add-tl-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-tl-index" value="-1">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Full Name *</label>
+          <input type="text" id="t-name" placeholder="e.g. Rahul Kumar">
+        </div>
+        <div class="form-group">
+          <label>Initials *</label>
+          <input type="text" id="t-initials" placeholder="e.g. RK" maxlength="3">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Firm Email *</label>
+        <input type="email" id="t-email" placeholder="name@ycrjca.com">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="text" id="t-phone" placeholder="Optional">
+        </div>
+        <div class="form-group">
+          <label>Status *</label>
+          <select id="t-status">
+            <option>Active</option>
+            <option>Inactive</option>
+          </select>
+        </div>
+      </div>
+      <div id="tl-form-error" class="error-msg" style="display:none; margin-top:4px;">
+        Please fill all required fields marked with *.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('add-tl-modal')">Cancel</button>
+      <button class="btn btn-navy" onclick="saveTL()">Save TL</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════
+const CREDS = {
+  tl: { username: 'allocation', password: 'test123' },
+  admin: { username: 'admin', password: 'admin123' }
+};
+
+// ══════════════════════════════════════
+// STATE
+// ══════════════════════════════════════
+let currentUser = null;
+let currentTL = null;
+let activeTab = 'tl';
+
+let staffData = [
+  { name:'Anita Sharma',   gender:'Female', level:'Senior Associate',    email:'anita@ycrjca.com',   phone:'9876543210', travel:'Yes', capacity:6, hours:48, primaryTL:'Rahul K',  status:'Active' },
+  { name:'Rohan Mehta',    gender:'Male',   level:'Junior Associate',     email:'rohan@ycrjca.com',   phone:'9876543211', travel:'No',  capacity:6, hours:48, primaryTL:'Priya S',  status:'Active' },
+  { name:'Kavya Nair',     gender:'Female', level:'Article Trainee',      email:'kavya@ycrjca.com',   phone:'9876543212', travel:'Yes', capacity:6, hours:48, primaryTL:'Amit M',   status:'Active' },
+  { name:'Suresh Pillai',  gender:'Male',   level:'Chartered Accountant', email:'suresh@ycrjca.com',  phone:'',           travel:'Yes', capacity:6, hours:48, primaryTL:'Rahul K',  status:'Active' },
+  { name:'Meena Iyer',     gender:'Female', level:'Assistant Manager',    email:'meena@ycrjca.com',   phone:'9876543214', travel:'No',  capacity:5, hours:40, primaryTL:'Sunita R', status:'Inactive'},
+  { name:'Arjun Verma',    gender:'Male',   level:'Junior Associate',     email:'arjun@ycrjca.com',   phone:'9876543215', travel:'Yes', capacity:6, hours:48, primaryTL:'Priya S',  status:'Active' },
+  { name:'Sneha Kulkarni', gender:'Female', level:'Junior Associate',     email:'sneha@ycrjca.com',   phone:'9876543216', travel:'Yes', capacity:6, hours:48, primaryTL:'Amit M',   status:'Active' },
+  { name:'Vikram Rao',     gender:'Male',   level:'Senior Associate',     email:'vikram@ycrjca.com',  phone:'9876543217', travel:'No',  capacity:6, hours:48, primaryTL:'Sunita R', status:'Active' },
+  { name:'Pooja Desai',    gender:'Female', level:'Article Trainee',      email:'pooja@ycrjca.com',   phone:'9876543218', travel:'No',  capacity:6, hours:48, primaryTL:'Rahul K',  status:'Active' },
+  { name:'Kiran Bhat',     gender:'Male',   level:'Article Trainee',      email:'kiran@ycrjca.com',   phone:'9876543219', travel:'Yes', capacity:6, hours:48, primaryTL:'Priya S',  status:'Active' },
+  { name:'Divya Menon',    gender:'Female', level:'Assistant Manager',    email:'divya@ycrjca.com',   phone:'9876543220', travel:'Yes', capacity:6, hours:48, primaryTL:'Amit M',   status:'Active' },
+  { name:'Rahul Joshi',    gender:'Male',   level:'Chartered Accountant', email:'rahulj@ycrjca.com',  phone:'9876543221', travel:'No',  capacity:6, hours:48, primaryTL:'Sunita R', status:'Active' },
+  { name:'Priya Nambiar',  gender:'Female', level:'Senior Associate',     email:'priyan@ycrjca.com',  phone:'9876543222', travel:'Yes', capacity:6, hours:48, primaryTL:'Deepak V', status:'Active' },
+  { name:'Arun Kumar',     gender:'Male',   level:'Junior Associate',     email:'arun@ycrjca.com',    phone:'9876543223', travel:'Yes', capacity:6, hours:48, primaryTL:'Rahul K',  status:'Active' },
+  { name:'Lakshmi Rao',    gender:'Female', level:'Article Trainee',      email:'lakshmi@ycrjca.com', phone:'9876543224', travel:'No',  capacity:6, hours:48, primaryTL:'Priya S',  status:'Active' },
+];
+
+let tlData = [
+  { name:'Rahul K',  initials:'RK', email:'rahulk@ycrjca.com',  phone:'9876540001', status:'Active'   },
+  { name:'Priya S',  initials:'PS', email:'priyas@ycrjca.com',  phone:'9876540002', status:'Active'   },
+  { name:'Amit M',   initials:'AM', email:'amitm@ycrjca.com',   phone:'9876540003', status:'Active'   },
+  { name:'Sunita R', initials:'SR', email:'sunitar@ycrjca.com', phone:'9876540004', status:'Active'   },
+  { name:'Deepak V', initials:'DV', email:'deepakv@ycrjca.com', phone:'9876540005', status:'Inactive' },
+];
+
+let assignmentLog = [];
+let assignmentCounter = 1;
+
+const LEVELS = ['Article Trainee','Junior Associate','Senior Associate','Assistant Manager','Chartered Accountant'];
+const LEVEL_SHORT  = {'Article Trainee':'AT','Junior Associate':'JA','Senior Associate':'SA','Assistant Manager':'AM','Chartered Accountant':'CA'};
+const LEVEL_COLORS = {'Article Trainee':'badge-at','Junior Associate':'badge-ja','Senior Associate':'badge-sa','Assistant Manager':'badge-am','Chartered Accountant':'badge-ca'};
+
+let currentAssignment = { id:'', client:'', desc:'', start:'', end:'', days:0, hours:0, travel:'', travelDetails:'', notes:'', tl:'', gender:'', teamReq:{}, selectedStaff:{} };
+
+// ══════════════════════════════════════
+// LOGIN
+// ══════════════════════════════════════
+function switchTab(tab) {
+  activeTab = tab;
+  document.querySelectorAll('.login-tab').forEach((t,i) => t.classList.toggle('active', (i===0&&tab==='tl')||(i===1&&tab==='admin')));
+  document.getElementById('tl-form').style.display   = tab==='tl'    ? 'block' : 'none';
+  document.getElementById('admin-form').style.display = tab==='admin' ? 'block' : 'none';
+}
+
+function loginTL() {
+  const u = document.getElementById('tl-username').value.trim();
+  const p = document.getElementById('tl-password').value;
+  if (u===CREDS.tl.username && p===CREDS.tl.password) {
+    currentUser = 'tl';
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('tl-screen').style.display    = 'flex';
+  } else {
+    document.getElementById('tl-error').style.display = 'block';
+  }
+}
+
+function loginAdmin() {
+  const u = document.getElementById('admin-username').value.trim();
+  const p = document.getElementById('admin-password').value;
+  if (u===CREDS.admin.username && p===CREDS.admin.password) {
+    currentUser = 'admin';
+    currentTL   = 'Admin';
+    document.getElementById('login-screen').style.display = 'none';
+    initApp();
+  } else {
+    document.getElementById('admin-error').style.display = 'block';
+  }
+}
+
+function selectTL() {
+  const sel = document.getElementById('tl-select').value;
+  if (!sel) { document.getElementById('tl-select-error').style.display='block'; return; }
+  currentTL = sel;
+  document.getElementById('tl-screen').style.display = 'none';
+  initApp();
+}
+
+// ══════════════════════════════════════
+// INIT APP
+// ══════════════════════════════════════
+function initApp() {
+  document.getElementById('app').style.display = 'block';
+  const name = currentUser==='admin' ? 'Admin' : currentTL;
+  const role = currentUser==='admin' ? 'Administrator' : 'Team Leader';
+  document.getElementById('user-name').textContent   = name;
+  document.getElementById('user-role').textContent   = role;
+  document.getElementById('user-avatar').textContent = name.charAt(0).toUpperCase();
+  document.getElementById('welcome-msg').textContent = 'Welcome back, ' + name + '!';
+  const now = new Date();
+  document.getElementById('dashboard-date').textContent = now.toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  if (currentUser==='admin') {
+    document.querySelectorAll('.admin-only').forEach(el => el.style.display='flex');
+    document.querySelectorAll('.nav-section-title.admin-only').forEach(el => el.style.display='block');
+  }
+  renderStaffTable(staffData);
+  renderTLTable(tlData);
+  populateTLDropdowns();
+  showPage('dashboard');
+}
+
+// ══════════════════════════════════════
+// NAVIGATION — single clean function
+// ══════════════════════════════════════
+function showPage(page, evt) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  const pageEl = document.getElementById('page-' + page);
+  if (pageEl) pageEl.classList.add('active');
+  // Highlight active nav button
+  if (evt && evt.currentTarget) {
+    evt.currentTarget.classList.add('active');
+  } else {
+    // Find matching nav button by page name in onclick attribute
+    const allBtns = document.querySelectorAll('.nav-item');
+    allBtns.forEach(btn => {
+      if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes("'" + page + "'")) {
+        btn.classList.add('active');
+      }
+    });
+  }
+  if (page === 'assignment') initAssignmentForm();
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+function logout() {
+  currentUser = null; currentTL = null;
+  document.getElementById('app').style.display         = 'none';
+  document.getElementById('tl-screen').style.display   = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('tl-password').value   = '';
+  document.getElementById('admin-password').value = '';
+  document.getElementById('tl-error').style.display    = 'none';
+  document.getElementById('admin-error').style.display = 'none';
+  switchTab('tl');
+}
+
+// ══════════════════════════════════════
+// STAFF MASTER
+// ══════════════════════════════════════
+function levelBadge(level) {
+  return '<span class="badge ' + (LEVEL_COLORS[level]||'') + '">' + (LEVEL_SHORT[level]||level) + '</span>';
+}
+
+function renderStaffTable(data) {
+  const tbody = document.getElementById('staff-tbody');
+  if (!data.length) {
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--text-muted);padding:40px;">No staff found.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.map(function(s) {
+    const idx = staffData.indexOf(s);
+    return '<tr>' +
+      '<td><strong>' + s.name + '</strong></td>' +
+      '<td>' + s.gender + '</td>' +
+      '<td>' + levelBadge(s.level) + '</td>' +
+      '<td style="font-size:13px;color:var(--text-muted);">' + s.email + '</td>' +
+      '<td>' + s.primaryTL + '</td>' +
+      '<td><span class="badge ' + (s.travel==='Yes'?'badge-yes':'badge-no') + '">' + s.travel + '</span></td>' +
+      '<td style="font-size:13px;">' + s.capacity + 'd / ' + s.hours + 'h</td>' +
+      '<td><span class="badge ' + (s.status==='Active'?'badge-active':'badge-inactive') + '">' + s.status + '</span></td>' +
+      '<td><div style="display:flex;gap:6px;">' +
+        '<button class="btn btn-ghost" style="padding:6px 10px;font-size:12px;" onclick="editStaff(' + idx + ')">Edit</button>' +
+        '<button class="btn btn-ghost" style="padding:6px 10px;font-size:12px;" onclick="toggleStaffStatus(' + idx + ')">' + (s.status==='Active'?'Deactivate':'Activate') + '</button>' +
+      '</div></td>' +
+    '</tr>';
+  }).join('');
+}
+
+function filterStaff() {
+  const search = document.getElementById('staff-search').value.toLowerCase();
+  const level  = document.getElementById('filter-level').value;
+  const status = document.getElementById('filter-status').value;
+  const gender = document.getElementById('filter-gender').value;
+  const filtered = staffData.filter(function(s) {
+    return (!search || s.name.toLowerCase().includes(search) || s.email.toLowerCase().includes(search)) &&
+           (!level  || s.level===level) &&
+           (!status || s.status===status) &&
+           (!gender || s.gender===gender);
+  });
+  renderStaffTable(filtered);
+}
+
+function openAddStaffModal() {
+  document.getElementById('staff-modal-title').textContent = 'Add New Staff';
+  document.getElementById('edit-staff-index').value = -1;
+  ['s-name','s-email','s-phone'].forEach(function(id){ document.getElementById(id).value=''; });
+  ['s-gender','s-level','s-travel','s-tl'].forEach(function(id){ document.getElementById(id).value=''; });
+  document.getElementById('s-capacity').value = 6;
+  document.getElementById('s-status').value   = 'Active';
+  document.getElementById('staff-form-error').style.display = 'none';
+  document.getElementById('add-staff-modal').classList.add('open');
+}
+
+function editStaff(index) {
+  const s = staffData[index];
+  document.getElementById('staff-modal-title').textContent = 'Edit Staff';
+  document.getElementById('edit-staff-index').value = index;
+  document.getElementById('s-name').value     = s.name;
+  document.getElementById('s-gender').value   = s.gender;
+  document.getElementById('s-level').value    = s.level;
+  document.getElementById('s-email').value    = s.email;
+  document.getElementById('s-phone').value    = s.phone;
+  document.getElementById('s-travel').value   = s.travel;
+  document.getElementById('s-capacity').value = s.capacity;
+  document.getElementById('s-tl').value       = s.primaryTL;
+  document.getElementById('s-status').value   = s.status;
+  document.getElementById('staff-form-error').style.display = 'none';
+  document.getElementById('add-staff-modal').classList.add('open');
+}
+
+function saveStaff() {
+  const name     = document.getElementById('s-name').value.trim();
+  const gender   = document.getElementById('s-gender').value;
+  const level    = document.getElementById('s-level').value;
+  const email    = document.getElementById('s-email').value.trim();
+  const phone    = document.getElementById('s-phone').value.trim();
+  const travel   = document.getElementById('s-travel').value;
+  const capacity = parseInt(document.getElementById('s-capacity').value)||6;
+  const tl       = document.getElementById('s-tl').value;
+  const status   = document.getElementById('s-status').value;
+  if (!name||!gender||!level||!email||!travel||!tl) {
+    document.getElementById('staff-form-error').style.display='block'; return;
+  }
+  document.getElementById('staff-form-error').style.display='none';
+  const staff = {name,gender,level,email,phone,travel,capacity,hours:capacity*8,primaryTL:tl,status};
+  const idx   = parseInt(document.getElementById('edit-staff-index').value);
+  if (idx===-1) { staffData.push(staff); showToast('Staff added successfully!'); }
+  else          { staffData[idx]=staff;  showToast('Staff updated successfully!'); }
+  closeModal('add-staff-modal');
+  renderStaffTable(staffData);
+  populateTLDropdowns();
+}
+
+function toggleStaffStatus(index) {
+  const s = staffData[index];
+  const newStatus = s.status==='Active' ? 'Inactive' : 'Active';
+  if (newStatus==='Inactive' && !confirm('Deactivate ' + s.name + '? Ensure they have no active assignments.')) return;
+  staffData[index].status = newStatus;
+  renderStaffTable(staffData);
+  showToast(s.name + ' marked as ' + newStatus + '.');
+}
+
+// ══════════════════════════════════════
+// TL MASTER
+// ══════════════════════════════════════
+function renderTLTable(data) {
+  const tbody = document.getElementById('tl-tbody');
+  if (!data.length) {
+    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:40px;">No TLs found.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = data.map(function(t) {
+    const idx      = tlData.indexOf(t);
+    const teamSize = staffData.filter(function(s){ return s.primaryTL===t.name && s.status==='Active'; }).length;
+    return '<tr>' +
+      '<td><strong>' + t.name + '</strong></td>' +
+      '<td><span style="font-weight:700;color:var(--navy);background:var(--cream);padding:3px 10px;border-radius:6px;font-size:13px;">' + t.initials + '</span></td>' +
+      '<td style="font-size:13px;color:var(--text-muted);">' + t.email + '</td>' +
+      '<td style="font-size:13px;">' + (t.phone||'—') + '</td>' +
+      '<td><strong>' + teamSize + '</strong> staff</td>' +
+      '<td><span class="badge ' + (t.status==='Active'?'badge-active':'badge-inactive') + '">' + t.status + '</span></td>' +
+      '<td><div style="display:flex;gap:6px;">' +
+        '<button class="btn btn-ghost" style="padding:6px 10px;font-size:12px;" onclick="editTL(' + idx + ')">Edit</button>' +
+        '<button class="btn btn-ghost" style="padding:6px 10px;font-size:12px;" onclick="toggleTLStatus(' + idx + ')">' + (t.status==='Active'?'Deactivate':'Activate') + '</button>' +
+      '</div></td>' +
+    '</tr>';
+  }).join('');
+}
+
+function filterTLs() {
+  const search = document.getElementById('tl-search').value.toLowerCase();
+  const status = document.getElementById('filter-tl-status').value;
+  const filtered = tlData.filter(function(t){
+    return (!search || t.name.toLowerCase().includes(search)) && (!status || t.status===status);
+  });
+  renderTLTable(filtered);
+}
+
+function openAddTLModal() {
+  document.getElementById('tl-modal-title').textContent = 'Add New Team Leader';
+  document.getElementById('edit-tl-index').value = -1;
+  ['t-name','t-initials','t-email','t-phone'].forEach(function(id){ document.getElementById(id).value=''; });
+  document.getElementById('t-status').value = 'Active';
+  document.getElementById('tl-form-error').style.display = 'none';
+  document.getElementById('add-tl-modal').classList.add('open');
+}
+
+function editTL(index) {
+  const t = tlData[index];
+  document.getElementById('tl-modal-title').textContent = 'Edit Team Leader';
+  document.getElementById('edit-tl-index').value = index;
+  document.getElementById('t-name').value     = t.name;
+  document.getElementById('t-initials').value = t.initials;
+  document.getElementById('t-email').value    = t.email;
+  document.getElementById('t-phone').value    = t.phone;
+  document.getElementById('t-status').value   = t.status;
+  document.getElementById('tl-form-error').style.display = 'none';
+  document.getElementById('add-tl-modal').classList.add('open');
+}
+
+function saveTL() {
+  const name     = document.getElementById('t-name').value.trim();
+  const initials = document.getElementById('t-initials').value.trim().toUpperCase();
+  const email    = document.getElementById('t-email').value.trim();
+  const phone    = document.getElementById('t-phone').value.trim();
+  const status   = document.getElementById('t-status').value;
+  if (!name||!initials||!email) {
+    document.getElementById('tl-form-error').style.display='block'; return;
+  }
+  document.getElementById('tl-form-error').style.display='none';
+  const tl  = {name,initials,email,phone,status};
+  const idx = parseInt(document.getElementById('edit-tl-index').value);
+  if (idx===-1) { tlData.push(tl); showToast('TL added successfully!'); }
+  else          { tlData[idx]=tl;  showToast('TL updated successfully!'); }
+  closeModal('add-tl-modal');
+  renderTLTable(tlData);
+  populateTLDropdowns();
+}
+
+function toggleTLStatus(index) {
+  const t = tlData[index];
+  if (!confirm((t.status==='Active'?'Deactivate ':'Activate ') + t.name + '?')) return;
+  tlData[index].status = t.status==='Active' ? 'Inactive' : 'Active';
+  renderTLTable(tlData);
+  showToast(t.name + ' status updated.');
+}
+
+// ══════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════
+function populateTLDropdowns() {
+  const activeTLs = tlData.filter(function(t){ return t.status==='Active'; });
+  const sel = document.getElementById('s-tl');
+  const cur = sel.value;
+  sel.innerHTML = '<option value="">Select TL</option>' +
+    activeTLs.map(function(t){ return '<option value="' + t.name + '"' + (t.name===cur?' selected':'') + '>' + t.name + '</option>'; }).join('');
+  const tlSel = document.getElementById('tl-select');
+  const curSel = tlSel.value;
+  tlSel.innerHTML = '<option value="">— Choose your name —</option>' +
+    activeTLs.map(function(t){ return '<option value="' + t.name + '"' + (t.name===curSel?' selected':'') + '>' + t.name + '</option>'; }).join('');
+}
+
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className   = 'toast ' + (type||'success');
+  t.style.display = 'block';
+  setTimeout(function(){ t.style.display='none'; }, 3000);
+}
+
+// ══════════════════════════════════════
+// PHASE 2 — ASSIGNMENT FORM & FILTER
+// ══════════════════════════════════════
+function initAssignmentForm() {
+  document.getElementById('af-tl').value = currentTL || 'Admin';
+  currentAssignment.tl  = currentTL || 'Admin';
+  currentAssignment.id  = generateAssignmentID();
+  currentAssignment.teamReq      = {};
+  currentAssignment.selectedStaff = {};
+  document.getElementById('sum-id').textContent = currentAssignment.id;
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('af-start').min = today;
+  document.getElementById('af-end').min   = today;
+  ['af-client','af-desc','af-travel-details','af-notes'].forEach(function(id){
+    var el = document.getElementById(id); if(el) el.value='';
+  });
+  document.getElementById('af-travel').value = '';
+  document.getElementById('af-gender').value = '';
+  document.getElementById('af-start').value  = '';
+  document.getElementById('af-end').value    = '';
+  document.getElementById('af-days').textContent  = '—';
+  document.getElementById('af-hours').textContent = '—';
+  document.getElementById('char-count').textContent = '0';
+  document.getElementById('travel-details-group').style.display = 'none';
+  renderTeamRequirementRows();
+  updateSummary();
+  document.getElementById('assignment-form-section').style.display = 'block';
+  document.getElementById('filter-panel-section').style.display   = 'none';
+}
+
+function generateAssignmentID() {
+  const yr  = new Date().getFullYear();
+  const num = String(assignmentCounter).padStart(3,'0');
+  return 'YCRJ-' + yr + '-' + num;
+}
+
+function calcWorkingDays(start, end) {
+  if (!start||!end) return 0;
+  var s=new Date(start), e=new Date(end), count=0;
+  while(s<=e){ if(s.getDay()!==0) count++; s.setDate(s.getDate()+1); }
+  return count;
+}
+
+function calcDays() {
+  const s=document.getElementById('af-start').value, e=document.getElementById('af-end').value;
+  if(!s||!e||s>e){
+    document.getElementById('af-days').textContent='—';
+    document.getElementById('af-hours').textContent='—';
+    currentAssignment.days=0; currentAssignment.hours=0; return;
+  }
+  const days=calcWorkingDays(s,e);
+  document.getElementById('af-days').textContent  = days+' days';
+  document.getElementById('af-hours').textContent = (days*8)+' hrs';
+  currentAssignment.days=days; currentAssignment.hours=days*8;
+  currentAssignment.start=s;  currentAssignment.end=e;
+}
+
+function toggleTravel() {
+  document.getElementById('travel-details-group').style.display =
+    document.getElementById('af-travel').value==='Yes' ? 'block' : 'none';
+}
+
+function updateCharCount() {
+  document.getElementById('char-count').textContent = document.getElementById('af-notes').value.length;
+}
+
+function renderTeamRequirementRows() {
+  const container = document.getElementById('team-requirement-rows');
+  const start=document.getElementById('af-start').value, end=document.getElementById('af-end').value;
+  const gender=document.getElementById('af-gender').value, travel=document.getElementById('af-travel').value;
+  container.innerHTML = LEVELS.map(function(level){
+    const count = currentAssignment.teamReq[level]||0;
+    const avail = getAvailableStaff(level,start,end,gender,travel).length;
+    const hasDate = start&&end;
+    var availHTML='';
+    if(hasDate){
+      var color='#16a34a',bg='#dcfce7',icon='✅';
+      if(avail===0){color='#991b1b';bg='#fee2e2';icon='🔴';}
+      else if(avail<=count&&count>0){color='#92400e';bg='#fef3c7';icon='⚠️';}
+      availHTML='<span style="font-size:12px;padding:3px 10px;border-radius:20px;background:'+bg+';color:'+color+';font-weight:600;">'+icon+' '+avail+' available</span>';
+    } else {
+      availHTML='<span style="font-size:12px;color:var(--text-muted);">Select dates to see availability</span>';
+    }
+    return '<div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);">' +
+      '<div><div style="display:flex;align-items:center;gap:8px;"><span class="badge '+LEVEL_COLORS[level]+'" style="font-size:11px;">'+LEVEL_SHORT[level]+'</span>' +
+      '<span style="font-size:14px;font-weight:500;">'+level+'</span></div><div style="margin-top:6px;">'+availHTML+'</div></div>' +
+      '<div style="display:flex;align-items:center;gap:10px;">' +
+        '<button onclick="changeTeamReq(''+level+'',-1)" style="width:32px;height:32px;border-radius:50%;border:1.5px solid var(--border);background:var(--white);cursor:pointer;font-size:18px;color:var(--navy);font-weight:700;">−</button>' +
+        '<span style="font-family:DM Serif Display,serif;font-size:22px;color:var(--navy);min-width:24px;text-align:center;">'+count+'</span>' +
+        '<button onclick="changeTeamReq(''+level+'',1)" style="width:32px;height:32px;border-radius:50%;border:none;background:var(--navy);cursor:pointer;font-size:18px;color:var(--white);font-weight:700;">+</button>' +
+      '</div></div>';
+  }).join('');
+  updateTotalTeamSize();
+}
+
+function changeTeamReq(level,delta) {
+  currentAssignment.teamReq[level] = Math.max(0,(currentAssignment.teamReq[level]||0)+delta);
+  renderTeamRequirementRows(); updateSummary(); checkFormReady();
+}
+
+function updateTotalTeamSize() {
+  const total = Object.values(currentAssignment.teamReq).reduce(function(a,b){return a+b;},0);
+  document.getElementById('total-team-size').textContent = total;
+  document.getElementById('sum-team').textContent = total+' staff';
+  return total;
+}
+
+function getAvailableStaff(level,start,end,gender,travel) {
+  if(!start||!end) return [];
+  return staffData.filter(function(s){
+    if(s.status!=='Active') return false;
+    if(s.level!==level) return false;
+    if(gender&&s.gender!==gender) return false;
+    if(travel==='Yes'&&s.travel!=='Yes') return false;
+    if(Object.values(currentAssignment.selectedStaff).some(function(sl){ return sl&&sl.name===s.name; })) return false;
+    return !assignmentLog.some(function(a){
+      return a.staffName===s.name && a.status!=='Completed' && a.status!=='Cancelled' && !(end<a.slotStart||start>a.slotEnd);
+    });
+  });
+}
+
+function updateAvailability() { renderTeamRequirementRows(); updateSummary(); checkFormReady(); }
+
+function updateSummary() {
+  const client=document.getElementById('af-client').value.trim();
+  const start=document.getElementById('af-start').value, end=document.getElementById('af-end').value;
+  const travel=document.getElementById('af-travel').value;
+  document.getElementById('sum-client').textContent = client||'—';
+  if(start&&end){
+    document.getElementById('sum-period').textContent   = formatDate(start)+' — '+formatDate(end);
+    document.getElementById('sum-duration').textContent = currentAssignment.days+' days / '+currentAssignment.hours+' hrs';
+  } else {
+    document.getElementById('sum-period').textContent   = '—';
+    document.getElementById('sum-duration').textContent = '—';
+  }
+  document.getElementById('sum-travel').textContent = travel||'—';
+  checkFormReady();
+}
+
+function checkFormReady() {
+  const client=document.getElementById('af-client').value.trim();
+  const desc=document.getElementById('af-desc').value.trim();
+  const start=document.getElementById('af-start').value, end=document.getElementById('af-end').value;
+  const travel=document.getElementById('af-travel').value;
+  const total=Object.values(currentAssignment.teamReq).reduce(function(a,b){return a+b;},0);
+  const valid = client&&desc&&start&&end&&start<=end&&travel&&total>0;
+  const btn=document.getElementById('find-staff-btn');
+  btn.disabled     = !valid;
+  btn.style.opacity = valid?'1':'0.4';
+  btn.style.cursor  = valid?'pointer':'not-allowed';
+  document.getElementById('form-incomplete-msg').style.display = valid?'none':'block';
+}
+
+function formatDate(d) {
+  if(!d) return '—';
+  return new Date(d+'T00:00:00').toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+}
+
+function proceedToFilter() {
+  currentAssignment.client       = document.getElementById('af-client').value.trim();
+  currentAssignment.desc         = document.getElementById('af-desc').value.trim();
+  currentAssignment.start        = document.getElementById('af-start').value;
+  currentAssignment.end          = document.getElementById('af-end').value;
+  currentAssignment.travel       = document.getElementById('af-travel').value;
+  currentAssignment.travelDetails= document.getElementById('af-travel-details').value.trim();
+  currentAssignment.notes        = document.getElementById('af-notes').value.trim();
+  currentAssignment.gender       = document.getElementById('af-gender').value;
+  document.getElementById('recap-client').textContent = currentAssignment.client;
+  document.getElementById('recap-desc').textContent   = currentAssignment.desc;
+  document.getElementById('recap-period').textContent = formatDate(currentAssignment.start)+' to '+formatDate(currentAssignment.end);
+  document.getElementById('recap-travel').textContent = currentAssignment.travel+(currentAssignment.travelDetails?' — '+currentAssignment.travelDetails:'');
+  document.getElementById('recap-tl').textContent     = currentAssignment.tl;
+  currentAssignment.selectedStaff = {};
+  buildSlots();
+  document.getElementById('assignment-form-section').style.display = 'none';
+  document.getElementById('filter-panel-section').style.display    = 'block';
+  document.getElementById('confirm-team-card').style.display       = 'none';
+}
+
+function backToForm() {
+  document.getElementById('assignment-form-section').style.display = 'block';
+  document.getElementById('filter-panel-section').style.display    = 'none';
+}
+
+function buildSlots() {
+  const container = document.getElementById('slots-container');
+  container.innerHTML = '';
+  var slotIndex = 0;
+  LEVELS.forEach(function(level){
+    const count = currentAssignment.teamReq[level]||0;
+    for(var i=0;i<count;i++){
+      slotIndex++;
+      const slotKey = level+'_'+i;
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.id = 'slot-card-'+slotKey;
+      card.style.marginBottom = '20px';
+      card.innerHTML = buildSlotHTML(slotKey, level, slotIndex, count>1?i+1:null);
+      container.appendChild(card);
+    }
+  });
+  checkAllSlotsFilled();
+}
+
+function buildSlotHTML(slotKey, level, slotNum, subNum) {
+  const label    = subNum ? 'Slot '+slotNum+' — '+level+' ('+subNum+')' : 'Slot '+slotNum+' — '+level;
+  const staff    = getAvailableStaff(level, currentAssignment.start, currentAssignment.end, currentAssignment.gender, currentAssignment.travel);
+  const selected = currentAssignment.selectedStaff[slotKey];
+
+  const staffRows = staff.length===0
+    ? '<tr><td colspan="5" style="text-align:center;color:var(--text-muted);padding:20px;">No available staff matching criteria for this period.</td></tr>'
+    : staff.map(function(s,idx){
+        const isExternal = s.primaryTL!==currentAssignment.tl;
+        const busy = assignmentLog.filter(function(a){ return a.staffName===s.name&&a.status!=='Completed'&&a.status!=='Cancelled'; }).length;
+        return '<tr style="cursor:pointer;" onclick="selectStaffForSlot(''+slotKey+'',''+level+'','+idx+')">' +
+          '<td><div style="display:flex;align-items:center;gap:10px;">' +
+            '<div style="width:36px;height:36px;border-radius:50%;background:var(--navy);color:var(--white);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;">' + s.name.charAt(0) + '</div>' +
+            '<div><div style="font-weight:600;font-size:14px;">' + s.name + '</div>' +
+              (isExternal
+                ? '<div style="font-size:11px;color:#d97706;font-weight:600;">⚠️ Primary TL: '+s.primaryTL+'</div>'
+                : '<div style="font-size:11px;color:var(--text-muted);">Primary TL: '+s.primaryTL+'</div>') +
+            '</div></div></td>' +
+          '<td>'+s.gender+'</td>' +
+          '<td><span style="font-size:11px;color:var(--text-muted);">'+(busy>0?busy+' active':'No active')+' assignments</span></td>' +
+          '<td><span class="badge '+(s.travel==='Yes'?'badge-yes':'badge-no')+'">'+s.travel+'</span></td>' +
+          '<td><button class="btn btn-navy" style="padding:6px 16px;font-size:13px;" onclick="event.stopPropagation();selectStaffForSlot(''+slotKey+'',''+level+'','+idx+')">Pick</button></td>' +
+        '</tr>';
+      }).join('');
+
+  const selectedHTML = selected
+    ? '<div style="background:#dcfce7;border-radius:var(--radius-sm);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">' +
+        '<div><div style="font-weight:700;color:#166534;font-size:15px;">✅ '+selected.name+' selected</div>' +
+        '<div style="font-size:12px;color:#166534;margin-top:2px;">'+(selected.slotStart?formatDate(selected.slotStart)+' to '+formatDate(selected.slotEnd)+' — '+selected.slotDays+' days':'Set dates below')+'</div></div>' +
+        '<button class="btn btn-ghost" style="font-size:12px;padding:6px 12px;" onclick="clearSlot(''+slotKey+'')">Change</button>' +
+      '</div>'
+    : '';
+
+  const dateHTML = selected
+    ? '<div style="background:var(--cream);border-radius:var(--radius-sm);padding:16px;margin-top:8px;">' +
+        '<div style="font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:12px;">Set dates for '+selected.name+'</div>' +
+        '<div class="form-row">' +
+          '<div class="form-group"><label>Slot Start Date</label>' +
+            '<input type="date" id="slot-start-'+slotKey+'" value="'+currentAssignment.start+'" min="'+currentAssignment.start+'" max="'+currentAssignment.end+'" onchange="updateSlotDates(''+slotKey+'')">' +
+          '</div>' +
+          '<div class="form-group"><label>Slot End Date</label>' +
+            '<input type="date" id="slot-end-'+slotKey+'" value="'+currentAssignment.end+'" min="'+currentAssignment.start+'" max="'+currentAssignment.end+'" onchange="updateSlotDates(''+slotKey+'')">' +
+          '</div>' +
+        '</div>' +
+        '<div style="font-size:13px;color:var(--navy);font-weight:600;margin-top:8px;" id="slot-days-'+slotKey+'">'+
+          calcWorkingDays(currentAssignment.start,currentAssignment.end)+' working days / '+(calcWorkingDays(currentAssignment.start,currentAssignment.end)*8)+' hours' +
+        '</div>' +
+      '</div>'
+    : '';
+
+  return '<div class="card-header">' +
+    '<h3><span class="badge '+LEVEL_COLORS[level]+'" style="margin-right:8px;">'+LEVEL_SHORT[level]+'</span>'+label+'</h3>' +
+    (selected ? '<span class="badge badge-active">✓ Filled</span>' : '<span style="font-size:12px;color:var(--text-muted);">Pending selection</span>') +
+    '</div>' +
+    '<div class="card-body">' +
+      selectedHTML +
+      (!selected ? '<div class="table-wrap"><table><thead><tr><th>Staff Member</th><th>Gender</th><th>Current Load</th><th>Travel</th><th>Action</th></tr></thead><tbody>'+staffRows+'</tbody></table></div>' : '') +
+      dateHTML +
+    '</div>';
+}
+
+function selectStaffForSlot(slotKey, level, staffIdx) {
+  const staff = getAvailableStaff(level, currentAssignment.start, currentAssignment.end, currentAssignment.gender, currentAssignment.travel);
+  const s = staff[staffIdx];
+  if (!s) return;
+  if (s.primaryTL !== currentAssignment.tl) {
+    if (!confirm('⚠️ ' + s.name + ' reports to ' + s.primaryTL + ' (different TL).\n\nProceed with selection?')) return;
+  }
+  currentAssignment.selectedStaff[slotKey] = {
+    name:s.name, level, gender:s.gender, primaryTL:s.primaryTL, email:s.email,
+    slotStart:currentAssignment.start, slotEnd:currentAssignment.end,
+    slotDays:calcWorkingDays(currentAssignment.start,currentAssignment.end)
+  };
+  rebuildAllSlots();
+  checkAllSlotsFilled();
+}
+
+function rebuildAllSlots() {
+  var slotIndex=0;
+  LEVELS.forEach(function(level){
+    const count=currentAssignment.teamReq[level]||0;
+    for(var i=0;i<count;i++){
+      slotIndex++;
+      const slotKey=level+'_'+i;
+      const card=document.getElementById('slot-card-'+slotKey);
+      if(card) card.innerHTML=buildSlotHTML(slotKey,level,slotIndex,count>1?i+1:null);
+    }
+  });
+}
+
+function clearSlot(slotKey) {
+  delete currentAssignment.selectedStaff[slotKey];
+  rebuildAllSlots();
+  checkAllSlotsFilled();
+}
+
+function updateSlotDates(slotKey) {
+  const s=document.getElementById('slot-start-'+slotKey).value;
+  const e=document.getElementById('slot-end-'+slotKey).value;
+  if(s&&e&&s<=e){
+    const days=calcWorkingDays(s,e);
+    document.getElementById('slot-days-'+slotKey).textContent=days+' working days / '+(days*8)+' hours';
+    if(currentAssignment.selectedStaff[slotKey]){
+      currentAssignment.selectedStaff[slotKey].slotStart=s;
+      currentAssignment.selectedStaff[slotKey].slotEnd=e;
+      currentAssignment.selectedStaff[slotKey].slotDays=days;
+    }
+  }
+  checkAllSlotsFilled();
+}
+
+function checkAllSlotsFilled() {
+  var total=0, filled=0;
+  LEVELS.forEach(function(level){
+    const count=currentAssignment.teamReq[level]||0;
+    total+=count;
+    for(var i=0;i<count;i++){
+      if(currentAssignment.selectedStaff[level+'_'+i]) filled++;
+    }
+  });
+  const card=document.getElementById('confirm-team-card');
+  if(filled===total&&total>0){ card.style.display='block'; renderConfirmedTeamSummary(); }
+  else card.style.display='none';
+}
+
+function renderConfirmedTeamSummary() {
+  var html='<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:14px;">' +
+    '<thead><tr>' +
+    '<th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);background:var(--cream);border-bottom:1px solid var(--border);">Staff</th>' +
+    '<th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);background:var(--cream);border-bottom:1px solid var(--border);">Level</th>' +
+    '<th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);background:var(--cream);border-bottom:1px solid var(--border);">Period</th>' +
+    '<th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);background:var(--cream);border-bottom:1px solid var(--border);">Days</th>' +
+    '<th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);background:var(--cream);border-bottom:1px solid var(--border);">Primary TL</th>' +
+    '</tr></thead><tbody>';
+  Object.values(currentAssignment.selectedStaff).forEach(function(s){
+    const isExternal = s.primaryTL!==currentAssignment.tl;
+    html+='<tr>' +
+      '<td style="padding:12px;border-bottom:1px solid var(--border);font-weight:600;">'+s.name+'</td>' +
+      '<td style="padding:12px;border-bottom:1px solid var(--border);"><span class="badge '+LEVEL_COLORS[s.level]+'">'+LEVEL_SHORT[s.level]+'</span></td>' +
+      '<td style="padding:12px;border-bottom:1px solid var(--border);font-size:13px;">'+formatDate(s.slotStart)+' → '+formatDate(s.slotEnd)+'</td>' +
+      '<td style="padding:12px;border-bottom:1px solid var(--border);font-weight:600;">'+s.slotDays+'d / '+(s.slotDays*8)+'h</td>' +
+      '<td style="padding:12px;border-bottom:1px solid var(--border);">'+(isExternal?'<span style="color:#d97706;font-weight:600;">⚠️ '+s.primaryTL+'</span>':s.primaryTL)+'</td>' +
+    '</tr>';
+  });
+  html+='</tbody></table></div>';
+  document.getElementById('confirmed-team-summary').innerHTML=html;
+}
+
+function confirmAssignment() {
+  const hasExternal = Object.values(currentAssignment.selectedStaff).some(function(s){ return s.primaryTL!==currentAssignment.tl; });
+  if(hasExternal) showNotificationPopup1(); else showNotificationPopup2();
+}
+
+function showNotificationPopup1() {
+  const ext = Object.values(currentAssignment.selectedStaff).filter(function(s){ return s.primaryTL!==currentAssignment.tl; });
+  const staffList = ext.map(function(s){
+    return '<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:14px;"><strong>'+s.name+'</strong> <span style="color:var(--text-muted);">→ Primary TL: '+s.primaryTL+'</span></div>';
+  }).join('');
+  showPopup({
+    title:'📧 Notify Primary TL?',
+    body:'<p style="color:var(--text-muted);font-size:14px;margin-bottom:16px;">The following staff belong to a different Primary TL. Send them a courtesy email?</p><div>'+staffList+'</div>',
+    confirmText:'Yes — Send Courtesy Email', skipText:'Skip for Now',
+    onConfirm:function(){ showToast('Courtesy email queued for Primary TLs'); showNotificationPopup2(); },
+    onSkip:function(){ showNotificationPopup2(); }
+  });
+}
+
+function showNotificationPopup2() {
+  const staffList = Object.values(currentAssignment.selectedStaff).map(function(s){
+    return '<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:14px;"><strong>'+s.name+'</strong> <span class="badge '+LEVEL_COLORS[s.level]+'" style="margin-left:6px;">'+LEVEL_SHORT[s.level]+'</span><div style="font-size:12px;color:var(--text-muted);margin-top:2px;">'+formatDate(s.slotStart)+' to '+formatDate(s.slotEnd)+' — '+s.slotDays+' days</div></div>';
+  }).join('');
+  showPopup({
+    title:'📧 Notify Assigned Staff?',
+    body:'<p style="color:var(--text-muted);font-size:14px;margin-bottom:16px;">Send assignment details and team info to all assigned staff?</p><div>'+staffList+'</div>',
+    confirmText:'Yes — Send to All Staff', skipText:'Skip for Now',
+    onConfirm:function(){ showToast('Assignment emails queued for staff'); showNotificationPopup3(); },
+    onSkip:function(){ showNotificationPopup3(); }
+  });
+}
+
+function showNotificationPopup3() {
+  showPopup({
+    title:'📧 Notify Office Manager?',
+    body:'<p style="color:var(--text-muted);font-size:14px;margin-bottom:16px;">Send assignment details to the Office Manager to create the OMS task?</p>' +
+      '<div style="background:var(--cream);border-radius:var(--radius-sm);padding:14px;font-size:13px;line-height:1.8;">' +
+        '<div><span style="color:var(--text-muted);">Assignment ID:</span> <strong>'+currentAssignment.id+'</strong></div>' +
+        '<div><span style="color:var(--text-muted);">Client:</span> <strong>'+currentAssignment.client+'</strong></div>' +
+        '<div><span style="color:var(--text-muted);">Team Size:</span> <strong>'+Object.keys(currentAssignment.selectedStaff).length+' staff</strong></div>' +
+      '</div>',
+    confirmText:'Yes — Notify Office Manager', skipText:'Skip for Now',
+    onConfirm:function(){ showToast('Office Manager notified!'); finalizeAssignment('Fully Notified'); },
+    onSkip:function(){ finalizeAssignment('Confirmed — Notification Pending'); }
+  });
+}
+
+function finalizeAssignment(status) {
+  Object.values(currentAssignment.selectedStaff).forEach(function(s){
+    assignmentLog.push({
+      assignmentId:currentAssignment.id, client:currentAssignment.client,
+      desc:currentAssignment.desc, tl:currentAssignment.tl,
+      overallStart:currentAssignment.start, overallEnd:currentAssignment.end,
+      travel:currentAssignment.travel, notes:currentAssignment.notes,
+      staffName:s.name, level:s.level, primaryTL:s.primaryTL,
+      slotStart:s.slotStart, slotEnd:s.slotEnd, slotDays:s.slotDays,
+      status:status, createdOn:new Date().toISOString()
+    });
+  });
+  assignmentCounter++;
+  closePopup();
+  showToast('Assignment '+currentAssignment.id+' saved successfully!');
+  setTimeout(function(){ showPage('dashboard'); }, 1500);
+}
+
+function showPopup(opts) {
+  var overlay = document.getElementById('generic-popup');
+  if(!overlay){
+    overlay=document.createElement('div');
+    overlay.id='generic-popup';
+    overlay.className='modal-overlay';
+    document.body.appendChild(overlay);
+  }
+  overlay.innerHTML='<div class="modal" style="max-width:480px;">' +
+    '<div class="modal-header" style="padding:24px 24px 0;"><h3 style="font-family:DM Serif Display,serif;font-size:20px;color:var(--navy);">'+opts.title+'</h3></div>' +
+    '<div class="modal-body" style="padding:20px 24px;">'+opts.body+'</div>' +
+    '<div class="modal-footer">' +
+      '<button class="btn btn-ghost" id="popup-skip">'+opts.skipText+'</button>' +
+      '<button class="btn btn-navy" id="popup-confirm">'+opts.confirmText+'</button>' +
+    '</div></div>';
+  overlay.classList.add('open');
+  document.getElementById('popup-confirm').onclick = function(){ opts.onConfirm(); };
+  document.getElementById('popup-skip').onclick    = function(){ opts.onSkip(); };
+  overlay.onclick = function(e){ if(e.target===overlay) closePopup(); };
+}
+
+function closePopup() {
+  var overlay=document.getElementById('generic-popup');
+  if(overlay) overlay.classList.remove('open');
+}
+
+// ══════════════════════════════════════
+// MODAL & KEYBOARD
+// ══════════════════════════════════════
+document.querySelectorAll('.modal-overlay').forEach(function(overlay){
+  overlay.addEventListener('click', function(e){ if(e.target===this) this.classList.remove('open'); });
+});
+
+document.addEventListener('keydown', function(e){
+  if(e.key==='Enter'){
+    var ls=document.getElementById('login-screen');
+    if(ls&&ls.style.display!=='none'){
+      if(activeTab==='tl') loginTL(); else loginAdmin();
+    }
+  }
+});
+</script>
+</body>
+</html>
