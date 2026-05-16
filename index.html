@@ -945,38 +945,38 @@
 
     <nav class="sidebar-nav">
       <div class="nav-section-title">Main</div>
-      <button class="nav-item active" onclick="showPage('dashboard')">
+      <button class="nav-item active" onclick=\"showPage('dashboard', event)\">
         <span class="nav-icon">🏠</span> Dashboard
       </button>
-      <button class="nav-item" onclick="showPage('calendar')">
+      <button class="nav-item" onclick=\"showPage('calendar', event)\">
         <span class="nav-icon">📅</span> Calendar
       </button>
-      <button class="nav-item" onclick="showPage('assignment')">
+      <button class="nav-item" onclick=\"showPage('assignment', event)\">
         <span class="nav-icon">📋</span> New Assignment
       </button>
-      <button class="nav-item" onclick="showPage('log')">
+      <button class="nav-item" onclick=\"showPage('log', event)\">
         <span class="nav-icon">📁</span> Assignment Log
       </button>
 
       <div class="nav-section-title" style="margin-top:8px;">My Team</div>
-      <button class="nav-item" onclick="showPage('tl-dashboard')">
+      <button class="nav-item" onclick=\"showPage('tl-dashboard', event)\">
         <span class="nav-icon">👥</span> TL Dashboard
       </button>
 
       <div class="nav-section-title admin-only" style="margin-top:8px;">Admin</div>
-      <button class="nav-item admin-only" onclick="showPage('staff-master')">
+      <button class="nav-item admin-only" onclick=\"showPage('staff-master', event)\">
         <span class="nav-icon">👤</span> Staff Master
       </button>
-      <button class="nav-item admin-only" onclick="showPage('tl-master')">
+      <button class="nav-item admin-only" onclick=\"showPage('tl-master', event)\">
         <span class="nav-icon">🎯</span> TL Master
       </button>
-      <button class="nav-item admin-only" onclick="showPage('leave-register')">
+      <button class="nav-item admin-only" onclick=\"showPage('leave-register', event)\">
         <span class="nav-icon">🗓️</span> Leave Register
       </button>
-      <button class="nav-item admin-only" onclick="showPage('admin-dashboard')">
+      <button class="nav-item admin-only" onclick=\"showPage('admin-dashboard', event)\">
         <span class="nav-icon">📊</span> Admin Dashboard
       </button>
-      <button class="nav-item admin-only" onclick="showPage('settings')">
+      <button class="nav-item admin-only" onclick=\"showPage('settings', event)\">
         <span class="nav-icon">⚙️</span> Settings
       </button>
     </nav>
@@ -1135,13 +1135,222 @@
       </div>
     </div>
 
+    <!-- ASSIGNMENT FORM + FILTER PANEL (Phase 2) -->
     <div class="page" id="page-assignment">
-      <div class="page-header"><h2>New Assignment</h2></div>
-      <div class="coming-soon">
-        <div class="icon">📋</div>
-        <h3>Assignment Form — Coming in Phase 2</h3>
-        <p>Create new assignments, filter available staff and allocate teams here.</p>
+
+      <!-- STEP 1: ASSIGNMENT FORM -->
+      <div id="assignment-form-section">
+        <div class="page-header">
+          <h2>New Assignment</h2>
+          <p>Fill assignment details and team requirement, then find available staff.</p>
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 360px;gap:24px;align-items:start;">
+
+          <!-- LEFT COLUMN -->
+          <div>
+            <!-- Assignment Details -->
+            <div class="card" style="margin-bottom:20px;">
+              <div class="card-header"><h3>Assignment Details</h3></div>
+              <div class="card-body">
+
+                <div class="form-group" style="margin-bottom:16px;">
+                  <label>Raising TL</label>
+                  <input type="text" id="af-tl" readonly style="background:var(--cream);color:var(--navy);font-weight:600;">
+                </div>
+
+                <div class="form-group" style="margin-bottom:16px;">
+                  <label>Client Name *</label>
+                  <input type="text" id="af-client" placeholder="e.g. ABC Enterprises Ltd" oninput="updateSummary()">
+                </div>
+
+                <div class="form-group" style="margin-bottom:16px;">
+                  <label>Assignment Description *</label>
+                  <textarea id="af-desc" placeholder="Describe the work e.g. Statutory Audit FY 2024-25" rows="2"
+                    style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);
+                    font-family:DM Sans,sans-serif;font-size:14px;outline:none;resize:vertical;transition:border-color 0.2s;"
+                    onfocus="this.style.borderColor='var(--navy)'" onblur="this.style.borderColor='var(--border)'"
+                    oninput="updateSummary()"></textarea>
+                </div>
+
+                <div class="form-row" style="margin-bottom:16px;">
+                  <div class="form-group">
+                    <label>Overall Start Date *</label>
+                    <input type="date" id="af-start" onchange="calcDays();updateAvailability();updateSummary()">
+                  </div>
+                  <div class="form-group">
+                    <label>Overall End Date *</label>
+                    <input type="date" id="af-end" onchange="calcDays();updateAvailability();updateSummary()">
+                  </div>
+                </div>
+
+                <div class="form-row" style="margin-bottom:16px;">
+                  <div style="background:var(--cream);border-radius:var(--radius-sm);padding:14px 18px;">
+                    <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:4px;">Working Days</div>
+                    <div id="af-days" style="font-family:DM Serif Display,serif;font-size:26px;color:var(--navy);">—</div>
+                  </div>
+                  <div style="background:var(--cream);border-radius:var(--radius-sm);padding:14px 18px;">
+                    <div style="font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:4px;">Total Hours</div>
+                    <div id="af-hours" style="font-family:DM Serif Display,serif;font-size:26px;color:var(--navy);">—</div>
+                  </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom:16px;">
+                  <label>Travel Required *</label>
+                  <select id="af-travel" onchange="toggleTravel();updateSummary()">
+                    <option value="">Select</option>
+                    <option value="No">No</option>
+                    <option value="Yes">Yes</option>
+                  </select>
+                </div>
+
+                <div id="travel-details-group" style="display:none;margin-bottom:16px;">
+                  <div class="form-group">
+                    <label>Travel Details</label>
+                    <input type="text" id="af-travel-details" placeholder="e.g. Travel to Mumbai, 2 nights stay">
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label>Special Notes <span style="font-weight:300;text-transform:none;letter-spacing:0;font-size:11px;">(max 200 chars)</span></label>
+                  <textarea id="af-notes" placeholder="Any specific instructions for the team..." rows="2" maxlength="200"
+                    style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);
+                    font-family:DM Sans,sans-serif;font-size:14px;outline:none;resize:none;transition:border-color 0.2s;"
+                    onfocus="this.style.borderColor='var(--navy)'" onblur="this.style.borderColor='var(--border)'"
+                    oninput="updateCharCount()"></textarea>
+                  <div style="text-align:right;font-size:11px;color:var(--text-muted);margin-top:3px;"><span id="char-count">0</span>/200</div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Team Requirement -->
+            <div class="card">
+              <div class="card-header"><h3>Team Requirement</h3></div>
+              <div class="card-body">
+                <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px;">
+                  Enter how many staff of each level are needed. Select dates above to see live availability counts.
+                </p>
+                <div id="team-requirement-rows"></div>
+                <div style="border-top:2px solid var(--border);padding-top:14px;margin-top:4px;display:flex;justify-content:space-between;align-items:center;">
+                  <span style="font-size:14px;font-weight:600;color:var(--text-muted);">Total Team Size</span>
+                  <span id="total-team-size" style="font-family:DM Serif Display,serif;font-size:28px;color:var(--navy);">0</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT COLUMN: Preferences + Summary -->
+          <div>
+            <div class="card" style="margin-bottom:20px;">
+              <div class="card-header"><h3>Preferences</h3></div>
+              <div class="card-body">
+                <div class="form-group">
+                  <label>Gender Preference</label>
+                  <select id="af-gender" onchange="updateAvailability()">
+                    <option value="">No Preference</option>
+                    <option value="Male">Male Only</option>
+                    <option value="Female">Female Only</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="card" style="position:sticky;top:20px;">
+              <div class="card-header"><h3>Assignment Summary</h3></div>
+              <div class="card-body">
+                <div style="font-size:13px;">
+                  <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);">
+                    <span style="color:var(--text-muted);">ID</span>
+                    <strong id="sum-id" style="color:var(--navy);">Auto-generated</strong>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);">
+                    <span style="color:var(--text-muted);">Client</span>
+                    <strong id="sum-client" style="color:var(--navy);max-width:160px;text-align:right;">—</strong>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);">
+                    <span style="color:var(--text-muted);">Period</span>
+                    <strong id="sum-period" style="color:var(--navy);">—</strong>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);">
+                    <span style="color:var(--text-muted);">Duration</span>
+                    <strong id="sum-duration" style="color:var(--navy);">—</strong>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);">
+                    <span style="color:var(--text-muted);">Travel</span>
+                    <strong id="sum-travel" style="color:var(--navy);">—</strong>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;padding:7px 0;">
+                    <span style="color:var(--text-muted);">Team Size</span>
+                    <strong id="sum-team" style="color:var(--navy);">0 staff</strong>
+                  </div>
+                </div>
+
+                <button class="btn btn-navy" id="find-staff-btn" onclick="proceedToFilter()"
+                  style="width:100%;margin-top:20px;padding:14px;font-size:15px;opacity:0.4;cursor:not-allowed;" disabled>
+                  Find Available Staff &rarr;
+                </button>
+                <p id="form-incomplete-msg" style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:8px;">
+                  Fill all required fields and add at least 1 staff slot.
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
       </div>
+
+      <!-- STEP 2: FILTER & ALLOCATION PANEL -->
+      <div id="filter-panel-section" style="display:none;">
+        <div class="page-header" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+          <button class="btn btn-ghost" onclick="backToForm()">&#8592; Back to Form</button>
+          <div>
+            <h2>Filter &amp; Allocate Staff</h2>
+            <p>Select staff for each slot — set individual dates per slot within the overall period.</p>
+          </div>
+        </div>
+
+        <!-- Recap banner -->
+        <div style="background:var(--navy);color:var(--white);border-radius:var(--radius);padding:18px 24px;margin-bottom:24px;display:flex;flex-wrap:wrap;gap:28px;">
+          <div>
+            <div style="font-size:10px;opacity:0.5;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;">Client</div>
+            <div style="font-weight:600;font-size:15px;" id="recap-client">—</div>
+          </div>
+          <div>
+            <div style="font-size:10px;opacity:0.5;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;">Assignment</div>
+            <div style="font-weight:600;font-size:15px;" id="recap-desc">—</div>
+          </div>
+          <div>
+            <div style="font-size:10px;opacity:0.5;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;">Overall Period</div>
+            <div style="font-weight:600;font-size:15px;" id="recap-period">—</div>
+          </div>
+          <div>
+            <div style="font-size:10px;opacity:0.5;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;">Travel</div>
+            <div style="font-weight:600;font-size:15px;" id="recap-travel">—</div>
+          </div>
+          <div>
+            <div style="font-size:10px;opacity:0.5;text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;">Raising TL</div>
+            <div style="font-weight:600;font-size:15px;" id="recap-tl">—</div>
+          </div>
+        </div>
+
+        <!-- Slot cards -->
+        <div id="slots-container"></div>
+
+        <!-- Confirm Team -->
+        <div class="card" id="confirm-team-card" style="display:none;margin-top:24px;">
+          <div class="card-header">
+            <h3>&#10003; All Slots Filled — Review &amp; Confirm</h3>
+          </div>
+          <div class="card-body">
+            <div id="confirmed-team-summary" style="margin-bottom:24px;"></div>
+            <button class="btn btn-navy" onclick="confirmAssignment()" style="padding:14px 32px;font-size:15px;">
+              Confirm Assignment &amp; Proceed to Notifications &rarr;
+            </button>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <div class="page" id="page-log">
@@ -1345,11 +1554,21 @@ let currentTL = null;
 
 // Sample data — will be replaced by Google Sheets data
 let staffData = [
-  { name:'Anita Sharma', gender:'Female', level:'Senior Associate', email:'anita@ycrjca.com', phone:'9876543210', travel:'Yes', capacity:6, hours:48, primaryTL:'Rahul K', status:'Active' },
-  { name:'Rohan Mehta', gender:'Male', level:'Junior Associate', email:'rohan@ycrjca.com', phone:'9876543211', travel:'No', capacity:6, hours:48, primaryTL:'Priya S', status:'Active' },
-  { name:'Kavya Nair', gender:'Female', level:'Article Trainee', email:'kavya@ycrjca.com', phone:'9876543212', travel:'Yes', capacity:6, hours:48, primaryTL:'Amit M', status:'Active' },
-  { name:'Suresh Pillai', gender:'Male', level:'Chartered Accountant', email:'suresh@ycrjca.com', phone:'', travel:'Yes', capacity:6, hours:48, primaryTL:'Rahul K', status:'Active' },
-  { name:'Meena Iyer', gender:'Female', level:'Assistant Manager', email:'meena@ycrjca.com', phone:'9876543214', travel:'No', capacity:5, hours:40, primaryTL:'Sunita R', status:'Inactive' },
+  { name:'Anita Sharma',   gender:'Female', level:'Senior Associate',    email:'anita@ycrjca.com',   phone:'9876543210', travel:'Yes', capacity:6, hours:48, primaryTL:'Rahul K',  status:'Active' },
+  { name:'Rohan Mehta',    gender:'Male',   level:'Junior Associate',     email:'rohan@ycrjca.com',   phone:'9876543211', travel:'No',  capacity:6, hours:48, primaryTL:'Priya S',  status:'Active' },
+  { name:'Kavya Nair',     gender:'Female', level:'Article Trainee',      email:'kavya@ycrjca.com',   phone:'9876543212', travel:'Yes', capacity:6, hours:48, primaryTL:'Amit M',   status:'Active' },
+  { name:'Suresh Pillai',  gender:'Male',   level:'Chartered Accountant', email:'suresh@ycrjca.com',  phone:'',           travel:'Yes', capacity:6, hours:48, primaryTL:'Rahul K',  status:'Active' },
+  { name:'Meena Iyer',     gender:'Female', level:'Assistant Manager',    email:'meena@ycrjca.com',   phone:'9876543214', travel:'No',  capacity:5, hours:40, primaryTL:'Sunita R', status:'Inactive' },
+  { name:'Arjun Verma',    gender:'Male',   level:'Junior Associate',     email:'arjun@ycrjca.com',   phone:'9876543215', travel:'Yes', capacity:6, hours:48, primaryTL:'Priya S',  status:'Active' },
+  { name:'Sneha Kulkarni', gender:'Female', level:'Junior Associate',     email:'sneha@ycrjca.com',   phone:'9876543216', travel:'Yes', capacity:6, hours:48, primaryTL:'Amit M',   status:'Active' },
+  { name:'Vikram Rao',     gender:'Male',   level:'Senior Associate',     email:'vikram@ycrjca.com',  phone:'9876543217', travel:'No',  capacity:6, hours:48, primaryTL:'Sunita R', status:'Active' },
+  { name:'Pooja Desai',    gender:'Female', level:'Article Trainee',      email:'pooja@ycrjca.com',   phone:'9876543218', travel:'No',  capacity:6, hours:48, primaryTL:'Rahul K',  status:'Active' },
+  { name:'Kiran Bhat',     gender:'Male',   level:'Article Trainee',      email:'kiran@ycrjca.com',   phone:'9876543219', travel:'Yes', capacity:6, hours:48, primaryTL:'Priya S',  status:'Active' },
+  { name:'Divya Menon',    gender:'Female', level:'Assistant Manager',    email:'divya@ycrjca.com',   phone:'9876543220', travel:'Yes', capacity:6, hours:48, primaryTL:'Amit M',   status:'Active' },
+  { name:'Rahul Joshi',    gender:'Male',   level:'Chartered Accountant', email:'rahulj@ycrjca.com',  phone:'9876543221', travel:'No',  capacity:6, hours:48, primaryTL:'Sunita R', status:'Active' },
+  { name:'Priya Nambiar',  gender:'Female', level:'Senior Associate',     email:'priyan@ycrjca.com',  phone:'9876543222', travel:'Yes', capacity:6, hours:48, primaryTL:'Deepak V', status:'Active' },
+  { name:'Arun Kumar',     gender:'Male',   level:'Junior Associate',     email:'arun@ycrjca.com',    phone:'9876543223', travel:'Yes', capacity:6, hours:48, primaryTL:'Rahul K',  status:'Active' },
+  { name:'Lakshmi Rao',    gender:'Female', level:'Article Trainee',      email:'lakshmi@ycrjca.com', phone:'9876543224', travel:'No',  capacity:6, hours:48, primaryTL:'Priya S',  status:'Active' },
 ];
 
 let tlData = [
@@ -1705,6 +1924,698 @@ function showToast(msg, type='success') {
   t.className = `toast ${type}`;
   t.style.display = 'block';
   setTimeout(()=>{ t.style.display='none'; }, 3000);
+}
+
+
+// ══════════════════════════════════════
+// PHASE 2 — ASSIGNMENT FORM & FILTER
+// ══════════════════════════════════════
+
+const LEVELS = [
+  'Article Trainee',
+  'Junior Associate',
+  'Senior Associate',
+  'Assistant Manager',
+  'Chartered Accountant'
+];
+
+const LEVEL_SHORT = {
+  'Article Trainee':'AT',
+  'Junior Associate':'JA',
+  'Senior Associate':'SA',
+  'Assistant Manager':'AM',
+  'Chartered Accountant':'CA'
+};
+
+const LEVEL_COLORS = {
+  'Article Trainee':'badge-at',
+  'Junior Associate':'badge-ja',
+  'Senior Associate':'badge-sa',
+  'Assistant Manager':'badge-am',
+  'Chartered Accountant':'badge-ca'
+};
+
+// Current assignment being built
+let currentAssignment = {
+  id: '', client:'', desc:'', start:'', end:'', days:0, hours:0,
+  travel:'', travelDetails:'', notes:'', tl:'', gender:'',
+  teamReq: {}, selectedStaff: {}
+};
+
+// Assignment log (in memory for test)
+let assignmentLog = [];
+let assignmentCounter = 1;
+
+// ── INIT ASSIGNMENT FORM ──
+function initAssignmentForm() {
+  document.getElementById('af-tl').value = currentTL || 'Admin';
+  currentAssignment.tl = currentTL || 'Admin';
+  currentAssignment.id = generateAssignmentID();
+  document.getElementById('sum-id').textContent = currentAssignment.id;
+
+  // Set min dates
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('af-start').min = today;
+  document.getElementById('af-end').min = today;
+
+  // Clear fields
+  ['af-client','af-desc','af-travel-details','af-notes'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('af-travel').value = '';
+  document.getElementById('af-gender').value = '';
+  document.getElementById('af-start').value = '';
+  document.getElementById('af-end').value = '';
+  document.getElementById('af-days').textContent = '—';
+  document.getElementById('af-hours').textContent = '—';
+  document.getElementById('char-count').textContent = '0';
+  document.getElementById('travel-details-group').style.display = 'none';
+
+  currentAssignment.teamReq = {};
+  currentAssignment.selectedStaff = {};
+  renderTeamRequirementRows();
+  updateSummary();
+
+  // Show form, hide filter panel
+  document.getElementById('assignment-form-section').style.display = 'block';
+  document.getElementById('filter-panel-section').style.display = 'none';
+}
+
+function generateAssignmentID() {
+  const yr = new Date().getFullYear();
+  const num = String(assignmentCounter).padStart(3,'0');
+  return `YCRJ-${yr}-${num}`;
+}
+
+// ── CALC WORKING DAYS (Mon-Sat) ──
+function calcWorkingDays(start, end) {
+  if (!start || !end) return 0;
+  let s = new Date(start), e = new Date(end), count = 0;
+  while (s <= e) {
+    const d = s.getDay();
+    if (d !== 0) count++; // skip Sunday
+    s.setDate(s.getDate() + 1);
+  }
+  return count;
+}
+
+function calcDays() {
+  const s = document.getElementById('af-start').value;
+  const e = document.getElementById('af-end').value;
+  if (!s || !e || s > e) {
+    document.getElementById('af-days').textContent = '—';
+    document.getElementById('af-hours').textContent = '—';
+    currentAssignment.days = 0; currentAssignment.hours = 0;
+    return;
+  }
+  const days = calcWorkingDays(s, e);
+  document.getElementById('af-days').textContent = days + ' days';
+  document.getElementById('af-hours').textContent = (days*8) + ' hrs';
+  currentAssignment.days = days;
+  currentAssignment.hours = days * 8;
+  currentAssignment.start = s;
+  currentAssignment.end = e;
+}
+
+function toggleTravel() {
+  const v = document.getElementById('af-travel').value;
+  document.getElementById('travel-details-group').style.display = v==='Yes' ? 'block' : 'none';
+}
+
+function updateCharCount() {
+  const v = document.getElementById('af-notes').value;
+  document.getElementById('char-count').textContent = v.length;
+}
+
+// ── TEAM REQUIREMENT ROWS ──
+function renderTeamRequirementRows() {
+  const container = document.getElementById('team-requirement-rows');
+  const start = document.getElementById('af-start').value;
+  const end = document.getElementById('af-end').value;
+  const gender = document.getElementById('af-gender').value;
+  const travel = document.getElementById('af-travel').value;
+
+  container.innerHTML = LEVELS.map(level => {
+    const count = currentAssignment.teamReq[level] || 0;
+    const avail = getAvailableStaff(level, start, end, gender, travel).length;
+    const hasDate = start && end;
+
+    let availHTML = '';
+    if (hasDate) {
+      let color = '#16a34a', bg = '#dcfce7', icon = '✅';
+      if (avail === 0) { color='#991b1b'; bg='#fee2e2'; icon='🔴'; }
+      else if (avail <= count) { color='#92400e'; bg='#fef3c7'; icon='⚠️'; }
+      availHTML = `<span style="font-size:12px;padding:3px 10px;border-radius:20px;background:${bg};color:${color};font-weight:600;">
+        ${icon} ${avail} available</span>`;
+    } else {
+      availHTML = `<span style="font-size:12px;color:var(--text-muted);">Select dates to see availability</span>`;
+    }
+
+    return `
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border);">
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span class="badge ${LEVEL_COLORS[level]}" style="font-size:11px;">${LEVEL_SHORT[level]}</span>
+          <span style="font-size:14px;font-weight:500;">${level}</span>
+        </div>
+        <div style="margin-top:6px;">${availHTML}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button onclick="changeTeamReq('${level}',-1)" style="width:32px;height:32px;border-radius:50%;border:1.5px solid var(--border);background:var(--white);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;color:var(--navy);font-weight:700;">−</button>
+        <span style="font-family:DM Serif Display,serif;font-size:22px;color:var(--navy);min-width:24px;text-align:center;">${count}</span>
+        <button onclick="changeTeamReq('${level}',1)" style="width:32px;height:32px;border-radius:50%;border:none;background:var(--navy);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;color:var(--white);font-weight:700;">+</button>
+      </div>
+    </div>`;
+  }).join('');
+
+  updateTotalTeamSize();
+}
+
+function changeTeamReq(level, delta) {
+  const cur = currentAssignment.teamReq[level] || 0;
+  const newVal = Math.max(0, cur + delta);
+  currentAssignment.teamReq[level] = newVal;
+  renderTeamRequirementRows();
+  updateSummary();
+  checkFormReady();
+}
+
+function updateTotalTeamSize() {
+  const total = Object.values(currentAssignment.teamReq).reduce((a,b)=>a+b,0);
+  document.getElementById('total-team-size').textContent = total;
+  document.getElementById('sum-team').textContent = total + ' staff';
+  return total;
+}
+
+// ── GET AVAILABLE STAFF ──
+function getAvailableStaff(level, start, end, gender, travel) {
+  if (!start || !end) return [];
+  return staffData.filter(s => {
+    if (s.status !== 'Active') return false;
+    if (s.level !== level) return false;
+    if (gender && s.gender !== gender) return false;
+    if (travel === 'Yes' && s.travel !== 'Yes') return false;
+    // Check not already selected in current assignment
+    const selected = currentAssignment.selectedStaff;
+    const alreadyPicked = Object.values(selected).some(slot => slot && slot.name === s.name);
+    if (alreadyPicked) return false;
+    // Check assignment log conflicts
+    const conflict = assignmentLog.some(a => {
+      if (a.staffName !== s.name) return false;
+      if (a.status === 'Completed' || a.status === 'Cancelled') return false;
+      return !(end < a.slotStart || start > a.slotEnd);
+    });
+    return !conflict;
+  });
+}
+
+function updateAvailability() {
+  renderTeamRequirementRows();
+  updateSummary();
+  checkFormReady();
+}
+
+// ── SUMMARY UPDATE ──
+function updateSummary() {
+  const client = document.getElementById('af-client').value.trim();
+  const start = document.getElementById('af-start').value;
+  const end = document.getElementById('af-end').value;
+  const travel = document.getElementById('af-travel').value;
+
+  document.getElementById('sum-client').textContent = client || '—';
+  if (start && end) {
+    document.getElementById('sum-period').textContent = formatDate(start) + ' — ' + formatDate(end);
+    document.getElementById('sum-duration').textContent = currentAssignment.days + ' days / ' + currentAssignment.hours + ' hrs';
+  } else {
+    document.getElementById('sum-period').textContent = '—';
+    document.getElementById('sum-duration').textContent = '—';
+  }
+  document.getElementById('sum-travel').textContent = travel || '—';
+  checkFormReady();
+}
+
+// ── FORM VALIDATION ──
+function checkFormReady() {
+  const client = document.getElementById('af-client').value.trim();
+  const desc = document.getElementById('af-desc').value.trim();
+  const start = document.getElementById('af-start').value;
+  const end = document.getElementById('af-end').value;
+  const travel = document.getElementById('af-travel').value;
+  const total = Object.values(currentAssignment.teamReq).reduce((a,b)=>a+b,0);
+
+  const valid = client && desc && start && end && start<=end && travel && total>0;
+  const btn = document.getElementById('find-staff-btn');
+  const msg = document.getElementById('form-incomplete-msg');
+  btn.disabled = !valid;
+  btn.style.opacity = valid ? '1' : '0.4';
+  btn.style.cursor = valid ? 'pointer' : 'not-allowed';
+  msg.style.display = valid ? 'none' : 'block';
+}
+
+// ── FORMAT DATE ──
+function formatDate(d) {
+  if (!d) return '—';
+  const dt = new Date(d + 'T00:00:00');
+  return dt.toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'numeric'});
+}
+
+// ── PROCEED TO FILTER PANEL ──
+function proceedToFilter() {
+  // Save form values
+  currentAssignment.client = document.getElementById('af-client').value.trim();
+  currentAssignment.desc = document.getElementById('af-desc').value.trim();
+  currentAssignment.start = document.getElementById('af-start').value;
+  currentAssignment.end = document.getElementById('af-end').value;
+  currentAssignment.travel = document.getElementById('af-travel').value;
+  currentAssignment.travelDetails = document.getElementById('af-travel-details').value.trim();
+  currentAssignment.notes = document.getElementById('af-notes').value.trim();
+  currentAssignment.gender = document.getElementById('af-gender').value;
+
+  // Update recap
+  document.getElementById('recap-client').textContent = currentAssignment.client;
+  document.getElementById('recap-desc').textContent = currentAssignment.desc;
+  document.getElementById('recap-period').textContent = formatDate(currentAssignment.start) + ' to ' + formatDate(currentAssignment.end);
+  document.getElementById('recap-travel').textContent = currentAssignment.travel + (currentAssignment.travelDetails ? ' — ' + currentAssignment.travelDetails : '');
+  document.getElementById('recap-tl').textContent = currentAssignment.tl;
+
+  // Build slots
+  currentAssignment.selectedStaff = {};
+  buildSlots();
+
+  // Switch view
+  document.getElementById('assignment-form-section').style.display = 'none';
+  document.getElementById('filter-panel-section').style.display = 'block';
+  document.getElementById('confirm-team-card').style.display = 'none';
+}
+
+function backToForm() {
+  document.getElementById('assignment-form-section').style.display = 'block';
+  document.getElementById('filter-panel-section').style.display = 'none';
+}
+
+// ── BUILD SLOTS ──
+function buildSlots() {
+  const container = document.getElementById('slots-container');
+  container.innerHTML = '';
+  let slotIndex = 0;
+
+  LEVELS.forEach(level => {
+    const count = currentAssignment.teamReq[level] || 0;
+    for (let i = 0; i < count; i++) {
+      slotIndex++;
+      const slotKey = level + '_' + i;
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.id = 'slot-card-' + slotKey;
+      card.style.marginBottom = '20px';
+      card.innerHTML = buildSlotHTML(slotKey, level, slotIndex, count > 1 ? i+1 : null);
+      container.appendChild(card);
+    }
+  });
+
+  checkAllSlotsFilled();
+}
+
+function buildSlotHTML(slotKey, level, slotNum, subNum) {
+  const label = subNum ? `Slot ${slotNum} — ${level} (${subNum})` : `Slot ${slotNum} — ${level}`;
+  const staff = getAvailableStaff(level, currentAssignment.start, currentAssignment.end, currentAssignment.gender, currentAssignment.travel);
+  const selected = currentAssignment.selectedStaff[slotKey];
+
+  const staffRows = staff.length === 0
+    ? `<div style="padding:20px;text-align:center;color:var(--text-muted);font-size:14px;">
+        No available staff matching criteria for this period.
+       </div>`
+    : staff.map((s, idx) => {
+        const isExternal = s.primaryTL !== currentAssignment.tl;
+        const busy = assignmentLog.filter(a => a.staffName === s.name && a.status !== 'Completed' && a.status !== 'Cancelled').length;
+        return `
+        <tr style="cursor:pointer;" onclick="selectStaffForSlot('${slotKey}','${level}',${idx})">
+          <td>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <div style="width:36px;height:36px;border-radius:50%;background:var(--navy);color:var(--white);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;flex-shrink:0;">
+                ${s.name.charAt(0)}
+              </div>
+              <div>
+                <div style="font-weight:600;font-size:14px;">${s.name}</div>
+                ${isExternal ? `<div style="font-size:11px;color:#d97706;font-weight:600;">⚠️ Primary TL: ${s.primaryTL}</div>` : `<div style="font-size:11px;color:var(--text-muted);">Primary TL: ${s.primaryTL}</div>`}
+              </div>
+            </div>
+          </td>
+          <td>${s.gender}</td>
+          <td><span style="font-size:11px;color:var(--text-muted);">${busy > 0 ? busy + ' active' : 'No active'} assignments</span></td>
+          <td><span class="badge ${s.travel==='Yes'?'badge-yes':'badge-no'}">${s.travel}</span></td>
+          <td>
+            <button class="btn btn-navy" style="padding:6px 16px;font-size:13px;" onclick="event.stopPropagation();selectStaffForSlot('${slotKey}','${level}',${idx})">
+              Pick
+            </button>
+          </td>
+        </tr>`;
+      }).join('');
+
+  const selectedHTML = selected
+    ? `<div style="background:#dcfce7;border-radius:var(--radius-sm);padding:14px 18px;display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <div>
+          <div style="font-weight:700;color:#166534;font-size:15px;">✅ ${selected.name} selected</div>
+          <div style="font-size:12px;color:#166534;margin-top:2px;">
+            ${selected.slotStart ? formatDate(selected.slotStart) + ' to ' + formatDate(selected.slotEnd) + ' — ' + selected.slotDays + ' days' : 'Set dates below'}
+          </div>
+        </div>
+        <button class="btn btn-ghost" style="font-size:12px;padding:6px 12px;" onclick="clearSlot('${slotKey}')">Change</button>
+       </div>`
+    : '';
+
+  const dateHTML = selected ? `
+    <div style="background:var(--cream);border-radius:var(--radius-sm);padding:16px;margin-top:${staff.length?'16px':'0'};">
+      <div style="font-size:12px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:12px;">
+        Set dates for ${selected.name}
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Slot Start Date *</label>
+          <input type="date" id="slot-start-${slotKey}" value="${currentAssignment.start}"
+            min="${currentAssignment.start}" max="${currentAssignment.end}"
+            onchange="updateSlotDates('${slotKey}')">
+        </div>
+        <div class="form-group">
+          <label>Slot End Date *</label>
+          <input type="date" id="slot-end-${slotKey}" value="${currentAssignment.end}"
+            min="${currentAssignment.start}" max="${currentAssignment.end}"
+            onchange="updateSlotDates('${slotKey}')">
+        </div>
+      </div>
+      <div style="font-size:13px;color:var(--navy);font-weight:600;margin-top:8px;" id="slot-days-${slotKey}">
+        ${calcWorkingDays(currentAssignment.start, currentAssignment.end)} working days / ${calcWorkingDays(currentAssignment.start, currentAssignment.end)*8} hours
+      </div>
+    </div>` : '';
+
+  return `
+    <div class="card-header">
+      <h3>
+        <span class="badge ${LEVEL_COLORS[level]}" style="margin-right:8px;">${LEVEL_SHORT[level]}</span>
+        ${label}
+      </h3>
+      ${selected ? '<span class="badge badge-active">✓ Filled</span>' : '<span style="font-size:12px;color:var(--text-muted);">Pending selection</span>'}
+    </div>
+    <div class="card-body">
+      ${selectedHTML}
+      ${!selected ? `
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Staff Member</th>
+              <th>Gender</th>
+              <th>Current Load</th>
+              <th>Travel</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>${staffRows}</tbody>
+        </table>
+      </div>` : ''}
+      ${dateHTML}
+    </div>`;
+}
+
+function selectStaffForSlot(slotKey, level, staffIdx) {
+  const staff = getAvailableStaff(level, currentAssignment.start, currentAssignment.end, currentAssignment.gender, currentAssignment.travel);
+  const s = staff[staffIdx];
+  if (!s) return;
+
+  // Check if external TL
+  if (s.primaryTL !== currentAssignment.tl) {
+    if (!confirm(`⚠️ ${s.name} reports to ${s.primaryTL} (different TL).
+
+Their current availability: ${s.capacity * 6} hrs/week.
+
+Proceed with selection?`)) return;
+  }
+
+  currentAssignment.selectedStaff[slotKey] = {
+    name: s.name, level, gender: s.gender,
+    primaryTL: s.primaryTL, email: s.email,
+    slotStart: currentAssignment.start,
+    slotEnd: currentAssignment.end,
+    slotDays: calcWorkingDays(currentAssignment.start, currentAssignment.end)
+  };
+
+  // Rebuild slot card
+  const card = document.getElementById('slot-card-' + slotKey);
+  const slotNum = Array.from(document.getElementById('slots-container').children).indexOf(card) + 1;
+  const levelCount = currentAssignment.teamReq[level];
+  const subIdx = parseInt(slotKey.split('_')[1]);
+  card.innerHTML = buildSlotHTML(slotKey, level, slotNum, levelCount > 1 ? subIdx+1 : null);
+
+  // Re-render other unfilled slots to remove picked staff
+  rebuildUnfilledSlots();
+  checkAllSlotsFilled();
+}
+
+function rebuildUnfilledSlots() {
+  const container = document.getElementById('slots-container');
+  let slotIndex = 0;
+  LEVELS.forEach(level => {
+    const count = currentAssignment.teamReq[level] || 0;
+    for (let i = 0; i < count; i++) {
+      slotIndex++;
+      const slotKey = level + '_' + i;
+      if (!currentAssignment.selectedStaff[slotKey]) {
+        const card = document.getElementById('slot-card-' + slotKey);
+        if (card) card.innerHTML = buildSlotHTML(slotKey, level, slotIndex, count > 1 ? i+1 : null);
+      }
+    }
+  });
+}
+
+function clearSlot(slotKey) {
+  delete currentAssignment.selectedStaff[slotKey];
+  const container = document.getElementById('slots-container');
+  let slotIndex = 0;
+  LEVELS.forEach(level => {
+    const count = currentAssignment.teamReq[level] || 0;
+    for (let i = 0; i < count; i++) {
+      slotIndex++;
+      const sk = level + '_' + i;
+      const card = document.getElementById('slot-card-' + sk);
+      if (card) card.innerHTML = buildSlotHTML(sk, level, slotIndex, count > 1 ? i+1 : null);
+    }
+  });
+  checkAllSlotsFilled();
+}
+
+function updateSlotDates(slotKey) {
+  const s = document.getElementById('slot-start-' + slotKey).value;
+  const e = document.getElementById('slot-end-' + slotKey).value;
+  if (s && e && s <= e) {
+    const days = calcWorkingDays(s, e);
+    document.getElementById('slot-days-' + slotKey).textContent = days + ' working days / ' + (days*8) + ' hours';
+    if (currentAssignment.selectedStaff[slotKey]) {
+      currentAssignment.selectedStaff[slotKey].slotStart = s;
+      currentAssignment.selectedStaff[slotKey].slotEnd = e;
+      currentAssignment.selectedStaff[slotKey].slotDays = days;
+    }
+  }
+  checkAllSlotsFilled();
+}
+
+function checkAllSlotsFilled() {
+  let total = 0, filled = 0;
+  LEVELS.forEach(level => {
+    const count = currentAssignment.teamReq[level] || 0;
+    total += count;
+    for (let i = 0; i < count; i++) {
+      const slotKey = level + '_' + i;
+      if (currentAssignment.selectedStaff[slotKey]) filled++;
+    }
+  });
+
+  const confirmCard = document.getElementById('confirm-team-card');
+  if (filled === total && total > 0) {
+    confirmCard.style.display = 'block';
+    renderConfirmedTeamSummary();
+  } else {
+    confirmCard.style.display = 'none';
+  }
+}
+
+function renderConfirmedTeamSummary() {
+  const slots = currentAssignment.selectedStaff;
+  let html = `<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:14px;">
+    <thead>
+      <tr>
+        <th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);background:var(--cream);border-bottom:1px solid var(--border);">Staff</th>
+        <th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);background:var(--cream);border-bottom:1px solid var(--border);">Level</th>
+        <th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);background:var(--cream);border-bottom:1px solid var(--border);">Period</th>
+        <th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);background:var(--cream);border-bottom:1px solid var(--border);">Days</th>
+        <th style="padding:10px 12px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;color:var(--text-muted);background:var(--cream);border-bottom:1px solid var(--border);">Primary TL</th>
+      </tr>
+    </thead><tbody>`;
+
+  Object.values(slots).forEach(s => {
+    const isExternal = s.primaryTL !== currentAssignment.tl;
+    html += `<tr>
+      <td style="padding:12px;border-bottom:1px solid var(--border);font-weight:600;">${s.name}</td>
+      <td style="padding:12px;border-bottom:1px solid var(--border);"><span class="badge ${LEVEL_COLORS[s.level]}">${LEVEL_SHORT[s.level]}</span></td>
+      <td style="padding:12px;border-bottom:1px solid var(--border);font-size:13px;">${formatDate(s.slotStart)} → ${formatDate(s.slotEnd)}</td>
+      <td style="padding:12px;border-bottom:1px solid var(--border);font-weight:600;">${s.slotDays}d / ${s.slotDays*8}h</td>
+      <td style="padding:12px;border-bottom:1px solid var(--border);">
+        ${isExternal ? `<span style="color:#d97706;font-weight:600;">⚠️ ${s.primaryTL}</span>` : s.primaryTL}
+      </td>
+    </tr>`;
+  });
+
+  html += '</tbody></table></div>';
+  document.getElementById('confirmed-team-summary').innerHTML = html;
+}
+
+// ── CONFIRM & NOTIFICATION POPUPS ──
+function confirmAssignment() {
+  // Check if any external staff
+  const hasExternal = Object.values(currentAssignment.selectedStaff)
+    .some(s => s.primaryTL !== currentAssignment.tl);
+
+  if (hasExternal) {
+    showNotificationPopup1();
+  } else {
+    showNotificationPopup2();
+  }
+}
+
+function showNotificationPopup1() {
+  const externalStaff = Object.values(currentAssignment.selectedStaff)
+    .filter(s => s.primaryTL !== currentAssignment.tl);
+
+  const staffList = externalStaff.map(s =>
+    `<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:14px;">
+      <strong>${s.name}</strong> <span style="color:var(--text-muted);">→ Primary TL: ${s.primaryTL}</span>
+     </div>`
+  ).join('');
+
+  showPopup({
+    title: '📧 Notify Primary TL?',
+    body: `<p style="color:var(--text-muted);font-size:14px;margin-bottom:16px;">
+      The following staff belong to a different Primary TL. Send them a courtesy email about this assignment?
+    </p>
+    <div>${staffList}</div>`,
+    confirmText: 'Yes — Send Courtesy Email',
+    skipText: 'Skip for Now',
+    onConfirm: () => { showToast('Courtesy email queued for Primary TLs', 'success'); showNotificationPopup2(); },
+    onSkip: () => { showNotificationPopup2(); }
+  });
+}
+
+function showNotificationPopup2() {
+  const staffList = Object.values(currentAssignment.selectedStaff).map(s =>
+    `<div style="padding:8px 0;border-bottom:1px solid var(--border);font-size:14px;">
+      <strong>${s.name}</strong> <span class="badge ${LEVEL_COLORS[s.level]}" style="margin-left:6px;">${LEVEL_SHORT[s.level]}</span>
+      <div style="font-size:12px;color:var(--text-muted);margin-top:2px;">${formatDate(s.slotStart)} to ${formatDate(s.slotEnd)} — ${s.slotDays} days</div>
+     </div>`
+  ).join('');
+
+  showPopup({
+    title: '📧 Notify Assigned Staff?',
+    body: `<p style="color:var(--text-muted);font-size:14px;margin-bottom:16px;">
+      Send assignment details, team info and ${currentAssignment.travel==='Yes'?'travel information':'dates'} to all assigned staff?
+    </p>
+    <div>${staffList}</div>`,
+    confirmText: 'Yes — Send to All Staff',
+    skipText: 'Skip for Now',
+    onConfirm: () => { showToast('Assignment emails queued for staff', 'success'); showNotificationPopup3(); },
+    onSkip: () => { showNotificationPopup3(); }
+  });
+}
+
+function showNotificationPopup3() {
+  showPopup({
+    title: '📧 Notify Office Manager?',
+    body: `<p style="color:var(--text-muted);font-size:14px;margin-bottom:16px;">
+      Send assignment details to the Office Manager to create the OMS task and allot the team with due dates?
+    </p>
+    <div style="background:var(--cream);border-radius:var(--radius-sm);padding:14px;font-size:13px;line-height:1.8;">
+      <div><span style="color:var(--text-muted);">Assignment ID:</span> <strong>${currentAssignment.id}</strong></div>
+      <div><span style="color:var(--text-muted);">Client:</span> <strong>${currentAssignment.client}</strong></div>
+      <div><span style="color:var(--text-muted);">Team Size:</span> <strong>${Object.keys(currentAssignment.selectedStaff).length} staff</strong></div>
+    </div>`,
+    confirmText: 'Yes — Notify Office Manager',
+    skipText: 'Skip for Now',
+    onConfirm: () => { showToast('Office Manager notified!', 'success'); finalizeAssignment('Fully Notified'); },
+    onSkip: () => { finalizeAssignment('Confirmed — Notification Pending'); }
+  });
+}
+
+function finalizeAssignment(status) {
+  // Save to assignment log
+  Object.entries(currentAssignment.selectedStaff).forEach(([key, s]) => {
+    assignmentLog.push({
+      assignmentId: currentAssignment.id,
+      client: currentAssignment.client,
+      desc: currentAssignment.desc,
+      tl: currentAssignment.tl,
+      overallStart: currentAssignment.start,
+      overallEnd: currentAssignment.end,
+      travel: currentAssignment.travel,
+      notes: currentAssignment.notes,
+      staffName: s.name,
+      level: s.level,
+      primaryTL: s.primaryTL,
+      slotStart: s.slotStart,
+      slotEnd: s.slotEnd,
+      slotDays: s.slotDays,
+      status: status,
+      createdOn: new Date().toISOString()
+    });
+  });
+
+  assignmentCounter++;
+  closePopup();
+  showToast(`Assignment ${currentAssignment.id} saved successfully!`, 'success');
+
+  // Reset form and go back to dashboard
+  setTimeout(() => {
+    showPage('dashboard', {currentTarget: document.querySelector('.nav-item')});
+  }, 1500);
+}
+
+// ── GENERIC POPUP ──
+function showPopup({title, body, confirmText, skipText, onConfirm, onSkip}) {
+  let overlay = document.getElementById('generic-popup');
+  if (!overlay) {
+    overlay = document.createElement('div');
+    overlay.id = 'generic-popup';
+    overlay.className = 'modal-overlay';
+    document.body.appendChild(overlay);
+  }
+  overlay.innerHTML = `
+    <div class="modal" style="max-width:480px;">
+      <div class="modal-header" style="padding:24px 24px 0;">
+        <h3 style="font-family:DM Serif Display,serif;font-size:20px;color:var(--navy);">${title}</h3>
+      </div>
+      <div class="modal-body" style="padding:20px 24px;">${body}</div>
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="document.getElementById('generic-popup').onSkip()">${skipText}</button>
+        <button class="btn btn-navy" onclick="document.getElementById('generic-popup').onConfirm()">${confirmText}</button>
+      </div>
+    </div>`;
+  overlay.onConfirm = onConfirm;
+  overlay.onSkip = onSkip;
+  overlay.classList.add('open');
+}
+
+function closePopup() {
+  const overlay = document.getElementById('generic-popup');
+  if (overlay) overlay.classList.remove('open');
+}
+
+// ── OVERRIDE showPage TO INIT ASSIGNMENT FORM ──
+const _origShowPage = showPage;
+function showPage(page, evt) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  if (evt && evt.currentTarget) evt.currentTarget.classList.add('active');
+  if (page === 'assignment') initAssignmentForm();
+  document.getElementById('sidebar').classList.remove('open');
 }
 
 // Close modal on overlay click
