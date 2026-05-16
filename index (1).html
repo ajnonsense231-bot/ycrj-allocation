@@ -1,0 +1,1727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>YCRJ & Co. — Staff Allocation System</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0f1f3d;
+    --navy-light: #1a3060;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --cream: #faf7f2;
+    --white: #ffffff;
+    --text: #1a1a2e;
+    --text-muted: #6b7280;
+    --border: #e5e0d8;
+    --success: #166534;
+    --success-bg: #dcfce7;
+    --error: #991b1b;
+    --error-bg: #fee2e2;
+    --warning: #92400e;
+    --warning-bg: #fef3c7;
+    --shadow: 0 4px 24px rgba(15,31,61,0.10);
+    --shadow-lg: 0 8px 40px rgba(15,31,61,0.15);
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── LOGIN SCREEN ── */
+  #login-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 60%, #2a4a8a 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  #login-screen::before {
+    content: '';
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%);
+    top: -200px; right: -150px;
+  }
+
+  #login-screen::after {
+    content: '';
+    position: absolute;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+    bottom: -100px; left: -100px;
+  }
+
+  .login-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 48px 44px;
+    width: 420px;
+    max-width: 95vw;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    z-index: 1;
+    animation: fadeUp 0.5s ease;
+  }
+
+  @keyframes fadeUp {
+    from { opacity:0; transform: translateY(20px); }
+    to { opacity:1; transform: translateY(0); }
+  }
+
+  .login-logo {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .login-logo .firm-initials {
+    width: 64px; height: 64px;
+    background: var(--navy);
+    border-radius: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+
+  .login-logo .firm-initials span {
+    font-family: 'DM Serif Display', serif;
+    color: var(--gold);
+    font-size: 22px;
+    letter-spacing: 1px;
+  }
+
+  .login-logo h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--navy);
+    line-height: 1.2;
+  }
+
+  .login-logo p {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+  }
+
+  .login-tabs {
+    display: flex;
+    background: var(--cream);
+    border-radius: var(--radius-sm);
+    padding: 4px;
+    margin-bottom: 28px;
+  }
+
+  .login-tab {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text-muted);
+    border: none;
+    background: transparent;
+  }
+
+  .login-tab.active {
+    background: var(--navy);
+    color: var(--white);
+    box-shadow: 0 2px 8px rgba(15,31,61,0.2);
+  }
+
+  .form-group { margin-bottom: 20px; }
+
+  .form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 8px;
+  }
+
+  .form-group input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    background: var(--white);
+    transition: border-color 0.2s;
+    outline: none;
+  }
+
+  .form-group input:focus {
+    border-color: var(--navy);
+  }
+
+  .btn-primary {
+    width: 100%;
+    padding: 14px;
+    background: var(--navy);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+  }
+
+  .btn-primary:hover {
+    background: var(--navy-light);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(15,31,61,0.25);
+  }
+
+  .error-msg {
+    background: var(--error-bg);
+    color: var(--error);
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    margin-top: 12px;
+    display: none;
+  }
+
+  /* ── TL SELECTION SCREEN ── */
+  #tl-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--cream);
+    display: none;
+  }
+
+  .tl-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 48px 44px;
+    width: 480px;
+    max-width: 95vw;
+    box-shadow: var(--shadow);
+    animation: fadeUp 0.4s ease;
+  }
+
+  .tl-card h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px;
+    color: var(--navy);
+    margin-bottom: 8px;
+  }
+
+  .tl-card p {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 32px;
+    line-height: 1.6;
+  }
+
+  .form-group select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    background: var(--white);
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+  }
+
+  .form-group select:focus { border-color: var(--navy); }
+
+  /* ── MAIN APP ── */
+  #app {
+    display: none;
+    min-height: 100vh;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: 240px;
+    background: var(--navy);
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    transition: transform 0.3s;
+  }
+
+  .sidebar-logo {
+    padding: 24px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .sidebar-logo .firm-name {
+    font-family: 'DM Serif Display', serif;
+    color: var(--white);
+    font-size: 17px;
+    line-height: 1.3;
+  }
+
+  .sidebar-logo .firm-sub {
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .sidebar-user {
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .user-avatar {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--navy);
+    flex-shrink: 0;
+  }
+
+  .user-info .name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--white);
+  }
+
+  .user-info .role {
+    font-size: 11px;
+    color: rgba(255,255,255,0.45);
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    padding: 16px 12px;
+    overflow-y: auto;
+  }
+
+  .nav-section-title {
+    font-size: 10px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 12px 8px 6px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    color: rgba(255,255,255,0.6);
+    font-size: 14px;
+    font-weight: 400;
+    transition: all 0.15s;
+    margin-bottom: 2px;
+    border: none;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+  }
+
+  .nav-item:hover {
+    background: rgba(255,255,255,0.07);
+    color: var(--white);
+  }
+
+  .nav-item.active {
+    background: rgba(201,168,76,0.15);
+    color: var(--gold-light);
+    font-weight: 500;
+  }
+
+  .nav-item .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+
+  .nav-item.admin-only { display: none; }
+
+  .sidebar-bottom {
+    padding: 12px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .btn-logout {
+    width: 100%;
+    padding: 10px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius-sm);
+    color: rgba(255,255,255,0.5);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-logout:hover {
+    background: rgba(255,255,255,0.1);
+    color: var(--white);
+  }
+
+  /* Main content */
+  .main-content {
+    margin-left: 240px;
+    min-height: 100vh;
+    padding: 32px;
+  }
+
+  /* Page header */
+  .page-header {
+    margin-bottom: 28px;
+  }
+
+  .page-header h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    color: var(--navy);
+  }
+
+  .page-header p {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .card-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .card-header h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--navy);
+  }
+
+  .card-body { padding: 24px; }
+
+  /* Stats row */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .stat-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    border-left: 4px solid var(--navy);
+  }
+
+  .stat-card.green { border-left-color: #16a34a; }
+  .stat-card.amber { border-left-color: #d97706; }
+  .stat-card.red { border-left-color: #dc2626; }
+
+  .stat-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px;
+    color: var(--navy);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 6px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Table */
+  .table-wrap { overflow-x: auto; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  thead th {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    background: var(--cream);
+    border-bottom: 1px solid var(--border);
+  }
+
+  tbody td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: middle;
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+
+  tbody tr:hover td { background: #fafaf8; }
+
+  /* Badges */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+
+  .badge-active { background: var(--success-bg); color: var(--success); }
+  .badge-inactive { background: #f3f4f6; color: #6b7280; }
+  .badge-yes { background: #dbeafe; color: #1e40af; }
+  .badge-no { background: #f3f4f6; color: #6b7280; }
+  .badge-at { background: #fce7f3; color: #9d174d; }
+  .badge-ja { background: #dbeafe; color: #1e40af; }
+  .badge-sa { background: #d1fae5; color: #065f46; }
+  .badge-am { background: #fef3c7; color: #92400e; }
+  .badge-ca { background: #ede9fe; color: #4c1d95; }
+
+  /* Buttons */
+  .btn {
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn-navy {
+    background: var(--navy);
+    color: var(--white);
+  }
+
+  .btn-navy:hover {
+    background: var(--navy-light);
+    transform: translateY(-1px);
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--navy);
+    border: 1.5px solid var(--navy);
+  }
+
+  .btn-outline:hover { background: var(--navy); color: var(--white); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+  }
+
+  .btn-ghost:hover { background: var(--cream); color: var(--text); }
+
+  .btn-danger {
+    background: #fee2e2;
+    color: #991b1b;
+    border: none;
+  }
+
+  .btn-danger:hover { background: #fecaca; }
+
+  /* Search & filter bar */
+  .filter-bar {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .search-input {
+    padding: 9px 14px 9px 36px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    width: 240px;
+    background: var(--cream) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat 10px center;
+    transition: border-color 0.2s;
+  }
+
+  .search-input:focus { border-color: var(--navy); background-color: var(--white); }
+
+  .filter-select {
+    padding: 9px 32px 9px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    background: var(--cream);
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    transition: border-color 0.2s;
+  }
+
+  .filter-select:focus { border-color: var(--navy); }
+
+  /* Modal */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15,31,61,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    display: none;
+  }
+
+  .modal-overlay.open { display: flex; animation: fadeIn 0.2s ease; }
+
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+  .modal {
+    background: var(--white);
+    border-radius: 16px;
+    width: 520px;
+    max-width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+    animation: slideUp 0.25s ease;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .modal-header {
+    padding: 24px 24px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .modal-header h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    color: var(--navy);
+  }
+
+  .modal-close {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: var(--cream);
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    transition: all 0.15s;
+  }
+
+  .modal-close:hover { background: var(--border); }
+
+  .modal-body { padding: 20px 24px 24px; }
+
+  .modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    background: var(--white);
+  }
+
+  .form-group input:focus,
+  .form-group select:focus { border-color: var(--navy); }
+
+  .form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 6px;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    padding: 14px 20px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: var(--shadow-lg);
+    z-index: 2000;
+    display: none;
+    animation: toastIn 0.3s ease;
+  }
+
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .toast.success { background: var(--navy); color: var(--white); }
+  .toast.error { background: #991b1b; color: var(--white); }
+
+  /* Pages */
+  .page { display: none; }
+  .page.active { display: block; animation: fadeUp 0.3s ease; }
+
+  /* Dashboard welcome */
+  .welcome-banner {
+    background: linear-gradient(120deg, var(--navy) 0%, #1e3a6e 100%);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    color: var(--white);
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .welcome-banner::after {
+    content: '';
+    position: absolute;
+    right: -30px; top: -30px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(201,168,76,0.1);
+  }
+
+  .welcome-banner h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    margin-bottom: 6px;
+  }
+
+  .welcome-banner p {
+    font-size: 14px;
+    opacity: 0.7;
+  }
+
+  .coming-soon {
+    background: var(--cream);
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 60px;
+    text-align: center;
+    color: var(--text-muted);
+  }
+
+  .coming-soon .icon { font-size: 40px; margin-bottom: 16px; }
+  .coming-soon h3 { font-size: 18px; color: var(--navy); margin-bottom: 8px; }
+  .coming-soon p { font-size: 14px; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; padding: 20px; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+
+  .mobile-menu-btn {
+    display: none;
+    position: fixed;
+    top: 16px; right: 16px;
+    z-index: 200;
+    background: var(--navy);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 14px;
+    cursor: pointer;
+    font-size: 18px;
+    box-shadow: var(--shadow);
+  }
+
+  @media (max-width: 768px) { 
+    .mobile-menu-btn { display: block; }
+    .main-content { padding-top: 60px; }
+  }
+
+  .inline-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    background: var(--gold);
+    color: var(--navy);
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     LOGIN SCREEN
+══════════════════════════════════════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="firm-initials"><span>YCRJ</span></div>
+      <h1>YCRJ & Co.</h1>
+      <p>Staff Allocation System</p>
+    </div>
+
+    <div class="login-tabs">
+      <button class="login-tab active" onclick="switchTab('tl')">Team Leader</button>
+      <button class="login-tab" onclick="switchTab('admin')">Admin</button>
+    </div>
+
+    <div id="tl-form">
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="tl-username" placeholder="Enter username" value="allocation">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="tl-password" placeholder="Enter password">
+      </div>
+      <button class="btn-primary" onclick="loginTL()">Continue as Team Leader →</button>
+      <div class="error-msg" id="tl-error">Incorrect username or password. Please try again.</div>
+    </div>
+
+    <div id="admin-form" style="display:none;">
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="admin-username" placeholder="Enter admin username" value="admin">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="admin-password" placeholder="Enter admin password">
+      </div>
+      <button class="btn-primary" onclick="loginAdmin()">Login as Admin →</button>
+      <div class="error-msg" id="admin-error">Incorrect admin credentials. Please try again.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     TL SELECTION SCREEN
+══════════════════════════════════════ -->
+<div id="tl-screen">
+  <div class="tl-card">
+    <h2>Welcome 👋</h2>
+    <p>Please select your name to continue. Your name will be used to attribute all assignments you raise in this session.</p>
+
+    <div class="form-group">
+      <label>Select Your Name</label>
+      <select id="tl-select">
+        <option value="">— Choose your name —</option>
+        <option value="Rahul K">Rahul K</option>
+        <option value="Priya S">Priya S</option>
+        <option value="Amit M">Amit M</option>
+        <option value="Sunita R">Sunita R</option>
+        <option value="Deepak V">Deepak V</option>
+      </select>
+    </div>
+
+    <button class="btn-primary" onclick="selectTL()" style="margin-top:8px;">Continue →</button>
+    <div class="error-msg" id="tl-select-error" style="display:block; display:none;">Please select your name to continue.</div>
+
+    <p style="margin-top:20px; font-size:12px; color:var(--text-muted); text-align:center;">
+      Acting on behalf of a TL? Select their name from the list above.
+    </p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MAIN APP
+══════════════════════════════════════ -->
+<div id="app">
+  <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="firm-name">YCRJ & Co.</div>
+      <div class="firm-sub">Staff Allocation</div>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="user-avatar" id="user-avatar">?</div>
+      <div class="user-info">
+        <div class="name" id="user-name">Loading...</div>
+        <div class="role" id="user-role">Team Leader</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Main</div>
+      <button class="nav-item active" onclick="showPage('dashboard')">
+        <span class="nav-icon">🏠</span> Dashboard
+      </button>
+      <button class="nav-item" onclick="showPage('calendar')">
+        <span class="nav-icon">📅</span> Calendar
+      </button>
+      <button class="nav-item" onclick="showPage('assignment')">
+        <span class="nav-icon">📋</span> New Assignment
+      </button>
+      <button class="nav-item" onclick="showPage('log')">
+        <span class="nav-icon">📁</span> Assignment Log
+      </button>
+
+      <div class="nav-section-title" style="margin-top:8px;">My Team</div>
+      <button class="nav-item" onclick="showPage('tl-dashboard')">
+        <span class="nav-icon">👥</span> TL Dashboard
+      </button>
+
+      <div class="nav-section-title admin-only" style="margin-top:8px;">Admin</div>
+      <button class="nav-item admin-only" onclick="showPage('staff-master')">
+        <span class="nav-icon">👤</span> Staff Master
+      </button>
+      <button class="nav-item admin-only" onclick="showPage('tl-master')">
+        <span class="nav-icon">🎯</span> TL Master
+      </button>
+      <button class="nav-item admin-only" onclick="showPage('leave-register')">
+        <span class="nav-icon">🗓️</span> Leave Register
+      </button>
+      <button class="nav-item admin-only" onclick="showPage('admin-dashboard')">
+        <span class="nav-icon">📊</span> Admin Dashboard
+      </button>
+      <button class="nav-item admin-only" onclick="showPage('settings')">
+        <span class="nav-icon">⚙️</span> Settings
+      </button>
+    </nav>
+
+    <div class="sidebar-bottom">
+      <button class="btn-logout" onclick="logout()">← Logout</button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+
+    <!-- DASHBOARD -->
+    <div class="page active" id="page-dashboard">
+      <div class="page-header">
+        <h2>Dashboard</h2>
+        <p id="dashboard-date"></p>
+      </div>
+
+      <div class="welcome-banner">
+        <h3 id="welcome-msg">Welcome back!</h3>
+        <p>Here's a quick overview of your firm's current allocation status.</p>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card green">
+          <div class="stat-value" id="stat-active">8</div>
+          <div class="stat-label">Active Assignments</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-staff">12</div>
+          <div class="stat-label">Total Active Staff</div>
+        </div>
+        <div class="stat-card amber">
+          <div class="stat-value" id="stat-pending">3</div>
+          <div class="stat-label">Pending Notifications</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-value" id="stat-overdue">1</div>
+          <div class="stat-label">Overdue Assignments</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h3>Recent Activity</h3>
+        </div>
+        <div class="card-body">
+          <p style="color:var(--text-muted); font-size:14px; line-height:1.8;">
+            ✅ <strong>ABC Ltd — Statutory Audit</strong> assigned to 4 staff by Rahul K<br>
+            📧 <strong>XYZ Ltd — GST Filing</strong> notification pending<br>
+            ⚠️ <strong>PQR Ltd — Tax Audit</strong> due date extended by Priya S<br>
+            🔴 <strong>DEF Ltd — ROC Filing</strong> is overdue — not marked complete
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- STAFF MASTER -->
+    <div class="page" id="page-staff-master">
+      <div class="page-header">
+        <h2>Staff Master <span class="inline-badge">Admin</span></h2>
+        <p>Manage all staff members — add, edit, activate or deactivate.</p>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="filter-bar">
+            <input type="text" class="search-input" placeholder="Search by name..." oninput="filterStaff()" id="staff-search">
+            <select class="filter-select" onchange="filterStaff()" id="filter-level">
+              <option value="">All Levels</option>
+              <option value="Article Trainee">Article Trainee</option>
+              <option value="Junior Associate">Junior Associate</option>
+              <option value="Senior Associate">Senior Associate</option>
+              <option value="Assistant Manager">Assistant Manager</option>
+              <option value="Chartered Accountant">Chartered Accountant</option>
+            </select>
+            <select class="filter-select" onchange="filterStaff()" id="filter-status">
+              <option value="">All Status</option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+            <select class="filter-select" onchange="filterStaff()" id="filter-gender">
+              <option value="">All Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </div>
+          <button class="btn btn-navy" onclick="openAddStaffModal()">+ Add Staff</button>
+        </div>
+        <div class="table-wrap">
+          <table id="staff-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Gender</th>
+                <th>Experience Level</th>
+                <th>Email</th>
+                <th>Primary TL</th>
+                <th>Travel</th>
+                <th>Capacity</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="staff-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TL MASTER -->
+    <div class="page" id="page-tl-master">
+      <div class="page-header">
+        <h2>TL Master <span class="inline-badge">Admin</span></h2>
+        <p>Manage all Team Leaders — add, edit, activate or deactivate.</p>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="filter-bar">
+            <input type="text" class="search-input" placeholder="Search by name..." oninput="filterTLs()" id="tl-search">
+            <select class="filter-select" onchange="filterTLs()" id="filter-tl-status">
+              <option value="">All Status</option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+          <button class="btn btn-navy" onclick="openAddTLModal()">+ Add TL</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Initials</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Team Size</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tl-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- COMING SOON pages -->
+    <div class="page" id="page-calendar">
+      <div class="page-header"><h2>Calendar / Gantt View</h2></div>
+      <div class="coming-soon">
+        <div class="icon">📅</div>
+        <h3>Calendar View — Coming in Phase 3</h3>
+        <p>Staff View, TL View and Client View with month picker will be available here.</p>
+      </div>
+    </div>
+
+    <div class="page" id="page-assignment">
+      <div class="page-header"><h2>New Assignment</h2></div>
+      <div class="coming-soon">
+        <div class="icon">📋</div>
+        <h3>Assignment Form — Coming in Phase 2</h3>
+        <p>Create new assignments, filter available staff and allocate teams here.</p>
+      </div>
+    </div>
+
+    <div class="page" id="page-log">
+      <div class="page-header"><h2>Assignment Log</h2></div>
+      <div class="coming-soon">
+        <div class="icon">📁</div>
+        <h3>Assignment Log — Coming in Phase 3</h3>
+        <p>Full history of all assignments with date range filters will be available here.</p>
+      </div>
+    </div>
+
+    <div class="page" id="page-tl-dashboard">
+      <div class="page-header"><h2>TL Dashboard</h2></div>
+      <div class="coming-soon">
+        <div class="icon">👥</div>
+        <h3>TL Dashboard — Coming in Phase 3</h3>
+        <p>Your team status, active assignments and needs attention panel will be here.</p>
+      </div>
+    </div>
+
+    <div class="page" id="page-leave-register">
+      <div class="page-header"><h2>Leave Register <span class="inline-badge">Admin</span></h2></div>
+      <div class="coming-soon">
+        <div class="icon">🗓️</div>
+        <h3>Leave Register — Coming in Phase 4</h3>
+        <p>Manage approved staff leaves that block availability in the calendar.</p>
+      </div>
+    </div>
+
+    <div class="page" id="page-admin-dashboard">
+      <div class="page-header"><h2>Admin Dashboard <span class="inline-badge">Admin</span></h2></div>
+      <div class="coming-soon">
+        <div class="icon">📊</div>
+        <h3>Admin Dashboard — Coming in Phase 3</h3>
+        <p>Firm-wide ongoing assignments tracker, overdue alerts and full visibility.</p>
+      </div>
+    </div>
+
+    <div class="page" id="page-settings">
+      <div class="page-header"><h2>System Settings <span class="inline-badge">Admin</span></h2></div>
+      <div class="coming-soon">
+        <div class="icon">⚙️</div>
+        <h3>Settings — Coming in Phase 4</h3>
+        <p>Manage login credentials, office manager emails and system configuration.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     ADD STAFF MODAL
+══════════════════════════════════════ -->
+<div class="modal-overlay" id="add-staff-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="staff-modal-title">Add New Staff</h3>
+      <button class="modal-close" onclick="closeModal('add-staff-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-staff-index" value="-1">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Full Name *</label>
+          <input type="text" id="s-name" placeholder="e.g. Anita Sharma">
+        </div>
+        <div class="form-group">
+          <label>Gender *</label>
+          <select id="s-gender">
+            <option value="">Select</option>
+            <option>Male</option>
+            <option>Female</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Experience Level *</label>
+          <select id="s-level">
+            <option value="">Select level</option>
+            <option>Article Trainee</option>
+            <option>Junior Associate</option>
+            <option>Senior Associate</option>
+            <option>Assistant Manager</option>
+            <option>Chartered Accountant</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Travel Willing *</label>
+          <select id="s-travel">
+            <option value="">Select</option>
+            <option>Yes</option>
+            <option>No</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Firm Email *</label>
+        <input type="email" id="s-email" placeholder="name@ycrjca.com">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="text" id="s-phone" placeholder="Optional">
+        </div>
+        <div class="form-group">
+          <label>Primary TL *</label>
+          <select id="s-tl">
+            <option value="">Select TL</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Weekly Capacity (Days)</label>
+          <input type="number" id="s-capacity" value="6" min="1" max="6">
+        </div>
+        <div class="form-group">
+          <label>Status *</label>
+          <select id="s-status">
+            <option>Active</option>
+            <option>Inactive</option>
+          </select>
+        </div>
+      </div>
+      <div id="staff-form-error" class="error-msg" style="display:none; margin-top:4px;">
+        Please fill all required fields marked with *.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('add-staff-modal')">Cancel</button>
+      <button class="btn btn-navy" onclick="saveStaff()">Save Staff</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADD TL MODAL -->
+<div class="modal-overlay" id="add-tl-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="tl-modal-title">Add New Team Leader</h3>
+      <button class="modal-close" onclick="closeModal('add-tl-modal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-tl-index" value="-1">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Full Name *</label>
+          <input type="text" id="t-name" placeholder="e.g. Rahul Kumar">
+        </div>
+        <div class="form-group">
+          <label>Initials *</label>
+          <input type="text" id="t-initials" placeholder="e.g. RK" maxlength="3">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Firm Email *</label>
+        <input type="email" id="t-email" placeholder="name@ycrjca.com">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="text" id="t-phone" placeholder="Optional">
+        </div>
+        <div class="form-group">
+          <label>Status *</label>
+          <select id="t-status">
+            <option>Active</option>
+            <option>Inactive</option>
+          </select>
+        </div>
+      </div>
+      <div id="tl-form-error" class="error-msg" style="display:none; margin-top:4px;">
+        Please fill all required fields marked with *.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('add-tl-modal')">Cancel</button>
+      <button class="btn btn-navy" onclick="saveTL()">Save TL</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════
+// CONFIG — Test credentials
+// ══════════════════════════════════════
+const CREDS = {
+  tl: { username: 'allocation', password: 'test123' },
+  admin: { username: 'admin', password: 'admin123' }
+};
+
+// ══════════════════════════════════════
+// STATE
+// ══════════════════════════════════════
+let currentUser = null; // 'tl' or 'admin'
+let currentTL = null;
+
+// Sample data — will be replaced by Google Sheets data
+let staffData = [
+  { name:'Anita Sharma', gender:'Female', level:'Senior Associate', email:'anita@ycrjca.com', phone:'9876543210', travel:'Yes', capacity:6, hours:48, primaryTL:'Rahul K', status:'Active' },
+  { name:'Rohan Mehta', gender:'Male', level:'Junior Associate', email:'rohan@ycrjca.com', phone:'9876543211', travel:'No', capacity:6, hours:48, primaryTL:'Priya S', status:'Active' },
+  { name:'Kavya Nair', gender:'Female', level:'Article Trainee', email:'kavya@ycrjca.com', phone:'9876543212', travel:'Yes', capacity:6, hours:48, primaryTL:'Amit M', status:'Active' },
+  { name:'Suresh Pillai', gender:'Male', level:'Chartered Accountant', email:'suresh@ycrjca.com', phone:'', travel:'Yes', capacity:6, hours:48, primaryTL:'Rahul K', status:'Active' },
+  { name:'Meena Iyer', gender:'Female', level:'Assistant Manager', email:'meena@ycrjca.com', phone:'9876543214', travel:'No', capacity:5, hours:40, primaryTL:'Sunita R', status:'Inactive' },
+];
+
+let tlData = [
+  { name:'Rahul K', initials:'RK', email:'rahulk@ycrjca.com', phone:'9876540001', status:'Active' },
+  { name:'Priya S', initials:'PS', email:'priyas@ycrjca.com', phone:'9876540002', status:'Active' },
+  { name:'Amit M', initials:'AM', email:'amitm@ycrjca.com', phone:'9876540003', status:'Active' },
+  { name:'Sunita R', initials:'SR', email:'sunitar@ycrjca.com', phone:'9876540004', status:'Active' },
+  { name:'Deepak V', initials:'DV', email:'deepakv@ycrjca.com', phone:'9876540005', status:'Inactive' },
+];
+
+// ══════════════════════════════════════
+// LOGIN
+// ══════════════════════════════════════
+let activeTab = 'tl';
+
+function switchTab(tab) {
+  activeTab = tab;
+  document.querySelectorAll('.login-tab').forEach((t,i) => t.classList.toggle('active', (i===0&&tab==='tl')||(i===1&&tab==='admin')));
+  document.getElementById('tl-form').style.display = tab==='tl' ? 'block' : 'none';
+  document.getElementById('admin-form').style.display = tab==='admin' ? 'block' : 'none';
+}
+
+function loginTL() {
+  const u = document.getElementById('tl-username').value.trim();
+  const p = document.getElementById('tl-password').value;
+  if (u===CREDS.tl.username && p===CREDS.tl.password) {
+    currentUser = 'tl';
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('tl-screen').style.display = 'flex';
+  } else {
+    document.getElementById('tl-error').style.display = 'block';
+  }
+}
+
+function loginAdmin() {
+  const u = document.getElementById('admin-username').value.trim();
+  const p = document.getElementById('admin-password').value;
+  if (u===CREDS.admin.username && p===CREDS.admin.password) {
+    currentUser = 'admin';
+    currentTL = 'Admin';
+    document.getElementById('login-screen').style.display = 'none';
+    initApp();
+  } else {
+    document.getElementById('admin-error').style.display = 'block';
+  }
+}
+
+function selectTL() {
+  const sel = document.getElementById('tl-select').value;
+  if (!sel) { document.getElementById('tl-select-error').style.display='block'; return; }
+  currentTL = sel;
+  document.getElementById('tl-screen').style.display = 'none';
+  initApp();
+}
+
+// ══════════════════════════════════════
+// INIT APP
+// ══════════════════════════════════════
+function initApp() {
+  const app = document.getElementById('app');
+  app.style.display = 'block';
+
+  // User info in sidebar
+  const name = currentUser==='admin' ? 'Admin' : currentTL;
+  const role = currentUser==='admin' ? 'Administrator' : 'Team Leader';
+  document.getElementById('user-name').textContent = name;
+  document.getElementById('user-role').textContent = role;
+  document.getElementById('user-avatar').textContent = name.charAt(0).toUpperCase();
+
+  // Welcome message
+  document.getElementById('welcome-msg').textContent = `Welcome back, ${name}!`;
+
+  // Date
+  const now = new Date();
+  document.getElementById('dashboard-date').textContent = now.toLocaleDateString('en-IN', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+
+  // Show admin nav items
+  if (currentUser==='admin') {
+    document.querySelectorAll('.admin-only').forEach(el => el.style.display='flex');
+    document.querySelectorAll('.nav-item.admin-only').forEach(el => el.style.display='flex');
+    document.querySelectorAll('.nav-section-title.admin-only').forEach(el => el.style.display='block');
+  }
+
+  // Render tables
+  renderStaffTable(staffData);
+  renderTLTable(tlData);
+  populateTLDropdowns();
+}
+
+// ══════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  event.currentTarget.classList.add('active');
+  // Close sidebar on mobile
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+function logout() {
+  currentUser = null; currentTL = null;
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('tl-screen').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('tl-password').value = '';
+  document.getElementById('admin-password').value = '';
+  document.getElementById('tl-error').style.display = 'none';
+  document.getElementById('admin-error').style.display = 'none';
+  switchTab('tl');
+}
+
+// ══════════════════════════════════════
+// STAFF MASTER
+// ══════════════════════════════════════
+function levelBadge(level) {
+  const map = {
+    'Article Trainee':'badge-at', 'Junior Associate':'badge-ja',
+    'Senior Associate':'badge-sa', 'Assistant Manager':'badge-am',
+    'Chartered Accountant':'badge-ca'
+  };
+  const short = {'Article Trainee':'AT','Junior Associate':'JA','Senior Associate':'SA','Assistant Manager':'AM','Chartered Accountant':'CA'};
+  return `<span class="badge ${map[level]||''}">${short[level]||level}</span>`;
+}
+
+function renderStaffTable(data) {
+  const tbody = document.getElementById('staff-tbody');
+  if (!data.length) {
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:var(--text-muted);padding:40px;">No staff found.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = data.map((s,i) => `
+    <tr>
+      <td><strong>${s.name}</strong></td>
+      <td>${s.gender}</td>
+      <td>${levelBadge(s.level)}</td>
+      <td style="font-size:13px;color:var(--text-muted);">${s.email}</td>
+      <td>${s.primaryTL}</td>
+      <td><span class="badge ${s.travel==='Yes'?'badge-yes':'badge-no'}">${s.travel}</span></td>
+      <td style="font-size:13px;">${s.capacity}d / ${s.hours}h</td>
+      <td><span class="badge ${s.status==='Active'?'badge-active':'badge-inactive'}">${s.status}</span></td>
+      <td>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-ghost" style="padding:6px 10px;font-size:12px;" onclick="editStaff(${staffData.indexOf(s)})">Edit</button>
+          <button class="btn btn-ghost" style="padding:6px 10px;font-size:12px;" onclick="toggleStaffStatus(${staffData.indexOf(s)})">${s.status==='Active'?'Deactivate':'Activate'}</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function filterStaff() {
+  const search = document.getElementById('staff-search').value.toLowerCase();
+  const level = document.getElementById('filter-level').value;
+  const status = document.getElementById('filter-status').value;
+  const gender = document.getElementById('filter-gender').value;
+  const filtered = staffData.filter(s =>
+    (!search || s.name.toLowerCase().includes(search) || s.email.toLowerCase().includes(search)) &&
+    (!level || s.level===level) &&
+    (!status || s.status===status) &&
+    (!gender || s.gender===gender)
+  );
+  renderStaffTable(filtered);
+}
+
+function openAddStaffModal() {
+  document.getElementById('staff-modal-title').textContent = 'Add New Staff';
+  document.getElementById('edit-staff-index').value = -1;
+  ['s-name','s-email','s-phone'].forEach(id => document.getElementById(id).value='');
+  ['s-gender','s-level','s-travel','s-tl'].forEach(id => document.getElementById(id).value='');
+  document.getElementById('s-capacity').value = 6;
+  document.getElementById('s-status').value = 'Active';
+  document.getElementById('staff-form-error').style.display='none';
+  document.getElementById('add-staff-modal').classList.add('open');
+}
+
+function editStaff(index) {
+  const s = staffData[index];
+  document.getElementById('staff-modal-title').textContent = 'Edit Staff';
+  document.getElementById('edit-staff-index').value = index;
+  document.getElementById('s-name').value = s.name;
+  document.getElementById('s-gender').value = s.gender;
+  document.getElementById('s-level').value = s.level;
+  document.getElementById('s-email').value = s.email;
+  document.getElementById('s-phone').value = s.phone;
+  document.getElementById('s-travel').value = s.travel;
+  document.getElementById('s-capacity').value = s.capacity;
+  document.getElementById('s-tl').value = s.primaryTL;
+  document.getElementById('s-status').value = s.status;
+  document.getElementById('staff-form-error').style.display='none';
+  document.getElementById('add-staff-modal').classList.add('open');
+}
+
+function saveStaff() {
+  const name=document.getElementById('s-name').value.trim();
+  const gender=document.getElementById('s-gender').value;
+  const level=document.getElementById('s-level').value;
+  const email=document.getElementById('s-email').value.trim();
+  const phone=document.getElementById('s-phone').value.trim();
+  const travel=document.getElementById('s-travel').value;
+  const capacity=parseInt(document.getElementById('s-capacity').value)||6;
+  const tl=document.getElementById('s-tl').value;
+  const status=document.getElementById('s-status').value;
+
+  if (!name||!gender||!level||!email||!travel||!tl) {
+    document.getElementById('staff-form-error').style.display='block'; return;
+  }
+  document.getElementById('staff-form-error').style.display='none';
+
+  const staff = {name,gender,level,email,phone,travel,capacity,hours:capacity*8,primaryTL:tl,status};
+  const idx = parseInt(document.getElementById('edit-staff-index').value);
+
+  if (idx===-1) { staffData.push(staff); showToast('Staff added successfully!','success'); }
+  else { staffData[idx]=staff; showToast('Staff updated successfully!','success'); }
+
+  closeModal('add-staff-modal');
+  renderStaffTable(staffData);
+  populateTLDropdowns();
+}
+
+function toggleStaffStatus(index) {
+  const s = staffData[index];
+  const newStatus = s.status==='Active' ? 'Inactive' : 'Active';
+  if (newStatus==='Inactive') {
+    if (!confirm(`Are you sure you want to deactivate ${s.name}? Please ensure they have no active assignments.`)) return;
+  }
+  staffData[index].status = newStatus;
+  renderStaffTable(staffData);
+  showToast(`${s.name} marked as ${newStatus}.`, 'success');
+}
+
+// ══════════════════════════════════════
+// TL MASTER
+// ══════════════════════════════════════
+function renderTLTable(data) {
+  const tbody = document.getElementById('tl-tbody');
+  if (!data.length) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:40px;">No TLs found.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = data.map((t,i) => {
+    const teamSize = staffData.filter(s => s.primaryTL===t.name && s.status==='Active').length;
+    return `
+    <tr>
+      <td><strong>${t.name}</strong></td>
+      <td><span style="font-weight:700;color:var(--navy);background:var(--cream);padding:3px 10px;border-radius:6px;font-size:13px;">${t.initials}</span></td>
+      <td style="font-size:13px;color:var(--text-muted);">${t.email}</td>
+      <td style="font-size:13px;">${t.phone||'—'}</td>
+      <td><strong>${teamSize}</strong> staff</td>
+      <td><span class="badge ${t.status==='Active'?'badge-active':'badge-inactive'}">${t.status}</span></td>
+      <td>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-ghost" style="padding:6px 10px;font-size:12px;" onclick="editTL(${tlData.indexOf(t)})">Edit</button>
+          <button class="btn btn-ghost" style="padding:6px 10px;font-size:12px;" onclick="toggleTLStatus(${tlData.indexOf(t)})">${t.status==='Active'?'Deactivate':'Activate'}</button>
+        </div>
+      </td>
+    </tr>`
+  }).join('');
+}
+
+function filterTLs() {
+  const search = document.getElementById('tl-search').value.toLowerCase();
+  const status = document.getElementById('filter-tl-status').value;
+  const filtered = tlData.filter(t =>
+    (!search || t.name.toLowerCase().includes(search)) &&
+    (!status || t.status===status)
+  );
+  renderTLTable(filtered);
+}
+
+function openAddTLModal() {
+  document.getElementById('tl-modal-title').textContent = 'Add New Team Leader';
+  document.getElementById('edit-tl-index').value = -1;
+  ['t-name','t-initials','t-email','t-phone'].forEach(id => document.getElementById(id).value='');
+  document.getElementById('t-status').value = 'Active';
+  document.getElementById('tl-form-error').style.display='none';
+  document.getElementById('add-tl-modal').classList.add('open');
+}
+
+function editTL(index) {
+  const t = tlData[index];
+  document.getElementById('tl-modal-title').textContent = 'Edit Team Leader';
+  document.getElementById('edit-tl-index').value = index;
+  document.getElementById('t-name').value = t.name;
+  document.getElementById('t-initials').value = t.initials;
+  document.getElementById('t-email').value = t.email;
+  document.getElementById('t-phone').value = t.phone;
+  document.getElementById('t-status').value = t.status;
+  document.getElementById('tl-form-error').style.display='none';
+  document.getElementById('add-tl-modal').classList.add('open');
+}
+
+function saveTL() {
+  const name=document.getElementById('t-name').value.trim();
+  const initials=document.getElementById('t-initials').value.trim().toUpperCase();
+  const email=document.getElementById('t-email').value.trim();
+  const phone=document.getElementById('t-phone').value.trim();
+  const status=document.getElementById('t-status').value;
+
+  if (!name||!initials||!email) {
+    document.getElementById('tl-form-error').style.display='block'; return;
+  }
+  document.getElementById('tl-form-error').style.display='none';
+
+  const tl = {name,initials,email,phone,status};
+  const idx = parseInt(document.getElementById('edit-tl-index').value);
+
+  if (idx===-1) { tlData.push(tl); showToast('TL added successfully!','success'); }
+  else { tlData[idx]=tl; showToast('TL updated successfully!','success'); }
+
+  closeModal('add-tl-modal');
+  renderTLTable(tlData);
+  populateTLDropdowns();
+}
+
+function toggleTLStatus(index) {
+  const t = tlData[index];
+  if (!confirm(`Are you sure you want to ${t.status==='Active'?'deactivate':'activate'} ${t.name}?`)) return;
+  tlData[index].status = t.status==='Active' ? 'Inactive' : 'Active';
+  renderTLTable(tlData);
+  showToast(`${t.name} status updated.`, 'success');
+}
+
+// ══════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════
+function populateTLDropdowns() {
+  const activeTLs = tlData.filter(t=>t.status==='Active');
+  const sel = document.getElementById('s-tl');
+  const current = sel.value;
+  sel.innerHTML = '<option value="">Select TL</option>' +
+    activeTLs.map(t=>`<option value="${t.name}" ${t.name===current?'selected':''}>${t.name}</option>`).join('');
+
+  // Also update TL selection screen
+  const tlSel = document.getElementById('tl-select');
+  const currentSel = tlSel.value;
+  tlSel.innerHTML = '<option value="">— Choose your name —</option>' +
+    activeTLs.map(t=>`<option value="${t.name}" ${t.name===currentSel?'selected':''}>${t.name}</option>`).join('');
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast ${type}`;
+  t.style.display = 'block';
+  setTimeout(()=>{ t.style.display='none'; }, 3000);
+}
+
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', function(e) {
+    if (e.target===this) this.classList.remove('open');
+  });
+});
+
+// Enter key on login
+document.addEventListener('keydown', function(e) {
+  if (e.key==='Enter') {
+    if (document.getElementById('login-screen').style.display!=='none') {
+      if (activeTab==='tl') loginTL(); else loginAdmin();
+    }
+  }
+});
+</script>
+</body>
+</html>
