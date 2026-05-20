@@ -3,1307 +3,1721 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>YCRJ Staff Allocation</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<title>YCRJ & Co. — Staff Allocation System</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{--nv:#0f1f3d;--nv2:#1a3060;--gd:#c9a84c;--gd2:#e8c97a;--cr:#faf7f2;--wh:#fff;--tx:#1a1a2e;--mu:#6b7280;--bd:#e5e0d8;--r:12px;--rs:8px;--sh:0 4px 24px rgba(15,31,61,.10);--shl:0 8px 40px rgba(15,31,61,.15);}
-*{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'DM Sans',sans-serif;background:var(--cr);color:var(--tx);min-height:100vh;}
-.hide{display:none!important;}
-.scr{display:none;min-height:100vh;}
-.scr.act{display:flex;}
-#sc-login{align-items:center;justify-content:center;background:linear-gradient(135deg,var(--nv) 0%,var(--nv2) 60%,#2a4a8a 100%);}
-.lcard{background:var(--wh);border-radius:20px;padding:48px 44px;width:420px;max-width:95vw;box-shadow:var(--shl);}
-.logo{text-align:center;margin-bottom:32px;}
-.logo-box{width:64px;height:64px;background:var(--nv);border-radius:16px;display:inline-flex;align-items:center;justify-content:center;margin-bottom:12px;}
-.logo-box span{font-family:'DM Serif Display',serif;color:var(--gd);font-size:20px;}
-.logo h1{font-family:'DM Serif Display',serif;font-size:22px;color:var(--nv);}
-.logo p{font-size:13px;color:var(--mu);margin-top:4px;}
-.tabrow{display:flex;background:var(--cr);border-radius:8px;padding:4px;margin-bottom:24px;}
-.ltab{flex:1;padding:10px;border:none;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;background:transparent;color:var(--mu);transition:all .2s;}
-.ltab.on{background:var(--nv);color:var(--wh);}
-.lform{display:none;}
-.lform.on{display:block;}
-.fi{margin-bottom:16px;}
-.fi label{display:block;font-size:11px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px;}
-.fi input,.fi select,.fi textarea{width:100%;padding:11px 14px;border:1.5px solid var(--bd);border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:14px;color:var(--tx);outline:none;transition:border-color .2s;background:var(--wh);}
-.fi input:focus,.fi select:focus,.fi textarea:focus{border-color:var(--nv);}
-.dd{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;}
-.bmain{width:100%;padding:13px;background:var(--nv);color:var(--wh);border:none;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;transition:all .2s;margin-top:4px;}
-.bmain:hover{background:var(--nv2);}
-.errmsg{background:#fee2e2;color:#991b1b;padding:10px 14px;border-radius:var(--rs);font-size:13px;margin-top:10px;display:none;}
-#sc-pick{align-items:center;justify-content:center;background:var(--cr);}
-.pcard{background:var(--wh);border-radius:20px;padding:48px 44px;width:460px;max-width:95vw;box-shadow:var(--sh);}
-.pcard h2{font-family:'DM Serif Display',serif;font-size:26px;color:var(--nv);margin-bottom:8px;}
-.pcard p{color:var(--mu);font-size:14px;margin-bottom:28px;line-height:1.6;}
-#sc-app{flex-direction:row;}
-.sb{position:fixed;left:0;top:0;bottom:0;width:240px;background:var(--nv);display:flex;flex-direction:column;z-index:100;transition:transform .3s;}
-.sb-logo{padding:22px 20px;border-bottom:1px solid rgba(255,255,255,.08);}
-.sb-firm{font-family:'DM Serif Display',serif;color:var(--wh);font-size:17px;}
-.sb-sub{font-size:11px;color:var(--gd);letter-spacing:1px;text-transform:uppercase;margin-top:2px;}
-.sb-user{padding:14px 20px;border-bottom:1px solid rgba(255,255,255,.08);display:flex;align-items:center;gap:10px;}
-.av{width:34px;height:34px;border-radius:50%;background:var(--gd);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:var(--nv);flex-shrink:0;}
-.un{font-size:13px;font-weight:600;color:var(--wh);}
-.ur{font-size:11px;color:rgba(255,255,255,.45);}
-.sb-nav{flex:1;padding:14px 12px;overflow-y:auto;}
-.ns{font-size:10px;font-weight:600;color:rgba(255,255,255,.3);text-transform:uppercase;letter-spacing:1px;padding:10px 8px 5px;}
-.nb{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--rs);cursor:pointer;color:rgba(255,255,255,.6);font-size:14px;border:none;background:transparent;width:100%;text-align:left;margin-bottom:2px;transition:all .15s;}
-.nb:hover{background:rgba(255,255,255,.07);color:var(--wh);}
-.nb.on{background:rgba(201,168,76,.15);color:var(--gd2);font-weight:500;}
-.adm{display:none;}
-.sb-ft{padding:12px;border-top:1px solid rgba(255,255,255,.08);}
-.blogout{width:100%;padding:10px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:var(--rs);color:rgba(255,255,255,.5);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;transition:all .2s;}
-.blogout:hover{background:rgba(255,255,255,.1);color:var(--wh);}
-.mn{margin-left:240px;padding:32px;min-height:100vh;}
-.pg{display:none;}
-.pg.on{display:block;}
-.ph{margin-bottom:24px;}
-.ph h2{font-family:'DM Serif Display',serif;font-size:28px;color:var(--nv);}
-.ph p{font-size:14px;color:var(--mu);margin-top:4px;}
-.card{background:var(--wh);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;margin-bottom:20px;}
-.ch{padding:18px 24px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;}
-.ch h3{font-size:16px;font-weight:600;color:var(--nv);}
-.cb{padding:24px;}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:16px;margin-bottom:20px;}
-.stat{background:var(--wh);border-radius:var(--r);padding:20px;box-shadow:var(--sh);border-left:4px solid var(--nv);}
-.stat.g{border-left-color:#16a34a;}.stat.a{border-left-color:#d97706;}.stat.rd{border-left-color:#dc2626;}.stat.bl{border-left-color:#1a3060;}
-.sv{font-family:'DM Serif Display',serif;font-size:32px;color:var(--nv);line-height:1;}
-.sl{font-size:12px;color:var(--mu);margin-top:6px;font-weight:500;text-transform:uppercase;letter-spacing:.5px;}
-.banner{background:linear-gradient(120deg,var(--nv) 0%,#1e3a6e 100%);border-radius:var(--r);padding:28px 32px;color:var(--wh);margin-bottom:20px;}
-.banner h3{font-family:'DM Serif Display',serif;font-size:22px;margin-bottom:6px;}
-.banner p{font-size:14px;opacity:.7;}
-.tw{overflow-x:auto;}
-table{width:100%;border-collapse:collapse;font-size:14px;}
-thead th{padding:11px 16px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.8px;color:var(--mu);background:var(--cr);border-bottom:1px solid var(--bd);}
-tbody td{padding:13px 16px;border-bottom:1px solid var(--bd);vertical-align:middle;}
-tbody tr:last-child td{border-bottom:none;}
-tbody tr:hover td{background:#fafaf8;}
-.b{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;}
-.b-act{background:#dcfce7;color:#166534;}.b-ina{background:#f3f4f6;color:#6b7280;}
-.b-yes{background:#dbeafe;color:#1e40af;}.b-no{background:#f3f4f6;color:#6b7280;}
-.b-at{background:#fce7f3;color:#9d174d;}.b-ja{background:#dbeafe;color:#1e40af;}
-.b-sa{background:#d1fae5;color:#065f46;}.b-am{background:#fef3c7;color:#92400e;}.b-ca{background:#ede9fe;color:#4c1d95;}
-.b-adm{background:var(--gd);color:var(--nv);font-size:10px;padding:2px 8px;border-radius:4px;margin-left:6px;vertical-align:middle;}
-.b-comp{background:#d1fae5;color:#065f46;}.b-pend{background:#fef3c7;color:#92400e;}.b-over{background:#fee2e2;color:#991b1b;}
-.btn{padding:8px 16px;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all .15s;display:inline-flex;align-items:center;gap:6px;}
-.bn{background:var(--nv);color:var(--wh);}.bn:hover{background:var(--nv2);}
-.bo{background:transparent;color:var(--nv);border:1.5px solid var(--nv);}.bo:hover{background:var(--nv);color:var(--wh);}
-.bg{background:transparent;color:var(--mu);border:1px solid var(--bd);}.bg:hover{background:var(--cr);}
-.brd{background:#fee2e2;color:#991b1b;}.brd:hover{background:#fecaca;}
-.bgr{background:#dcfce7;color:#166534;}.bgr:hover{background:#bbf7d0;}
-.fbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
-.srch{padding:9px 14px 9px 36px;border:1.5px solid var(--bd);border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;width:200px;background:var(--cr) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat 10px center;}
-.srch:focus{border-color:var(--nv);background-color:var(--wh);}
-.fsel{padding:9px 28px 9px 12px;border:1.5px solid var(--bd);border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;background:var(--cr);cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;}
-.fsel:focus{border-color:var(--nv);}
-.ov{position:fixed;inset:0;background:rgba(15,31,61,.5);display:none;align-items:center;justify-content:center;z-index:1000;padding:20px;}
-.ov.on{display:flex;}
-.modal{background:var(--wh);border-radius:16px;width:520px;max-width:100%;max-height:90vh;overflow-y:auto;box-shadow:var(--shl);}
-.mh{padding:22px 24px 0;display:flex;align-items:center;justify-content:space-between;}
-.mh h3{font-family:'DM Serif Display',serif;font-size:20px;color:var(--nv);}
-.mx{width:30px;height:30px;border-radius:50%;border:none;background:var(--cr);cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;color:var(--mu);}
-.mb{padding:18px 24px 22px;}
-.mf{padding:14px 24px;border-top:1px solid var(--bd);display:flex;justify-content:flex-end;gap:10px;flex-wrap:wrap;}
-.r2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-.toast{position:fixed;bottom:24px;right:24px;padding:13px 20px;border-radius:var(--rs);font-size:14px;font-weight:500;box-shadow:var(--shl);z-index:2000;display:none;background:var(--nv);color:var(--wh);}
-.cs{background:var(--cr);border:2px dashed var(--bd);border-radius:var(--r);padding:60px;text-align:center;color:var(--mu);}
-.cs .ico{font-size:40px;margin-bottom:14px;}
-.cs h3{font-size:18px;color:var(--nv);margin-bottom:8px;}
-.af-grid{display:grid;grid-template-columns:1fr 320px;gap:24px;align-items:start;}
-.view-tabs{display:flex;background:var(--cr);border-radius:8px;padding:4px;gap:2px;}
-.vtab{padding:7px 16px;border:none;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;background:transparent;color:var(--mu);transition:all .2s;}
-.vtab.on{background:var(--nv);color:var(--wh);}
-.gantt-wrap{overflow-x:auto;}
-.gantt{min-width:900px;}
-.gantt-head{display:grid;background:var(--cr);border-bottom:1px solid var(--bd);position:sticky;top:0;z-index:2;}
-.gantt-row{display:grid;border-bottom:1px solid var(--bd);align-items:center;min-height:52px;}
-.gcell{padding:8px 10px;font-size:12px;}
-.gcell.name{font-weight:600;font-size:13px;border-right:1px solid var(--bd);background:var(--wh);position:sticky;left:0;z-index:1;}
-.gbar{height:28px;border-radius:6px;display:flex;align-items:center;padding:0 8px;font-size:11px;font-weight:600;color:var(--wh);cursor:pointer;transition:opacity .15s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.gbar:hover{opacity:.85;}
-.gbar.own{background:#1a3060;}.gbar.ext{background:#d97706;}.gbar.done{background:#6b7280;}.gbar.over{background:#dc2626;}
-.tl-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
-.team-row{display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--bd);}
-.team-row:last-child{border-bottom:none;}
-.sdot{width:10px;height:10px;border-radius:50%;flex-shrink:0;}
-.dg{background:#16a34a;}.db{background:#1a3060;}.do{background:#d97706;}.dr{background:#dc2626;}
-.alert-row{padding:12px 0;border-bottom:1px solid var(--bd);display:flex;align-items:flex-start;gap:10px;}
-.alert-row:last-child{border-bottom:none;}
-.prog-bar{height:6px;border-radius:3px;background:#e5e0d8;margin-top:6px;overflow:hidden;}
-.prog-fill{height:100%;border-radius:3px;background:var(--nv);}
-.mpick{position:absolute;top:100%;left:0;margin-top:8px;background:var(--wh);border-radius:var(--r);box-shadow:var(--shl);padding:20px;z-index:100;width:280px;}
-.mpick-yr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-.mpick-yr span{font-family:'DM Serif Display',serif;font-size:18px;color:var(--nv);}
-.mpick-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
-.mpick-m{padding:8px 4px;border:none;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;background:var(--cr);color:var(--tx);transition:all .15s;}
-.mpick-m:hover{background:var(--nv);color:var(--wh);}
-.mpick-m.cur{background:var(--nv);color:var(--wh);font-weight:600;}
-.cal-nav-wrap{position:relative;}
-.log-row{padding:16px 0;border-bottom:1px solid var(--bd);}
-.log-row:last-child{border-bottom:none;}
-.adsh-row{padding:16px 0;border-bottom:1px solid var(--bd);}
-.adsh-row:last-child{border-bottom:none;}
-.mob{display:none;position:fixed;top:16px;right:16px;z-index:200;background:var(--nv);color:var(--wh);border:none;border-radius:8px;padding:8px 14px;cursor:pointer;font-size:18px;box-shadow:var(--sh);}
-@media(max-width:768px){.mob{display:block;}.sb{transform:translateX(-100%);}.sb.open{transform:translateX(0);}.mn{margin-left:0;padding:20px;padding-top:60px;}.af-grid{grid-template-columns:1fr;}.r2{grid-template-columns:1fr;}.tl-grid{grid-template-columns:1fr;}}
+  :root {
+    --navy: #0f1f3d;
+    --navy-light: #1a3060;
+    --gold: #c9a84c;
+    --gold-light: #e8c97a;
+    --cream: #faf7f2;
+    --white: #ffffff;
+    --text: #1a1a2e;
+    --text-muted: #6b7280;
+    --border: #e5e0d8;
+    --success: #166534;
+    --success-bg: #dcfce7;
+    --error: #991b1b;
+    --error-bg: #fee2e2;
+    --warning: #92400e;
+    --warning-bg: #fef3c7;
+    --shadow: 0 4px 24px rgba(15,31,61,0.10);
+    --shadow-lg: 0 8px 40px rgba(15,31,61,0.15);
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── LOGIN SCREEN ── */
+  #login-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 60%, #2a4a8a 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  #login-screen::before {
+    content: '';
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,168,76,0.12) 0%, transparent 70%);
+    top: -200px; right: -150px;
+  }
+
+  #login-screen::after {
+    content: '';
+    position: absolute;
+    width: 400px; height: 400px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(201,168,76,0.08) 0%, transparent 70%);
+    bottom: -100px; left: -100px;
+  }
+
+  .login-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 48px 44px;
+    width: 420px;
+    max-width: 95vw;
+    box-shadow: var(--shadow-lg);
+    position: relative;
+    z-index: 1;
+    animation: fadeUp 0.5s ease;
+  }
+
+  @keyframes fadeUp {
+    from { opacity:0; transform: translateY(20px); }
+    to { opacity:1; transform: translateY(0); }
+  }
+
+  .login-logo {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  .login-logo .firm-initials {
+    width: 64px; height: 64px;
+    background: var(--navy);
+    border-radius: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+
+  .login-logo .firm-initials span {
+    font-family: 'DM Serif Display', serif;
+    color: var(--gold);
+    font-size: 22px;
+    letter-spacing: 1px;
+  }
+
+  .login-logo h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--navy);
+    line-height: 1.2;
+  }
+
+  .login-logo p {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 4px;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+  }
+
+  .login-tabs {
+    display: flex;
+    background: var(--cream);
+    border-radius: var(--radius-sm);
+    padding: 4px;
+    margin-bottom: 28px;
+  }
+
+  .login-tab {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text-muted);
+    border: none;
+    background: transparent;
+  }
+
+  .login-tab.active {
+    background: var(--navy);
+    color: var(--white);
+    box-shadow: 0 2px 8px rgba(15,31,61,0.2);
+  }
+
+  .form-group { margin-bottom: 20px; }
+
+  .form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    margin-bottom: 8px;
+  }
+
+  .form-group input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    background: var(--white);
+    transition: border-color 0.2s;
+    outline: none;
+  }
+
+  .form-group input:focus {
+    border-color: var(--navy);
+  }
+
+  .btn-primary {
+    width: 100%;
+    padding: 14px;
+    background: var(--navy);
+    color: var(--white);
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+  }
+
+  .btn-primary:hover {
+    background: var(--navy-light);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(15,31,61,0.25);
+  }
+
+  .error-msg {
+    background: var(--error-bg);
+    color: var(--error);
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    margin-top: 12px;
+    display: none;
+  }
+
+  /* ── TL SELECTION SCREEN ── */
+  #tl-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--cream);
+    display: none;
+  }
+
+  .tl-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 48px 44px;
+    width: 480px;
+    max-width: 95vw;
+    box-shadow: var(--shadow);
+    animation: fadeUp 0.4s ease;
+  }
+
+  .tl-card h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px;
+    color: var(--navy);
+    margin-bottom: 8px;
+  }
+
+  .tl-card p {
+    color: var(--text-muted);
+    font-size: 14px;
+    margin-bottom: 32px;
+    line-height: 1.6;
+  }
+
+  .form-group select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    background: var(--white);
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 16px center;
+  }
+
+  .form-group select:focus { border-color: var(--navy); }
+
+  /* ── MAIN APP ── */
+  #app {
+    display: none;
+    min-height: 100vh;
+  }
+
+  /* Sidebar */
+  .sidebar {
+    position: fixed;
+    left: 0; top: 0; bottom: 0;
+    width: 240px;
+    background: var(--navy);
+    display: flex;
+    flex-direction: column;
+    z-index: 100;
+    transition: transform 0.3s;
+  }
+
+  .sidebar-logo {
+    padding: 24px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .sidebar-logo .firm-name {
+    font-family: 'DM Serif Display', serif;
+    color: var(--white);
+    font-size: 17px;
+    line-height: 1.3;
+  }
+
+  .sidebar-logo .firm-sub {
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .sidebar-user {
+    padding: 16px 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .user-avatar {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--navy);
+    flex-shrink: 0;
+  }
+
+  .user-info .name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--white);
+  }
+
+  .user-info .role {
+    font-size: 11px;
+    color: rgba(255,255,255,0.45);
+  }
+
+  .sidebar-nav {
+    flex: 1;
+    padding: 16px 12px;
+    overflow-y: auto;
+  }
+
+  .nav-section-title {
+    font-size: 10px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.3);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 12px 8px 6px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    color: rgba(255,255,255,0.6);
+    font-size: 14px;
+    font-weight: 400;
+    transition: all 0.15s;
+    margin-bottom: 2px;
+    border: none;
+    background: transparent;
+    width: 100%;
+    text-align: left;
+  }
+
+  .nav-item:hover {
+    background: rgba(255,255,255,0.07);
+    color: var(--white);
+  }
+
+  .nav-item.active {
+    background: rgba(201,168,76,0.15);
+    color: var(--gold-light);
+    font-weight: 500;
+  }
+
+  .nav-item .nav-icon { font-size: 16px; width: 20px; text-align: center; }
+
+  .nav-item.admin-only { display: none; }
+
+  .sidebar-bottom {
+    padding: 12px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+
+  .btn-logout {
+    width: 100%;
+    padding: 10px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius-sm);
+    color: rgba(255,255,255,0.5);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .btn-logout:hover {
+    background: rgba(255,255,255,0.1);
+    color: var(--white);
+  }
+
+  /* Main content */
+  .main-content {
+    margin-left: 240px;
+    min-height: 100vh;
+    padding: 32px;
+  }
+
+  /* Page header */
+  .page-header {
+    margin-bottom: 28px;
+  }
+
+  .page-header h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 28px;
+    color: var(--navy);
+  }
+
+  .page-header p {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  /* Cards */
+  .card {
+    background: var(--white);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+
+  .card-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .card-header h3 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--navy);
+  }
+
+  .card-body { padding: 24px; }
+
+  /* Stats row */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+
+  .stat-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    border-left: 4px solid var(--navy);
+  }
+
+  .stat-card.green { border-left-color: #16a34a; }
+  .stat-card.amber { border-left-color: #d97706; }
+  .stat-card.red { border-left-color: #dc2626; }
+
+  .stat-value {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px;
+    color: var(--navy);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 6px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* Table */
+  .table-wrap { overflow-x: auto; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+  }
+
+  thead th {
+    padding: 12px 16px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    background: var(--cream);
+    border-bottom: 1px solid var(--border);
+  }
+
+  tbody td {
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    vertical-align: middle;
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+
+  tbody tr:hover td { background: #fafaf8; }
+
+  /* Badges */
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+  }
+
+  .badge-active { background: var(--success-bg); color: var(--success); }
+  .badge-inactive { background: #f3f4f6; color: #6b7280; }
+  .badge-yes { background: #dbeafe; color: #1e40af; }
+  .badge-no { background: #f3f4f6; color: #6b7280; }
+  .badge-at { background: #fce7f3; color: #9d174d; }
+  .badge-ja { background: #dbeafe; color: #1e40af; }
+  .badge-sa { background: #d1fae5; color: #065f46; }
+  .badge-am { background: #fef3c7; color: #92400e; }
+  .badge-ca { background: #ede9fe; color: #4c1d95; }
+
+  /* Buttons */
+  .btn {
+    padding: 8px 16px;
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn-navy {
+    background: var(--navy);
+    color: var(--white);
+  }
+
+  .btn-navy:hover {
+    background: var(--navy-light);
+    transform: translateY(-1px);
+  }
+
+  .btn-outline {
+    background: transparent;
+    color: var(--navy);
+    border: 1.5px solid var(--navy);
+  }
+
+  .btn-outline:hover { background: var(--navy); color: var(--white); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+  }
+
+  .btn-ghost:hover { background: var(--cream); color: var(--text); }
+
+  .btn-danger {
+    background: #fee2e2;
+    color: #991b1b;
+    border: none;
+  }
+
+  .btn-danger:hover { background: #fecaca; }
+
+  /* Search & filter bar */
+  .filter-bar {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .search-input {
+    padding: 9px 14px 9px 36px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    width: 240px;
+    background: var(--cream) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat 10px center;
+    transition: border-color 0.2s;
+  }
+
+  .search-input:focus { border-color: var(--navy); background-color: var(--white); }
+
+  .filter-select {
+    padding: 9px 32px 9px 12px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    background: var(--cream);
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 12 12'%3E%3Cpath fill='%236b7280' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    transition: border-color 0.2s;
+  }
+
+  .filter-select:focus { border-color: var(--navy); }
+
+  /* Modal */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15,31,61,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    display: none;
+  }
+
+  .modal-overlay.open { display: flex; animation: fadeIn 0.2s ease; }
+
+  @keyframes fadeIn { from { opacity:0; } to { opacity:1; } }
+
+  .modal {
+    background: var(--white);
+    border-radius: 16px;
+    width: 520px;
+    max-width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-lg);
+    animation: slideUp 0.25s ease;
+  }
+
+  @keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+
+  .modal-header {
+    padding: 24px 24px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .modal-header h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    color: var(--navy);
+  }
+
+  .modal-close {
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    border: none;
+    background: var(--cream);
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+    transition: all 0.15s;
+  }
+
+  .modal-close:hover { background: var(--border); }
+
+  .modal-body { padding: 20px 24px 24px; }
+
+  .modal-footer {
+    padding: 16px 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .form-group input,
+  .form-group select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    background: var(--white);
+  }
+
+  .form-group input:focus,
+  .form-group select:focus { border-color: var(--navy); }
+
+  .form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 6px;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    padding: 14px 20px;
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: var(--shadow-lg);
+    z-index: 2000;
+    display: none;
+    animation: toastIn 0.3s ease;
+  }
+
+  @keyframes toastIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .toast.success { background: var(--navy); color: var(--white); }
+  .toast.error { background: #991b1b; color: var(--white); }
+
+  /* Pages */
+  .page { display: none; }
+  .page.active { display: block; animation: fadeUp 0.3s ease; }
+
+  /* Dashboard welcome */
+  .welcome-banner {
+    background: linear-gradient(120deg, var(--navy) 0%, #1e3a6e 100%);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    color: var(--white);
+    margin-bottom: 24px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .welcome-banner::after {
+    content: '';
+    position: absolute;
+    right: -30px; top: -30px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(201,168,76,0.1);
+  }
+
+  .welcome-banner h3 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    margin-bottom: 6px;
+  }
+
+  .welcome-banner p {
+    font-size: 14px;
+    opacity: 0.7;
+  }
+
+  .coming-soon {
+    background: var(--cream);
+    border: 2px dashed var(--border);
+    border-radius: var(--radius);
+    padding: 60px;
+    text-align: center;
+    color: var(--text-muted);
+  }
+
+  .coming-soon .icon { font-size: 40px; margin-bottom: 16px; }
+  .coming-soon h3 { font-size: 18px; color: var(--navy); margin-bottom: 8px; }
+  .coming-soon p { font-size: 14px; }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; padding: 20px; }
+    .form-row { grid-template-columns: 1fr; }
+  }
+
+  .mobile-menu-btn {
+    display: none;
+    position: fixed;
+    top: 16px; left: 16px;
+    z-index: 200;
+    background: var(--navy);
+    color: var(--white);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 18px;
+  }
+
+  @media (max-width: 768px) { .mobile-menu-btn { display: block; } }
+
+  .inline-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    background: var(--gold);
+    color: var(--navy);
+    margin-left: 6px;
+    vertical-align: middle;
+  }
 </style>
 </head>
 <body>
 
-<div id="sc-login" class="scr act">
-  <div class="lcard">
-    <div class="logo"><div class="logo-box"><span>YCRJ</span></div><h1>YCRJ &amp; Associates</h1><p>Staff Allocation System</p></div>
-    <div class="tabrow"><button class="ltab on" id="t-tl">Team Leader</button><button class="ltab" id="t-ad">Admin</button></div>
-    <div class="lform on" id="f-tl">
-      <div class="fi"><label>Username</label><input type="text" id="tl-u" value="allocation"></div>
-      <div class="fi"><label>Password</label><input type="password" id="tl-p" placeholder="Password"></div>
-      <button class="bmain" id="btn-tl-login">Continue as Team Leader</button>
-      <div class="errmsg" id="tl-err">Incorrect username or password.</div>
+<!-- ══════════════════════════════════════
+     LOGIN SCREEN
+══════════════════════════════════════ -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="firm-initials"><span>YCRJ</span></div>
+      <h1>YCRJ & Co.</h1>
+      <p>Staff Allocation System</p>
     </div>
-    <div class="lform" id="f-ad">
-      <div class="fi"><label>Username</label><input type="text" id="ad-u" value="admin"></div>
-      <div class="fi"><label>Password</label><input type="password" id="ad-p" placeholder="Password"></div>
-      <button class="bmain" id="btn-ad-login">Login as Admin</button>
-      <div class="errmsg" id="ad-err">Incorrect admin credentials.</div>
+
+    <div class="login-tabs">
+      <button class="login-tab active" onclick="switchTab('tl')">Team Leader</button>
+      <button class="login-tab" onclick="switchTab('admin')">Admin</button>
+    </div>
+
+    <div id="tl-form">
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="tl-username" placeholder="Enter username" value="allocation">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="tl-password" placeholder="Enter password">
+      </div>
+      <button class="btn-primary" onclick="loginTL()">Continue as Team Leader →</button>
+      <div class="error-msg" id="tl-error">Incorrect username or password. Please try again.</div>
+    </div>
+
+    <div id="admin-form" style="display:none;">
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="admin-username" placeholder="Enter admin username" value="admin">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="admin-password" placeholder="Enter admin password">
+      </div>
+      <button class="btn-primary" onclick="loginAdmin()">Login as Admin →</button>
+      <div class="error-msg" id="admin-error">Incorrect admin credentials. Please try again.</div>
     </div>
   </div>
 </div>
 
-<div id="sc-pick" class="scr">
-  <div class="pcard">
-    <h2>Welcome!</h2>
-    <p>Select your name to continue. Your name will be attributed to all assignments you raise.</p>
-    <div class="fi"><label>Select Your Name</label><select id="tl-pick" class="dd" style="width:100%"><option value="">-- Choose your name --</option></select></div>
-    <button class="bmain" id="btn-pick">Continue</button>
-    <div class="errmsg" id="pick-err">Please select your name.</div>
-    <p style="margin-top:14px;font-size:12px;color:var(--mu);text-align:center">Acting on behalf of a TL? Select their name above.</p>
+<!-- ══════════════════════════════════════
+     TL SELECTION SCREEN
+══════════════════════════════════════ -->
+<div id="tl-screen">
+  <div class="tl-card">
+    <h2>Welcome 👋</h2>
+    <p>Please select your name to continue. Your name will be used to attribute all assignments you raise in this session.</p>
+
+    <div class="form-group">
+      <label>Select Your Name</label>
+      <select id="tl-select">
+        <option value="">— Choose your name —</option>
+        <option value="Rahul K">Rahul K</option>
+        <option value="Priya S">Priya S</option>
+        <option value="Amit M">Amit M</option>
+        <option value="Sunita R">Sunita R</option>
+        <option value="Deepak V">Deepak V</option>
+      </select>
+    </div>
+
+    <button class="btn-primary" onclick="selectTL()" style="margin-top:8px;">Continue →</button>
+    <div class="error-msg" id="tl-select-error" style="display:block; display:none;">Please select your name to continue.</div>
+
+    <p style="margin-top:20px; font-size:12px; color:var(--text-muted); text-align:center;">
+      Acting on behalf of a TL? Select their name from the list above.
+    </p>
   </div>
 </div>
 
-<div id="sc-app" class="scr">
-  <button class="mob" id="mob-btn">&#9776;</button>
-  <div class="sb" id="sidebar">
-    <div class="sb-logo"><div class="sb-firm">YCRJ</div><div class="sb-sub">Staff Allocation</div></div>
-    <div class="sb-user"><div class="av" id="sb-av">?</div><div><div class="un" id="sb-nm">--</div><div class="ur" id="sb-rl">--</div></div></div>
-    <nav class="sb-nav">
-      <div class="ns">Main</div>
-      <button class="nb on" data-pg="dash">&#127968;&nbsp; Dashboard</button>
-      <button class="nb" data-pg="cal">&#128197;&nbsp; Calendar</button>
-      <button class="nb" data-pg="asgn">&#128203;&nbsp; New Assignment</button>
-      <button class="nb" data-pg="log">&#128193;&nbsp; Assignment Log</button>
-      <div class="ns">My Team</div>
-      <button class="nb" data-pg="tldash">&#128101;&nbsp; TL Dashboard</button>
-      <div class="ns adm">Admin</div>
-      <button class="nb adm" data-pg="staff">&#128100;&nbsp; Staff Master</button>
-      <button class="nb adm" data-pg="tlm">&#127919;&nbsp; TL Master</button>
-      <button class="nb adm" data-pg="leave">&#128197;&nbsp; Leave Register</button>
-      <button class="nb adm" data-pg="adash">&#128202;&nbsp; Admin Dashboard</button>
-      <button class="nb adm" data-pg="sett">&#9881;&nbsp; Settings</button>
+<!-- ══════════════════════════════════════
+     MAIN APP
+══════════════════════════════════════ -->
+<div id="app">
+  <button class="mobile-menu-btn" onclick="toggleSidebar()">☰</button>
+
+  <!-- Sidebar -->
+  <div class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <div class="firm-name">YCRJ & Co.</div>
+      <div class="firm-sub">Staff Allocation</div>
+    </div>
+
+    <div class="sidebar-user">
+      <div class="user-avatar" id="user-avatar">?</div>
+      <div class="user-info">
+        <div class="name" id="user-name">Loading...</div>
+        <div class="role" id="user-role">Team Leader</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <div class="nav-section-title">Main</div>
+      <button class="nav-item active" onclick="showPage('dashboard')">
+        <span class="nav-icon">🏠</span> Dashboard
+      </button>
+      <button class="nav-item" onclick="showPage('calendar')">
+        <span class="nav-icon">📅</span> Calendar
+      </button>
+      <button class="nav-item" onclick="showPage('assignment')">
+        <span class="nav-icon">📋</span> New Assignment
+      </button>
+      <button class="nav-item" onclick="showPage('log')">
+        <span class="nav-icon">📁</span> Assignment Log
+      </button>
+
+      <div class="nav-section-title" style="margin-top:8px;">My Team</div>
+      <button class="nav-item" onclick="showPage('tl-dashboard')">
+        <span class="nav-icon">👥</span> TL Dashboard
+      </button>
+
+      <div class="nav-section-title admin-only" style="margin-top:8px;">Admin</div>
+      <button class="nav-item admin-only" onclick="showPage('staff-master')">
+        <span class="nav-icon">👤</span> Staff Master
+      </button>
+      <button class="nav-item admin-only" onclick="showPage('tl-master')">
+        <span class="nav-icon">🎯</span> TL Master
+      </button>
+      <button class="nav-item admin-only" onclick="showPage('leave-register')">
+        <span class="nav-icon">🗓️</span> Leave Register
+      </button>
+      <button class="nav-item admin-only" onclick="showPage('admin-dashboard')">
+        <span class="nav-icon">📊</span> Admin Dashboard
+      </button>
+      <button class="nav-item admin-only" onclick="showPage('settings')">
+        <span class="nav-icon">⚙️</span> Settings
+      </button>
     </nav>
-    <div class="sb-ft"><button class="blogout" id="btn-logout">&#8592; Logout</button></div>
+
+    <div class="sidebar-bottom">
+      <button class="btn-logout" onclick="logout()">← Logout</button>
+    </div>
   </div>
 
-  <div class="mn">
+  <!-- Main Content -->
+  <div class="main-content">
 
     <!-- DASHBOARD -->
-    <div class="pg on" id="pg-dash">
-      <div class="ph"><h2>Dashboard</h2><p id="pg-dt"></p></div>
-      <div class="banner"><h3 id="pg-wlc">Welcome back!</h3><p>Overview of your firm's current allocation status.</p></div>
-      <div class="stats">
-        <div class="stat g"><div class="sv" id="st-act">0</div><div class="sl">Active</div></div>
-        <div class="stat bl"><div class="sv" id="st-stf">0</div><div class="sl">Staff Assigned</div></div>
-        <div class="stat a"><div class="sv" id="st-pnd">0</div><div class="sl">Notif. Pending</div></div>
-        <div class="stat rd"><div class="sv" id="st-ovr">0</div><div class="sl">Overdue</div></div>
+    <div class="page active" id="page-dashboard">
+      <div class="page-header">
+        <h2>Dashboard</h2>
+        <p id="dashboard-date"></p>
       </div>
-      <div class="card"><div class="ch"><h3>Recent Assignments</h3></div><div class="cb"><div id="dash-recent"></div></div></div>
-    </div>
 
-    <!-- CALENDAR -->
-    <div class="pg" id="pg-cal">
-      <div class="ph"><h2>Calendar / Gantt View</h2></div>
+      <div class="welcome-banner">
+        <h3 id="welcome-msg">Welcome back!</h3>
+        <p>Here's a quick overview of your firm's current allocation status.</p>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card green">
+          <div class="stat-value" id="stat-active">8</div>
+          <div class="stat-label">Active Assignments</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" id="stat-staff">12</div>
+          <div class="stat-label">Total Active Staff</div>
+        </div>
+        <div class="stat-card amber">
+          <div class="stat-value" id="stat-pending">3</div>
+          <div class="stat-label">Pending Notifications</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-value" id="stat-overdue">1</div>
+          <div class="stat-label">Overdue Assignments</div>
+        </div>
+      </div>
+
       <div class="card">
-        <div class="ch" style="flex-wrap:wrap;gap:14px">
-          <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">
-            <button class="btn bg" id="cal-prev">&#8592;</button>
-            <div class="cal-nav-wrap">
-              <button class="btn bo" id="cal-month-btn" style="min-width:160px;justify-content:center"></button>
-              <div class="mpick hide" id="cal-mpick">
-                <div class="mpick-yr"><button class="btn bg" style="padding:4px 10px" id="yr-prev">&#8592;</button><span id="mpick-yr-lbl">2024</span><button class="btn bg" style="padding:4px 10px" id="yr-next">&#8594;</button></div>
-                <div class="mpick-grid" id="mpick-grid"></div>
-              </div>
-            </div>
-            <button class="btn bg" id="cal-next">&#8594;</button>
-          </div>
-          <div class="view-tabs">
-            <button class="vtab on" data-view="client">Client</button>
-            <button class="vtab" data-view="staff">Staff</button>
-            <button class="vtab" data-view="tl">TL</button>
-          </div>
-          <div class="fbar">
-            <select class="fsel" id="cal-ftl"><option value="">All TLs</option></select>
-            <select class="fsel" id="cal-flv"><option value="">All Levels</option></select>
-            <select class="fsel" id="cal-fcl"><option value="">All Clients</option></select>
-          </div>
+        <div class="card-header">
+          <h3>Recent Activity</h3>
         </div>
-        <div style="padding:0 24px 24px"><div id="cal-body"></div></div>
-      </div>
-      <div style="display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--mu);padding:0 0 20px">
-        <span><span style="display:inline-block;width:14px;height:14px;background:#1a3060;border-radius:3px;vertical-align:middle;margin-right:4px"></span>Own TL Assignment</span>
-        <span><span style="display:inline-block;width:14px;height:14px;background:#d97706;border-radius:3px;vertical-align:middle;margin-right:4px"></span>External TL Staff</span>
-        <span><span style="display:inline-block;width:14px;height:14px;background:#6b7280;border-radius:3px;vertical-align:middle;margin-right:4px"></span>Completed</span>
-        <span><span style="display:inline-block;width:14px;height:14px;background:#dc2626;border-radius:3px;vertical-align:middle;margin-right:4px"></span>Overdue</span>
-      </div>
-    </div>
-
-    <!-- NEW ASSIGNMENT -->
-    <div class="pg" id="pg-asgn">
-      <div id="af-sec">
-        <div class="ph"><h2>New Assignment</h2><p>Fill details then find available staff.</p></div>
-        <div class="af-grid">
-          <div>
-            <div class="card">
-              <div class="ch"><h3>Assignment Details</h3></div>
-              <div class="cb">
-                <div class="fi"><label>Raising TL *</label><select id="af-tl" class="dd" style="width:100%;font-weight:600"><option value="">-- Select TL --</option></select></div>
-                <div class="fi"><label>Client Name *</label><input type="text" id="af-cl" placeholder="e.g. ABC Enterprises Ltd"></div>
-                <div class="fi"><label>Assignment Description *</label><textarea id="af-ds" rows="2" placeholder="e.g. Statutory Audit FY 2024-25" style="resize:vertical"></textarea></div>
-                <div class="r2" style="margin-bottom:16px">
-                  <div class="fi"><label>Start Date *</label><input type="date" id="af-sd"></div>
-                  <div class="fi"><label>End Date *</label><input type="date" id="af-ed"></div>
-                </div>
-                <div class="r2" style="margin-bottom:16px">
-                  <div style="background:var(--cr);border-radius:var(--rs);padding:12px 16px"><div style="font-size:11px;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px">Working Days</div><div id="af-dy" style="font-family:'DM Serif Display',serif;font-size:26px;color:var(--nv)">--</div></div>
-                  <div style="background:var(--cr);border-radius:var(--rs);padding:12px 16px"><div style="font-size:11px;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;margin-bottom:4px">Total Hours</div><div id="af-hr" style="font-family:'DM Serif Display',serif;font-size:26px;color:var(--nv)">--</div></div>
-                </div>
-                <div class="fi"><label>Travel Required *</label><select id="af-tr" class="dd" style="width:100%"><option value="">Select</option><option value="No">No</option><option value="Yes">Yes</option></select></div>
-                <div class="fi hide" id="af-tdw"><label>Travel Details</label><input type="text" id="af-td" placeholder="e.g. Mumbai, 2 nights"></div>
-                <div class="fi"><label>Special Notes <small style="font-weight:300;text-transform:none;letter-spacing:0">(max 200 chars)</small></label><textarea id="af-nt" rows="2" maxlength="200" style="resize:none"></textarea><div style="text-align:right;font-size:11px;color:var(--mu);margin-top:3px"><span id="af-cc">0</span>/200</div></div>
-              </div>
-            </div>
-            <div class="card">
-              <div class="ch"><h3>Team Requirement</h3></div>
-              <div class="cb">
-                <p style="font-size:13px;color:var(--mu);margin-bottom:16px">Set how many staff of each level needed. Select dates to see live availability.</p>
-                <div id="af-lvs"></div>
-                <div style="border-top:2px solid var(--bd);padding-top:12px;margin-top:4px;display:flex;justify-content:space-between;align-items:center"><span style="font-size:14px;font-weight:600;color:var(--mu)">Total Team Size</span><span id="af-tot" style="font-family:'DM Serif Display',serif;font-size:28px;color:var(--nv)">0</span></div>
-              </div>
-            </div>
-            <div class="fi"><label>Gender Preference</label><select id="af-gd" class="dd" style="width:100%"><option value="">No Preference</option><option value="Male">Male Only</option><option value="Female">Female Only</option></select></div>
-          </div>
-          <div>
-            <div class="card" style="position:sticky;top:20px">
-              <div class="ch"><h3>Summary</h3></div>
-              <div class="cb">
-                <div style="font-size:13px">
-                  <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--bd)"><span style="color:var(--mu)">ID</span><b id="sm-id" style="color:var(--nv)">--</b></div>
-                  <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--bd)"><span style="color:var(--mu)">Client</span><b id="sm-cl" style="color:var(--nv);max-width:160px;text-align:right">--</b></div>
-                  <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--bd)"><span style="color:var(--mu)">Period</span><b id="sm-pr" style="color:var(--nv)">--</b></div>
-                  <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--bd)"><span style="color:var(--mu)">Duration</span><b id="sm-du" style="color:var(--nv)">--</b></div>
-                  <div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--bd)"><span style="color:var(--mu)">Travel</span><b id="sm-tr" style="color:var(--nv)">--</b></div>
-                  <div style="display:flex;justify-content:space-between;padding:6px 0"><span style="color:var(--mu)">Team</span><b id="sm-tm" style="color:var(--nv)">0 staff</b></div>
-                </div>
-                <button class="btn bn" id="af-go" style="width:100%;margin-top:18px;padding:13px;font-size:15px;opacity:.4;cursor:not-allowed" disabled>Find Available Staff &#8594;</button>
-                <p id="af-hint" style="font-size:12px;color:var(--mu);text-align:center;margin-top:8px">Fill all required fields and add at least 1 staff slot.</p>
-              </div>
-            </div>
-          </div>
+        <div class="card-body">
+          <p style="color:var(--text-muted); font-size:14px; line-height:1.8;">
+            ✅ <strong>ABC Ltd — Statutory Audit</strong> assigned to 4 staff by Rahul K<br>
+            📧 <strong>XYZ Ltd — GST Filing</strong> notification pending<br>
+            ⚠️ <strong>PQR Ltd — Tax Audit</strong> due date extended by Priya S<br>
+            🔴 <strong>DEF Ltd — ROC Filing</strong> is overdue — not marked complete
+          </p>
         </div>
       </div>
-      <div id="fp-sec" class="hide">
-        <div class="ph" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap">
-          <button class="btn bg" id="fp-back">&#8592; Back</button>
-          <div><h2>Filter &amp; Allocate</h2><p>Pick staff for each slot and set individual dates.</p></div>
-        </div>
-        <div id="fp-recap" style="background:var(--nv);color:var(--wh);border-radius:var(--r);padding:18px 24px;margin-bottom:24px;display:flex;flex-wrap:wrap;gap:20px"></div>
-        <div id="fp-slots"></div>
-        <div class="card hide" id="fp-confirm">
-          <div class="ch"><h3>&#10003; All Slots Filled &mdash; Review &amp; Confirm</h3></div>
-          <div class="cb"><div id="fp-summ"></div><button class="btn bn" id="fp-confirm-btn" style="margin-top:20px;padding:13px 28px;font-size:15px">Confirm Assignment &#8594;</button></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ASSIGNMENT LOG -->
-    <div class="pg" id="pg-log">
-      <div class="ph"><h2>Assignment Log</h2><p>Full history of all assignments.</p></div>
-      <div class="card">
-        <div class="ch">
-          <div class="fbar">
-            <div><label style="font-size:11px;font-weight:600;color:var(--mu);display:block;margin-bottom:4px">From</label><input type="date" id="lg-from" style="padding:8px 12px;border:1.5px solid var(--bd);border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:13px;outline:none"></div>
-            <div><label style="font-size:11px;font-weight:600;color:var(--mu);display:block;margin-bottom:4px">To</label><input type="date" id="lg-to" style="padding:8px 12px;border:1.5px solid var(--bd);border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:13px;outline:none"></div>
-            <select class="fsel" id="lg-tl" style="align-self:flex-end"><option value="">All TLs</option></select>
-            <select class="fsel" id="lg-st" style="align-self:flex-end"><option value="">All Status</option><option>Active</option><option>Completed</option><option>Notification Pending</option><option>Overdue</option></select>
-            <button class="btn bn" id="lg-search" style="align-self:flex-end">Search</button>
-          </div>
-        </div>
-        <div class="cb"><div id="lg-body"></div></div>
-      </div>
-    </div>
-
-    <!-- TL DASHBOARD -->
-    <div class="pg" id="pg-tldash">
-      <div class="ph"><h2>TL Dashboard</h2><p id="tld-sub"></p></div>
-      <div class="stats" id="tld-stats"></div>
-      <div class="tl-grid">
-        <div class="card"><div class="ch"><h3>My Team Status</h3></div><div class="cb"><div id="tld-team"></div></div></div>
-        <div class="card"><div class="ch"><h3>My Active Assignments</h3></div><div class="cb"><div id="tld-asgn"></div></div></div>
-      </div>
-      <div class="card"><div class="ch"><h3 style="color:#dc2626">&#9888; Needs Attention</h3></div><div class="cb"><div id="tld-alerts"></div></div></div>
     </div>
 
     <!-- STAFF MASTER -->
-    <div class="pg" id="pg-staff">
-      <div class="ph"><h2>Staff Master <span class="b b-adm">Admin</span></h2><p>Manage all staff members.</p></div>
+    <div class="page" id="page-staff-master">
+      <div class="page-header">
+        <h2>Staff Master <span class="inline-badge">Admin</span></h2>
+        <p>Manage all staff members — add, edit, activate or deactivate.</p>
+      </div>
+
       <div class="card">
-        <div class="ch">
-          <div class="fbar"><input class="srch" type="text" placeholder="Search name..." id="s-q"><select class="fsel" id="s-flv"><option value="">All Levels</option><option>Article Trainee</option><option>Junior Associate</option><option>Senior Associate</option><option>Assistant Manager</option><option>Chartered Accountant</option></select><select class="fsel" id="s-fst"><option value="">All Status</option><option>Active</option><option>Inactive</option></select><select class="fsel" id="s-fgd"><option value="">All Gender</option><option>Male</option><option>Female</option></select></div>
-          <button class="btn bn" id="btn-add-staff">+ Add Staff</button>
+        <div class="card-header">
+          <div class="filter-bar">
+            <input type="text" class="search-input" placeholder="Search by name..." oninput="filterStaff()" id="staff-search">
+            <select class="filter-select" onchange="filterStaff()" id="filter-level">
+              <option value="">All Levels</option>
+              <option value="Article Trainee">Article Trainee</option>
+              <option value="Junior Associate">Junior Associate</option>
+              <option value="Senior Associate">Senior Associate</option>
+              <option value="Assistant Manager">Assistant Manager</option>
+              <option value="Chartered Accountant">Chartered Accountant</option>
+            </select>
+            <select class="filter-select" onchange="filterStaff()" id="filter-status">
+              <option value="">All Status</option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+            <select class="filter-select" onchange="filterStaff()" id="filter-gender">
+              <option value="">All Gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </div>
+          <button class="btn btn-navy" onclick="openAddStaffModal()">+ Add Staff</button>
         </div>
-        <div class="tw"><table><thead><tr><th>Name</th><th>Gender</th><th>Level</th><th>Email</th><th>Primary TL</th><th>Travel</th><th>Capacity</th><th>Status</th><th>Actions</th></tr></thead><tbody id="staff-tb"></tbody></table></div>
+        <div class="table-wrap">
+          <table id="staff-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Gender</th>
+                <th>Experience Level</th>
+                <th>Email</th>
+                <th>Primary TL</th>
+                <th>Travel</th>
+                <th>Capacity</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="staff-tbody"></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
     <!-- TL MASTER -->
-    <div class="pg" id="pg-tlm">
-      <div class="ph"><h2>TL Master <span class="b b-adm">Admin</span></h2><p>Manage all Team Leaders.</p></div>
+    <div class="page" id="page-tl-master">
+      <div class="page-header">
+        <h2>TL Master <span class="inline-badge">Admin</span></h2>
+        <p>Manage all Team Leaders — add, edit, activate or deactivate.</p>
+      </div>
       <div class="card">
-        <div class="ch">
-          <div class="fbar"><input class="srch" type="text" placeholder="Search name..." id="tl-q"><select class="fsel" id="tl-fst"><option value="">All Status</option><option>Active</option><option>Inactive</option></select></div>
-          <button class="btn bn" id="btn-add-tl">+ Add TL</button>
+        <div class="card-header">
+          <div class="filter-bar">
+            <input type="text" class="search-input" placeholder="Search by name..." oninput="filterTLs()" id="tl-search">
+            <select class="filter-select" onchange="filterTLs()" id="filter-tl-status">
+              <option value="">All Status</option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+          <button class="btn btn-navy" onclick="openAddTLModal()">+ Add TL</button>
         </div>
-        <div class="tw"><table><thead><tr><th>Name</th><th>Initials</th><th>Email</th><th>Phone</th><th>Team Size</th><th>Status</th><th>Actions</th></tr></thead><tbody id="tl-tb"></tbody></table></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Initials</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Team Size</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tl-tbody"></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
-    <!-- LEAVE -->
-    <div class="pg" id="pg-leave"><div class="ph"><h2>Leave Register <span class="b b-adm">Admin</span></h2></div><div class="cs"><div class="ico">&#128197;</div><h3>Coming in Phase 4</h3><p>Manage approved staff leaves that block calendar availability.</p></div></div>
-
-    <!-- ADMIN DASHBOARD -->
-    <div class="pg" id="pg-adash">
-      <div class="ph"><h2>Admin Dashboard <span class="b b-adm">Admin</span></h2><p>Firm-wide assignment overview and controls.</p></div>
-      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:20px;align-items:flex-end">
-        <div><label style="font-size:11px;font-weight:600;color:var(--mu);display:block;margin-bottom:4px">From</label><input type="date" id="ad-from" style="padding:8px 12px;border:1.5px solid var(--bd);border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:13px;outline:none"></div>
-        <div><label style="font-size:11px;font-weight:600;color:var(--mu);display:block;margin-bottom:4px">To</label><input type="date" id="ad-to" style="padding:8px 12px;border:1.5px solid var(--bd);border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:13px;outline:none"></div>
-        <select class="fsel" id="adsh-tl"><option value="">All TLs</option></select>
-        <button class="btn bn" id="adsh-filter">Apply Filter</button>
-      </div>
-      <div class="stats" id="adsh-stats"></div>
-      <div class="card">
-        <div class="ch"><h3>&#128308; Overdue Assignments</h3></div>
-        <div class="cb"><div id="adsh-over"></div></div>
-      </div>
-      <div class="card">
-        <div class="ch"><h3>&#128231; Notification Pending</h3></div>
-        <div class="cb"><div id="adsh-pend"></div></div>
-      </div>
-      <div class="card">
-        <div class="ch"><h3>&#9989; Active Assignments</h3></div>
-        <div class="cb"><div id="adsh-active"></div></div>
-      </div>
-      <div class="card">
-        <div class="ch"><h3>&#10003; Completed This Period</h3></div>
-        <div class="cb"><div id="adsh-comp"></div></div>
+    <!-- COMING SOON pages -->
+    <div class="page" id="page-calendar">
+      <div class="page-header"><h2>Calendar / Gantt View</h2></div>
+      <div class="coming-soon">
+        <div class="icon">📅</div>
+        <h3>Calendar View — Coming in Phase 3</h3>
+        <p>Staff View, TL View and Client View with month picker will be available here.</p>
       </div>
     </div>
 
-    <!-- SETTINGS -->
-    <div class="pg" id="pg-sett"><div class="ph"><h2>Settings <span class="b b-adm">Admin</span></h2></div><div class="cs"><div class="ico">&#9881;</div><h3>Coming in Phase 4</h3><p>Manage login credentials and system configuration.</p></div></div>
+    <div class="page" id="page-assignment">
+      <div class="page-header"><h2>New Assignment</h2></div>
+      <div class="coming-soon">
+        <div class="icon">📋</div>
+        <h3>Assignment Form — Coming in Phase 2</h3>
+        <p>Create new assignments, filter available staff and allocate teams here.</p>
+      </div>
+    </div>
+
+    <div class="page" id="page-log">
+      <div class="page-header"><h2>Assignment Log</h2></div>
+      <div class="coming-soon">
+        <div class="icon">📁</div>
+        <h3>Assignment Log — Coming in Phase 3</h3>
+        <p>Full history of all assignments with date range filters will be available here.</p>
+      </div>
+    </div>
+
+    <div class="page" id="page-tl-dashboard">
+      <div class="page-header"><h2>TL Dashboard</h2></div>
+      <div class="coming-soon">
+        <div class="icon">👥</div>
+        <h3>TL Dashboard — Coming in Phase 3</h3>
+        <p>Your team status, active assignments and needs attention panel will be here.</p>
+      </div>
+    </div>
+
+    <div class="page" id="page-leave-register">
+      <div class="page-header"><h2>Leave Register <span class="inline-badge">Admin</span></h2></div>
+      <div class="coming-soon">
+        <div class="icon">🗓️</div>
+        <h3>Leave Register — Coming in Phase 4</h3>
+        <p>Manage approved staff leaves that block availability in the calendar.</p>
+      </div>
+    </div>
+
+    <div class="page" id="page-admin-dashboard">
+      <div class="page-header"><h2>Admin Dashboard <span class="inline-badge">Admin</span></h2></div>
+      <div class="coming-soon">
+        <div class="icon">📊</div>
+        <h3>Admin Dashboard — Coming in Phase 3</h3>
+        <p>Firm-wide ongoing assignments tracker, overdue alerts and full visibility.</p>
+      </div>
+    </div>
+
+    <div class="page" id="page-settings">
+      <div class="page-header"><h2>System Settings <span class="inline-badge">Admin</span></h2></div>
+      <div class="coming-soon">
+        <div class="icon">⚙️</div>
+        <h3>Settings — Coming in Phase 4</h3>
+        <p>Manage login credentials, office manager emails and system configuration.</p>
+      </div>
+    </div>
 
   </div>
 </div>
 
-<!-- MODALS -->
-<div class="ov" id="ov-staff">
+<!-- ══════════════════════════════════════
+     ADD STAFF MODAL
+══════════════════════════════════════ -->
+<div class="modal-overlay" id="add-staff-modal">
   <div class="modal">
-    <div class="mh"><h3 id="ms-title">Add Staff</h3><button class="mx" data-close="ov-staff">&#10005;</button></div>
-    <div class="mb">
-      <input type="hidden" id="ms-idx" value="-1">
-      <div class="r2"><div class="fi"><label>Full Name *</label><input type="text" id="ms-nm" placeholder="e.g. Anita Sharma"></div><div class="fi"><label>Gender *</label><select id="ms-gd" class="dd" style="width:100%"><option value="">Select</option><option>Male</option><option>Female</option></select></div></div>
-      <div class="r2"><div class="fi"><label>Experience Level *</label><select id="ms-lv" class="dd" style="width:100%"><option value="">Select</option><option>Article Trainee</option><option>Junior Associate</option><option>Senior Associate</option><option>Assistant Manager</option><option>Chartered Accountant</option></select></div><div class="fi"><label>Travel Willing *</label><select id="ms-tr" class="dd" style="width:100%"><option value="">Select</option><option>Yes</option><option>No</option></select></div></div>
-      <div class="fi"><label>Firm Email *</label><input type="email" id="ms-em" placeholder="name@ycrjca.com"></div>
-      <div class="r2"><div class="fi"><label>Phone</label><input type="text" id="ms-ph" placeholder="Optional"></div><div class="fi"><label>Primary TL *</label><select id="ms-tl" class="dd" style="width:100%"><option value="">Select TL</option></select></div></div>
-      <div class="r2"><div class="fi"><label>Weekly Capacity (Days)</label><input type="number" id="ms-cp" value="6" min="1" max="6"></div><div class="fi"><label>Status *</label><select id="ms-st" class="dd" style="width:100%"><option>Active</option><option>Inactive</option></select></div></div>
-      <div class="errmsg" id="ms-err">Please fill all required fields.</div>
+    <div class="modal-header">
+      <h3 id="staff-modal-title">Add New Staff</h3>
+      <button class="modal-close" onclick="closeModal('add-staff-modal')">✕</button>
     </div>
-    <div class="mf"><button class="btn bg" data-close="ov-staff">Cancel</button><button class="btn bn" id="btn-save-staff">Save Staff</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-staff-index" value="-1">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Full Name *</label>
+          <input type="text" id="s-name" placeholder="e.g. Anita Sharma">
+        </div>
+        <div class="form-group">
+          <label>Gender *</label>
+          <select id="s-gender">
+            <option value="">Select</option>
+            <option>Male</option>
+            <option>Female</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Experience Level *</label>
+          <select id="s-level">
+            <option value="">Select level</option>
+            <option>Article Trainee</option>
+            <option>Junior Associate</option>
+            <option>Senior Associate</option>
+            <option>Assistant Manager</option>
+            <option>Chartered Accountant</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Travel Willing *</label>
+          <select id="s-travel">
+            <option value="">Select</option>
+            <option>Yes</option>
+            <option>No</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Firm Email *</label>
+        <input type="email" id="s-email" placeholder="name@ycrjca.com">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="text" id="s-phone" placeholder="Optional">
+        </div>
+        <div class="form-group">
+          <label>Primary TL *</label>
+          <select id="s-tl">
+            <option value="">Select TL</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Weekly Capacity (Days)</label>
+          <input type="number" id="s-capacity" value="6" min="1" max="6">
+        </div>
+        <div class="form-group">
+          <label>Status *</label>
+          <select id="s-status">
+            <option>Active</option>
+            <option>Inactive</option>
+          </select>
+        </div>
+      </div>
+      <div id="staff-form-error" class="error-msg" style="display:none; margin-top:4px;">
+        Please fill all required fields marked with *.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('add-staff-modal')">Cancel</button>
+      <button class="btn btn-navy" onclick="saveStaff()">Save Staff</button>
+    </div>
   </div>
 </div>
 
-<div class="ov" id="ov-tl">
+<!-- ADD TL MODAL -->
+<div class="modal-overlay" id="add-tl-modal">
   <div class="modal">
-    <div class="mh"><h3 id="mt-title">Add TL</h3><button class="mx" data-close="ov-tl">&#10005;</button></div>
-    <div class="mb">
-      <input type="hidden" id="mt-idx" value="-1">
-      <div class="r2"><div class="fi"><label>Full Name *</label><input type="text" id="mt-nm" placeholder="e.g. Rahul Kumar"></div><div class="fi"><label>Initials *</label><input type="text" id="mt-in" placeholder="e.g. RK" maxlength="3"></div></div>
-      <div class="fi"><label>Firm Email *</label><input type="email" id="mt-em" placeholder="name@ycrjca.com"></div>
-      <div class="r2"><div class="fi"><label>Phone</label><input type="text" id="mt-ph" placeholder="Optional"></div><div class="fi"><label>Status *</label><select id="mt-st" class="dd" style="width:100%"><option>Active</option><option>Inactive</option></select></div></div>
-      <div class="errmsg" id="mt-err">Please fill all required fields.</div>
+    <div class="modal-header">
+      <h3 id="tl-modal-title">Add New Team Leader</h3>
+      <button class="modal-close" onclick="closeModal('add-tl-modal')">✕</button>
     </div>
-    <div class="mf"><button class="btn bg" data-close="ov-tl">Cancel</button><button class="btn bn" id="btn-save-tl">Save TL</button></div>
+    <div class="modal-body">
+      <input type="hidden" id="edit-tl-index" value="-1">
+      <div class="form-row">
+        <div class="form-group">
+          <label>Full Name *</label>
+          <input type="text" id="t-name" placeholder="e.g. Rahul Kumar">
+        </div>
+        <div class="form-group">
+          <label>Initials *</label>
+          <input type="text" id="t-initials" placeholder="e.g. RK" maxlength="3">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Firm Email *</label>
+        <input type="email" id="t-email" placeholder="name@ycrjca.com">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Phone</label>
+          <input type="text" id="t-phone" placeholder="Optional">
+        </div>
+        <div class="form-group">
+          <label>Status *</label>
+          <select id="t-status">
+            <option>Active</option>
+            <option>Inactive</option>
+          </select>
+        </div>
+      </div>
+      <div id="tl-form-error" class="error-msg" style="display:none; margin-top:4px;">
+        Please fill all required fields marked with *.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('add-tl-modal')">Cancel</button>
+      <button class="btn btn-navy" onclick="saveTL()">Save TL</button>
+    </div>
   </div>
 </div>
 
-<div class="ov" id="ov-pop">
-  <div class="modal" style="max-width:460px">
-    <div class="mh"><h3 id="pop-t">Notify?</h3></div>
-    <div class="mb" id="pop-b"></div>
-    <div class="mf"><button class="btn bg" id="pop-skip">Skip for Now</button><button class="btn bn" id="pop-ok">Send</button></div>
-  </div>
-</div>
-
-<div class="ov" id="ov-det">
-  <div class="modal" style="max-width:500px">
-    <div class="mh"><h3>Assignment Details</h3><button class="mx" data-close="ov-det">&#10005;</button></div>
-    <div class="mb" id="det-body"></div>
-    <div class="mf" id="det-foot"></div>
-  </div>
-</div>
-
+<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
-var CREDS={tl:{u:'allocation',p:'test123'},ad:{u:'admin',p:'admin123'}};
-var WHO=null,TLNAME=null;
-var today=new Date(),ty=today.getFullYear(),tm=today.getMonth();
-function zp(n){return n<10?'0'+n:''+n;}
-function ym(y,m,d){return y+'-'+zp(m+1)+'-'+zp(d);}
+// ══════════════════════════════════════
+// CONFIG — Test credentials
+// ══════════════════════════════════════
+const CREDS = {
+  tl: { username: 'allocation', password: 'test123' },
+  admin: { username: 'admin', password: 'admin123' }
+};
 
-var STAFF=[
-  {n:'Anita Sharma',   g:'Female',lv:'Senior Associate',   em:'anita@ycrjca.com',  ph:'9876543210',tr:'Yes',cp:6,tl:'Rahul K', st:'Active'},
-  {n:'Rohan Mehta',    g:'Male',  lv:'Junior Associate',    em:'rohan@ycrjca.com',  ph:'9876543211',tr:'No', cp:6,tl:'Priya S', st:'Active'},
-  {n:'Kavya Nair',     g:'Female',lv:'Article Trainee',     em:'kavya@ycrjca.com',  ph:'9876543212',tr:'Yes',cp:6,tl:'Amit M',  st:'Active'},
-  {n:'Suresh Pillai',  g:'Male',  lv:'Chartered Accountant',em:'suresh@ycrjca.com', ph:'',          tr:'Yes',cp:6,tl:'Rahul K', st:'Active'},
-  {n:'Meena Iyer',     g:'Female',lv:'Assistant Manager',   em:'meena@ycrjca.com',  ph:'9876543214',tr:'No', cp:5,tl:'Sunita R',st:'Inactive'},
-  {n:'Arjun Verma',    g:'Male',  lv:'Junior Associate',    em:'arjun@ycrjca.com',  ph:'9876543215',tr:'Yes',cp:6,tl:'Priya S', st:'Active'},
-  {n:'Sneha Kulkarni', g:'Female',lv:'Junior Associate',    em:'sneha@ycrjca.com',  ph:'9876543216',tr:'Yes',cp:6,tl:'Amit M',  st:'Active'},
-  {n:'Vikram Rao',     g:'Male',  lv:'Senior Associate',    em:'vikram@ycrjca.com', ph:'9876543217',tr:'No', cp:6,tl:'Sunita R',st:'Active'},
-  {n:'Pooja Desai',    g:'Female',lv:'Article Trainee',     em:'pooja@ycrjca.com',  ph:'9876543218',tr:'No', cp:6,tl:'Rahul K', st:'Active'},
-  {n:'Kiran Bhat',     g:'Male',  lv:'Article Trainee',     em:'kiran@ycrjca.com',  ph:'9876543219',tr:'Yes',cp:6,tl:'Priya S', st:'Active'},
-  {n:'Divya Menon',    g:'Female',lv:'Assistant Manager',   em:'divya@ycrjca.com',  ph:'9876543220',tr:'Yes',cp:6,tl:'Amit M',  st:'Active'},
-  {n:'Rahul Joshi',    g:'Male',  lv:'Chartered Accountant',em:'rahulj@ycrjca.com', ph:'9876543221',tr:'No', cp:6,tl:'Sunita R',st:'Active'},
-  {n:'Priya Nambiar',  g:'Female',lv:'Senior Associate',    em:'priyan@ycrjca.com', ph:'9876543222',tr:'Yes',cp:6,tl:'Deepak V',st:'Active'},
-  {n:'Arun Kumar',     g:'Male',  lv:'Junior Associate',    em:'arun@ycrjca.com',   ph:'9876543223',tr:'Yes',cp:6,tl:'Rahul K', st:'Active'},
-  {n:'Lakshmi Rao',    g:'Female',lv:'Article Trainee',     em:'lakshmi@ycrjca.com',ph:'9876543224',tr:'No', cp:6,tl:'Priya S', st:'Active'}
+// ══════════════════════════════════════
+// STATE
+// ══════════════════════════════════════
+let currentUser = null; // 'tl' or 'admin'
+let currentTL = null;
+
+// Sample data — will be replaced by Google Sheets data
+let staffData = [
+  { name:'Anita Sharma', gender:'Female', level:'Senior Associate', email:'anita@ycrjca.com', phone:'9876543210', travel:'Yes', capacity:6, hours:48, primaryTL:'Rahul K', status:'Active' },
+  { name:'Rohan Mehta', gender:'Male', level:'Junior Associate', email:'rohan@ycrjca.com', phone:'9876543211', travel:'No', capacity:6, hours:48, primaryTL:'Priya S', status:'Active' },
+  { name:'Kavya Nair', gender:'Female', level:'Article Trainee', email:'kavya@ycrjca.com', phone:'9876543212', travel:'Yes', capacity:6, hours:48, primaryTL:'Amit M', status:'Active' },
+  { name:'Suresh Pillai', gender:'Male', level:'Chartered Accountant', email:'suresh@ycrjca.com', phone:'', travel:'Yes', capacity:6, hours:48, primaryTL:'Rahul K', status:'Active' },
+  { name:'Meena Iyer', gender:'Female', level:'Assistant Manager', email:'meena@ycrjca.com', phone:'9876543214', travel:'No', capacity:5, hours:40, primaryTL:'Sunita R', status:'Inactive' },
 ];
 
-var TLS=[
-  {n:'Rahul K', i:'RK',em:'rahulk@ycrjca.com', ph:'9876540001',st:'Active'},
-  {n:'Priya S', i:'PS',em:'priyas@ycrjca.com', ph:'9876540002',st:'Active'},
-  {n:'Amit M',  i:'AM',em:'amitm@ycrjca.com',  ph:'9876540003',st:'Active'},
-  {n:'Sunita R',i:'SR',em:'sunitar@ycrjca.com',ph:'9876540004',st:'Active'},
-  {n:'Deepak V',i:'DV',em:'deepakv@ycrjca.com',ph:'9876540005',st:'Inactive'}
+let tlData = [
+  { name:'Rahul K', initials:'RK', email:'rahulk@ycrjca.com', phone:'9876540001', status:'Active' },
+  { name:'Priya S', initials:'PS', email:'priyas@ycrjca.com', phone:'9876540002', status:'Active' },
+  { name:'Amit M', initials:'AM', email:'amitm@ycrjca.com', phone:'9876540003', status:'Active' },
+  { name:'Sunita R', initials:'SR', email:'sunitar@ycrjca.com', phone:'9876540004', status:'Active' },
+  { name:'Deepak V', initials:'DV', email:'deepakv@ycrjca.com', phone:'9876540005', status:'Inactive' },
 ];
 
-var LOG=[
-  {id:'YCRJ-2024-001',cl:'ABC Ltd',       ds:'Statutory Audit FY 2024-25',   tl:'Rahul K', os:ym(ty,tm,1), oe:ym(ty,tm,20),tr:'Yes',nt:'Carry audit papers',tlHrs:0,
-   team:[{n:'Anita Sharma',lv:'Senior Associate',ss:ym(ty,tm,1),se:ym(ty,tm,20),dy:16,ptl:'Rahul K'},
-         {n:'Rohan Mehta', lv:'Junior Associate', ss:ym(ty,tm,1),se:ym(ty,tm,10),dy:8, ptl:'Priya S'},
-         {n:'Kavya Nair',  lv:'Article Trainee',  ss:ym(ty,tm,1),se:ym(ty,tm,20),dy:16,ptl:'Amit M'},
-         {n:'Arjun Verma', lv:'Junior Associate', ss:ym(ty,tm,11),se:ym(ty,tm,20),dy:8,ptl:'Priya S'}],st:'Active'},
-  {id:'YCRJ-2024-002',cl:'XYZ Ltd',       ds:'GST Filing Q2',                tl:'Priya S', os:ym(ty,tm,5), oe:ym(ty,tm,15),tr:'No', nt:'',tlHrs:0,
-   team:[{n:'Sneha Kulkarni',lv:'Junior Associate',ss:ym(ty,tm,5),se:ym(ty,tm,15),dy:9,ptl:'Amit M'},
-         {n:'Kiran Bhat',   lv:'Article Trainee', ss:ym(ty,tm,5),se:ym(ty,tm,15),dy:9,ptl:'Priya S'}],st:'Active'},
-  {id:'YCRJ-2024-003',cl:'PQR Ltd',       ds:'Tax Audit AY 2024-25',         tl:'Amit M',  os:ym(ty,tm,10),oe:ym(ty,tm,25),tr:'Yes',nt:'Client in Pune',tlHrs:0,
-   team:[{n:'Vikram Rao',  lv:'Senior Associate', ss:ym(ty,tm,10),se:ym(ty,tm,25),dy:12,ptl:'Sunita R'},
-         {n:'Divya Menon', lv:'Assistant Manager',ss:ym(ty,tm,10),se:ym(ty,tm,25),dy:12,ptl:'Amit M'},
-         {n:'Lakshmi Rao', lv:'Article Trainee',  ss:ym(ty,tm,10),se:ym(ty,tm,20),dy:9, ptl:'Priya S'}],st:'Notification Pending'},
-  {id:'YCRJ-2024-004',cl:'DEF Ltd',       ds:'ROC Filing Annual Returns',    tl:'Rahul K', os:ym(ty,tm,1), oe:ym(ty,tm,8), tr:'No', nt:'',tlHrs:12,
-   team:[{n:'Pooja Desai', lv:'Article Trainee', ss:ym(ty,tm,1),se:ym(ty,tm,8),dy:6,ptl:'Rahul K'},
-         {n:'Arun Kumar',  lv:'Junior Associate',ss:ym(ty,tm,1),se:ym(ty,tm,8),dy:6,ptl:'Rahul K'}],st:'Completed'},
-  {id:'YCRJ-2024-005',cl:'MNO Ltd',       ds:'Management Advisory',          tl:'Sunita R',os:ym(ty,tm,15),oe:ym(ty,tm,28),tr:'No', nt:'',tlHrs:0,
-   team:[{n:'Rahul Joshi', lv:'Chartered Accountant',ss:ym(ty,tm,15),se:ym(ty,tm,28),dy:11,ptl:'Sunita R'},
-         {n:'Priya Nambiar',lv:'Senior Associate',   ss:ym(ty,tm,15),se:ym(ty,tm,28),dy:11,ptl:'Deepak V'}],st:'Active'},
-  {id:'YCRJ-2024-006',cl:'GHI Ltd',       ds:'Internal Audit',               tl:'Deepak V',os:ym(ty,tm,1), oe:ym(ty,tm,5), tr:'No', nt:'',tlHrs:0,
-   team:[{n:'Suresh Pillai',lv:'Chartered Accountant',ss:ym(ty,tm,1),se:ym(ty,tm,5),dy:5,ptl:'Rahul K'}],st:'Overdue'}
-];
+// ══════════════════════════════════════
+// LOGIN
+// ══════════════════════════════════════
+let activeTab = 'tl';
 
-var ASGN_CTR=7;
-var LEVELS=['Article Trainee','Junior Associate','Senior Associate','Assistant Manager','Chartered Accountant'];
-var LSHORT={'Article Trainee':'AT','Junior Associate':'JA','Senior Associate':'SA','Assistant Manager':'AM','Chartered Accountant':'CA'};
-var LBADGE={'Article Trainee':'b-at','Junior Associate':'b-ja','Senior Associate':'b-sa','Assistant Manager':'b-am','Chartered Accountant':'b-ca'};
-var CA={id:'',cl:'',ds:'',sd:'',ed:'',dy:0,hr:0,tr:'',td:'',nt:'',tl:'',gd:'',req:{},pk:{}};
-var calY=ty,calM=tm,calView='client',mpickY=ty;
-var MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
-var CURRENT_DET=null;
+function switchTab(tab) {
+  activeTab = tab;
+  document.querySelectorAll('.login-tab').forEach((t,i) => t.classList.toggle('active', (i===0&&tab==='tl')||(i===1&&tab==='admin')));
+  document.getElementById('tl-form').style.display = tab==='tl' ? 'block' : 'none';
+  document.getElementById('admin-form').style.display = tab==='admin' ? 'block' : 'none';
+}
 
-function el(id){return document.getElementById(id);}
-function fmtD(d){if(!d)return '--';return new Date(d+'T00:00:00').toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});}
-function workDays(s,e){if(!s||!e)return 0;var d=new Date(s),ed=new Date(e),c=0;while(d<=ed){if(d.getDay()!==0)c++;d.setDate(d.getDate()+1);}return c;}
-function lvBadge(l){return '<span class="b '+LBADGE[l]+'">'+(LSHORT[l]||l)+'</span>';}
-function stBadge(s){var m={'Active':'b-act','Completed':'b-comp','Notification Pending':'b-pend','Overdue':'b-over','Inactive':'b-ina'};return '<span class="b '+(m[s]||'b-ina')+'">'+s+'</span>';}
-function showToast(msg){var t=el('toast');t.textContent=msg;t.style.display='block';setTimeout(function(){t.style.display='none';},3000);}
-function openOv(id){el(id).className='ov on';}
-function closeOv(id){el(id).className='ov';}
+function loginTL() {
+  const u = document.getElementById('tl-username').value.trim();
+  const p = document.getElementById('tl-password').value;
+  if (u===CREDS.tl.username && p===CREDS.tl.password) {
+    currentUser = 'tl';
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('tl-screen').style.display = 'flex';
+  } else {
+    document.getElementById('tl-error').style.display = 'block';
+  }
+}
 
-document.addEventListener('DOMContentLoaded',function(){
-  el('t-tl').addEventListener('click',function(){setTab('tl');});
-  el('t-ad').addEventListener('click',function(){setTab('ad');});
-  el('btn-tl-login').addEventListener('click',doLoginTL);
-  el('btn-ad-login').addEventListener('click',doLoginAdmin);
-  el('btn-pick').addEventListener('click',doPickTL);
-  el('btn-logout').addEventListener('click',doLogout);
-  document.querySelectorAll('.nb').forEach(function(b){b.addEventListener('click',function(){navTo(this.getAttribute('data-pg'),this);});});
-  el('mob-btn').addEventListener('click',function(){el('sidebar').classList.toggle('open');});
-  document.querySelectorAll('[data-close]').forEach(function(b){b.addEventListener('click',function(){closeOv(this.getAttribute('data-close'));});});
-  document.querySelectorAll('.ov').forEach(function(o){o.addEventListener('click',function(e){if(e.target===this)closeOv(this.id);});});
-  el('btn-add-staff').addEventListener('click',function(){openStaffModal(-1);});
-  el('btn-save-staff').addEventListener('click',saveStaff);
-  el('s-q').addEventListener('input',filterStaff);
-  el('s-flv').addEventListener('change',filterStaff);
-  el('s-fst').addEventListener('change',filterStaff);
-  el('s-fgd').addEventListener('change',filterStaff);
-  el('btn-add-tl').addEventListener('click',function(){openTLModal(-1);});
-  el('btn-save-tl').addEventListener('click',saveTL);
-  el('tl-q').addEventListener('input',filterTL);
-  el('tl-fst').addEventListener('change',filterTL);
-  el('af-tl').addEventListener('change',function(){CA.tl=this.value;afCheck();});
-  el('af-cl').addEventListener('input',function(){CA.cl=this.value.trim();afUpdateSummary();});
-  el('af-ds').addEventListener('input',afCheck);
-  el('af-sd').addEventListener('change',function(){afCalc();afRenderLevels();afUpdateSummary();});
-  el('af-ed').addEventListener('change',function(){afCalc();afRenderLevels();afUpdateSummary();});
-  el('af-tr').addEventListener('change',function(){el('af-tdw').className=this.value==='Yes'?'fi':'fi hide';CA.tr=this.value;afUpdateSummary();});
-  el('af-nt').addEventListener('input',function(){el('af-cc').textContent=this.value.length;});
-  el('af-gd').addEventListener('change',function(){afRenderLevels();});
-  el('af-go').addEventListener('click',afProceed);
-  el('fp-back').addEventListener('click',function(){el('af-sec').className='';el('fp-sec').className='hide';});
-  el('fp-confirm-btn').addEventListener('click',afConfirm);
-  el('cal-prev').addEventListener('click',function(){calM--;if(calM<0){calM=11;calY--;}renderCal();});
-  el('cal-next').addEventListener('click',function(){calM++;if(calM>11){calM=0;calY++;}renderCal();});
-  el('cal-month-btn').addEventListener('click',function(e){e.stopPropagation();var mp=el('cal-mpick');mp.className=mp.className==='mpick hide'?'mpick':'mpick hide';mpickY=calY;renderMpick();});
-  document.addEventListener('click',function(){var mp=el('cal-mpick');if(mp)mp.className='mpick hide';});
-  el('yr-prev').addEventListener('click',function(e){e.stopPropagation();mpickY--;renderMpick();});
-  el('yr-next').addEventListener('click',function(e){e.stopPropagation();mpickY++;renderMpick();});
-  document.querySelectorAll('.vtab').forEach(function(t){t.addEventListener('click',function(){document.querySelectorAll('.vtab').forEach(function(x){x.className='vtab';});this.className='vtab on';calView=this.getAttribute('data-view');renderCal();});});
-  el('cal-ftl').addEventListener('change',renderCal);
-  el('cal-flv').addEventListener('change',renderCal);
-  el('cal-fcl').addEventListener('change',renderCal);
-  el('lg-search').addEventListener('click',renderLog);
-  el('adsh-filter').addEventListener('click',renderAdminDash);
-  var d1=new Date();d1.setDate(1);
-  var d2=new Date(d1.getFullYear(),d1.getMonth()+1,0);
-  el('lg-from').value=d1.toISOString().split('T')[0];
-  el('lg-to').value=d2.toISOString().split('T')[0];
-  el('ad-from').value=d1.toISOString().split('T')[0];
-  el('ad-to').value=d2.toISOString().split('T')[0];
-  document.addEventListener('keydown',function(e){if(e.key==='Enter'){if(el('sc-login').classList.contains('act')){if(el('f-tl').classList.contains('on'))doLoginTL();else doLoginAdmin();}}});
+function loginAdmin() {
+  const u = document.getElementById('admin-username').value.trim();
+  const p = document.getElementById('admin-password').value;
+  if (u===CREDS.admin.username && p===CREDS.admin.password) {
+    currentUser = 'admin';
+    currentTL = 'Admin';
+    document.getElementById('login-screen').style.display = 'none';
+    initApp();
+  } else {
+    document.getElementById('admin-error').style.display = 'block';
+  }
+}
+
+function selectTL() {
+  const sel = document.getElementById('tl-select').value;
+  if (!sel) { document.getElementById('tl-select-error').style.display='block'; return; }
+  currentTL = sel;
+  document.getElementById('tl-screen').style.display = 'none';
+  initApp();
+}
+
+// ══════════════════════════════════════
+// INIT APP
+// ══════════════════════════════════════
+function initApp() {
+  const app = document.getElementById('app');
+  app.style.display = 'block';
+
+  // User info in sidebar
+  const name = currentUser==='admin' ? 'Admin' : currentTL;
+  const role = currentUser==='admin' ? 'Administrator' : 'Team Leader';
+  document.getElementById('user-name').textContent = name;
+  document.getElementById('user-role').textContent = role;
+  document.getElementById('user-avatar').textContent = name.charAt(0).toUpperCase();
+
+  // Welcome message
+  document.getElementById('welcome-msg').textContent = `Welcome back, ${name}!`;
+
+  // Date
+  const now = new Date();
+  document.getElementById('dashboard-date').textContent = now.toLocaleDateString('en-IN', {weekday:'long', year:'numeric', month:'long', day:'numeric'});
+
+  // Show admin nav items
+  if (currentUser==='admin') {
+    document.querySelectorAll('.admin-only').forEach(el => el.style.display='flex');
+    document.querySelectorAll('.nav-item.admin-only').forEach(el => el.style.display='flex');
+    document.querySelectorAll('.nav-section-title.admin-only').forEach(el => el.style.display='block');
+  }
+
+  // Render tables
+  renderStaffTable(staffData);
+  renderTLTable(tlData);
+  populateTLDropdowns();
+}
+
+// ══════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  event.currentTarget.classList.add('active');
+  // Close sidebar on mobile
+  document.getElementById('sidebar').classList.remove('open');
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+}
+
+function logout() {
+  currentUser = null; currentTL = null;
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('tl-screen').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('tl-password').value = '';
+  document.getElementById('admin-password').value = '';
+  document.getElementById('tl-error').style.display = 'none';
+  document.getElementById('admin-error').style.display = 'none';
+  switchTab('tl');
+}
+
+// ══════════════════════════════════════
+// STAFF MASTER
+// ══════════════════════════════════════
+function levelBadge(level) {
+  const map = {
+    'Article Trainee':'badge-at', 'Junior Associate':'badge-ja',
+    'Senior Associate':'badge-sa', 'Assistant Manager':'badge-am',
+    'Chartered Accountant':'badge-ca'
+  };
+  const short = {'Article Trainee':'AT','Junior Associate':'JA','Senior Associate':'SA','Assistant Manager':'AM','Chartered Accountant':'CA'};
+  return `<span class="badge ${map[level]||''}">${short[level]||level}</span>`;
+}
+
+function renderStaffTable(data) {
+  const tbody = document.getElementById('staff-tbody');
+  if (!data.length) {
+    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;color:var(--text-muted);padding:40px;">No staff found.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = data.map((s,i) => `
+    <tr>
+      <td><strong>${s.name}</strong></td>
+      <td>${s.gender}</td>
+      <td>${levelBadge(s.level)}</td>
+      <td style="font-size:13px;color:var(--text-muted);">${s.email}</td>
+      <td>${s.primaryTL}</td>
+      <td><span class="badge ${s.travel==='Yes'?'badge-yes':'badge-no'}">${s.travel}</span></td>
+      <td style="font-size:13px;">${s.capacity}d / ${s.hours}h</td>
+      <td><span class="badge ${s.status==='Active'?'badge-active':'badge-inactive'}">${s.status}</span></td>
+      <td>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-ghost" style="padding:6px 10px;font-size:12px;" onclick="editStaff(${staffData.indexOf(s)})">Edit</button>
+          <button class="btn btn-ghost" style="padding:6px 10px;font-size:12px;" onclick="toggleStaffStatus(${staffData.indexOf(s)})">${s.status==='Active'?'Deactivate':'Activate'}</button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function filterStaff() {
+  const search = document.getElementById('staff-search').value.toLowerCase();
+  const level = document.getElementById('filter-level').value;
+  const status = document.getElementById('filter-status').value;
+  const gender = document.getElementById('filter-gender').value;
+  const filtered = staffData.filter(s =>
+    (!search || s.name.toLowerCase().includes(search) || s.email.toLowerCase().includes(search)) &&
+    (!level || s.level===level) &&
+    (!status || s.status===status) &&
+    (!gender || s.gender===gender)
+  );
+  renderStaffTable(filtered);
+}
+
+function openAddStaffModal() {
+  document.getElementById('staff-modal-title').textContent = 'Add New Staff';
+  document.getElementById('edit-staff-index').value = -1;
+  ['s-name','s-email','s-phone'].forEach(id => document.getElementById(id).value='');
+  ['s-gender','s-level','s-travel','s-tl'].forEach(id => document.getElementById(id).value='');
+  document.getElementById('s-capacity').value = 6;
+  document.getElementById('s-status').value = 'Active';
+  document.getElementById('staff-form-error').style.display='none';
+  document.getElementById('add-staff-modal').classList.add('open');
+}
+
+function editStaff(index) {
+  const s = staffData[index];
+  document.getElementById('staff-modal-title').textContent = 'Edit Staff';
+  document.getElementById('edit-staff-index').value = index;
+  document.getElementById('s-name').value = s.name;
+  document.getElementById('s-gender').value = s.gender;
+  document.getElementById('s-level').value = s.level;
+  document.getElementById('s-email').value = s.email;
+  document.getElementById('s-phone').value = s.phone;
+  document.getElementById('s-travel').value = s.travel;
+  document.getElementById('s-capacity').value = s.capacity;
+  document.getElementById('s-tl').value = s.primaryTL;
+  document.getElementById('s-status').value = s.status;
+  document.getElementById('staff-form-error').style.display='none';
+  document.getElementById('add-staff-modal').classList.add('open');
+}
+
+function saveStaff() {
+  const name=document.getElementById('s-name').value.trim();
+  const gender=document.getElementById('s-gender').value;
+  const level=document.getElementById('s-level').value;
+  const email=document.getElementById('s-email').value.trim();
+  const phone=document.getElementById('s-phone').value.trim();
+  const travel=document.getElementById('s-travel').value;
+  const capacity=parseInt(document.getElementById('s-capacity').value)||6;
+  const tl=document.getElementById('s-tl').value;
+  const status=document.getElementById('s-status').value;
+
+  if (!name||!gender||!level||!email||!travel||!tl) {
+    document.getElementById('staff-form-error').style.display='block'; return;
+  }
+  document.getElementById('staff-form-error').style.display='none';
+
+  const staff = {name,gender,level,email,phone,travel,capacity,hours:capacity*8,primaryTL:tl,status};
+  const idx = parseInt(document.getElementById('edit-staff-index').value);
+
+  if (idx===-1) { staffData.push(staff); showToast('Staff added successfully!','success'); }
+  else { staffData[idx]=staff; showToast('Staff updated successfully!','success'); }
+
+  closeModal('add-staff-modal');
+  renderStaffTable(staffData);
+  populateTLDropdowns();
+}
+
+function toggleStaffStatus(index) {
+  const s = staffData[index];
+  const newStatus = s.status==='Active' ? 'Inactive' : 'Active';
+  if (newStatus==='Inactive') {
+    if (!confirm(`Are you sure you want to deactivate ${s.name}? Please ensure they have no active assignments.`)) return;
+  }
+  staffData[index].status = newStatus;
+  renderStaffTable(staffData);
+  showToast(`${s.name} marked as ${newStatus}.`, 'success');
+}
+
+// ══════════════════════════════════════
+// TL MASTER
+// ══════════════════════════════════════
+function renderTLTable(data) {
+  const tbody = document.getElementById('tl-tbody');
+  if (!data.length) {
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:40px;">No TLs found.</td></tr>`;
+    return;
+  }
+  tbody.innerHTML = data.map((t,i) => {
+    const teamSize = staffData.filter(s => s.primaryTL===t.name && s.status==='Active').length;
+    return `
+    <tr>
+      <td><strong>${t.name}</strong></td>
+      <td><span style="font-weight:700;color:var(--navy);background:var(--cream);padding:3px 10px;border-radius:6px;font-size:13px;">${t.initials}</span></td>
+      <td style="font-size:13px;color:var(--text-muted);">${t.email}</td>
+      <td style="font-size:13px;">${t.phone||'—'}</td>
+      <td><strong>${teamSize}</strong> staff</td>
+      <td><span class="badge ${t.status==='Active'?'badge-active':'badge-inactive'}">${t.status}</span></td>
+      <td>
+        <div style="display:flex;gap:6px;">
+          <button class="btn btn-ghost" style="padding:6px 10px;font-size:12px;" onclick="editTL(${tlData.indexOf(t)})">Edit</button>
+          <button class="btn btn-ghost" style="padding:6px 10px;font-size:12px;" onclick="toggleTLStatus(${tlData.indexOf(t)})">${t.status==='Active'?'Deactivate':'Activate'}</button>
+        </div>
+      </td>
+    </tr>`
+  }).join('');
+}
+
+function filterTLs() {
+  const search = document.getElementById('tl-search').value.toLowerCase();
+  const status = document.getElementById('filter-tl-status').value;
+  const filtered = tlData.filter(t =>
+    (!search || t.name.toLowerCase().includes(search)) &&
+    (!status || t.status===status)
+  );
+  renderTLTable(filtered);
+}
+
+function openAddTLModal() {
+  document.getElementById('tl-modal-title').textContent = 'Add New Team Leader';
+  document.getElementById('edit-tl-index').value = -1;
+  ['t-name','t-initials','t-email','t-phone'].forEach(id => document.getElementById(id).value='');
+  document.getElementById('t-status').value = 'Active';
+  document.getElementById('tl-form-error').style.display='none';
+  document.getElementById('add-tl-modal').classList.add('open');
+}
+
+function editTL(index) {
+  const t = tlData[index];
+  document.getElementById('tl-modal-title').textContent = 'Edit Team Leader';
+  document.getElementById('edit-tl-index').value = index;
+  document.getElementById('t-name').value = t.name;
+  document.getElementById('t-initials').value = t.initials;
+  document.getElementById('t-email').value = t.email;
+  document.getElementById('t-phone').value = t.phone;
+  document.getElementById('t-status').value = t.status;
+  document.getElementById('tl-form-error').style.display='none';
+  document.getElementById('add-tl-modal').classList.add('open');
+}
+
+function saveTL() {
+  const name=document.getElementById('t-name').value.trim();
+  const initials=document.getElementById('t-initials').value.trim().toUpperCase();
+  const email=document.getElementById('t-email').value.trim();
+  const phone=document.getElementById('t-phone').value.trim();
+  const status=document.getElementById('t-status').value;
+
+  if (!name||!initials||!email) {
+    document.getElementById('tl-form-error').style.display='block'; return;
+  }
+  document.getElementById('tl-form-error').style.display='none';
+
+  const tl = {name,initials,email,phone,status};
+  const idx = parseInt(document.getElementById('edit-tl-index').value);
+
+  if (idx===-1) { tlData.push(tl); showToast('TL added successfully!','success'); }
+  else { tlData[idx]=tl; showToast('TL updated successfully!','success'); }
+
+  closeModal('add-tl-modal');
+  renderTLTable(tlData);
+  populateTLDropdowns();
+}
+
+function toggleTLStatus(index) {
+  const t = tlData[index];
+  if (!confirm(`Are you sure you want to ${t.status==='Active'?'deactivate':'activate'} ${t.name}?`)) return;
+  tlData[index].status = t.status==='Active' ? 'Inactive' : 'Active';
+  renderTLTable(tlData);
+  showToast(`${t.name} status updated.`, 'success');
+}
+
+// ══════════════════════════════════════
+// HELPERS
+// ══════════════════════════════════════
+function populateTLDropdowns() {
+  const activeTLs = tlData.filter(t=>t.status==='Active');
+  const sel = document.getElementById('s-tl');
+  const current = sel.value;
+  sel.innerHTML = '<option value="">Select TL</option>' +
+    activeTLs.map(t=>`<option value="${t.name}" ${t.name===current?'selected':''}>${t.name}</option>`).join('');
+
+  // Also update TL selection screen
+  const tlSel = document.getElementById('tl-select');
+  const currentSel = tlSel.value;
+  tlSel.innerHTML = '<option value="">— Choose your name —</option>' +
+    activeTLs.map(t=>`<option value="${t.name}" ${t.name===currentSel?'selected':''}>${t.name}</option>`).join('');
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast ${type}`;
+  t.style.display = 'block';
+  setTimeout(()=>{ t.style.display='none'; }, 3000);
+}
+
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', function(e) {
+    if (e.target===this) this.classList.remove('open');
+  });
 });
 
-function setTab(t){
-  el('t-tl').className='ltab'+(t==='tl'?' on':'');
-  el('t-ad').className='ltab'+(t==='ad'?' on':'');
-  el('f-tl').className='lform'+(t==='tl'?' on':'');
-  el('f-ad').className='lform'+(t==='ad'?' on':'');
-}
-
-function doLoginTL(){
-  var u=el('tl-u').value.trim(),p=el('tl-p').value;
-  if(u===CREDS.tl.u&&p===CREDS.tl.p){WHO='tl';fillTLPick();el('sc-login').className='scr';el('sc-pick').className='scr act';}
-  else el('tl-err').style.display='block';
-}
-function doLoginAdmin(){
-  var u=el('ad-u').value.trim(),p=el('ad-p').value;
-  if(u===CREDS.ad.u&&p===CREDS.ad.p){WHO='admin';TLNAME='Admin';bootApp();}
-  else el('ad-err').style.display='block';
-}
-function fillTLPick(){
-  var s=el('tl-pick');s.innerHTML='<option value="">-- Choose your name --</option>';
-  TLS.filter(function(t){return t.st==='Active';}).forEach(function(t){var o=document.createElement('option');o.value=t.n;o.textContent=t.n;s.appendChild(o);});
-}
-function doPickTL(){
-  var v=el('tl-pick').value;
-  if(!v){el('pick-err').style.display='block';return;}
-  TLNAME=v;bootApp();
-}
-function doLogout(){
-  WHO=null;TLNAME=null;
-  el('tl-p').value='';el('ad-p').value='';
-  el('tl-err').style.display='none';el('ad-err').style.display='none';
-  setTab('tl');
-  el('sc-app').className='scr';el('sc-pick').className='scr';el('sc-login').className='scr act';
-}
-
-function bootApp(){
-  var name=WHO==='admin'?'Admin':TLNAME;
-  el('sb-av').textContent=name.charAt(0).toUpperCase();
-  el('sb-nm').textContent=name;
-  el('sb-rl').textContent=WHO==='admin'?'Administrator':'Team Leader';
-  el('pg-wlc').textContent='Welcome back, '+name+'!';
-  el('pg-dt').textContent=new Date().toLocaleDateString('en-IN',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-  if(WHO==='admin')document.querySelectorAll('.adm').forEach(function(x){x.style.display='flex';});
-  fillAllDropdowns();
-  renderStaff(STAFF);renderTL(TLS);
-  renderDashboard();renderCal();renderLog();renderTLDash();renderAdminDash();
-  el('sc-login').className='scr';el('sc-pick').className='scr';el('sc-app').className='scr act';
-  navTo('dash',document.querySelector('.nb'));
-}
-
-function fillAllDropdowns(){
-  var active=TLS.filter(function(t){return t.st==='Active';});
-  var ps=el('tl-pick');if(ps){ps.innerHTML='<option value="">-- Choose your name --</option>';active.forEach(function(t){var o=document.createElement('option');o.value=t.n;o.textContent=t.n;ps.appendChild(o);});}
-  var ms=el('ms-tl');ms.innerHTML='<option value="">Select TL</option>';active.forEach(function(t){var o=document.createElement('option');o.value=t.n;o.textContent=t.n;ms.appendChild(o);});
-  var at=el('af-tl');at.innerHTML='<option value="">-- Select TL --</option>';active.forEach(function(t){var o=document.createElement('option');o.value=t.n;o.textContent=t.n;if(WHO==='tl'&&t.n===TLNAME)o.selected=true;at.appendChild(o);});
-  if(WHO==='tl')CA.tl=TLNAME||'';
-  var ct=el('cal-ftl');ct.innerHTML='<option value="">All TLs</option>';active.forEach(function(t){var o=document.createElement('option');o.value=t.n;o.textContent=t.n;ct.appendChild(o);});
-  var cc=el('cal-fcl');cc.innerHTML='<option value="">All Clients</option>';var cls=[];LOG.forEach(function(a){if(cls.indexOf(a.cl)<0)cls.push(a.cl);});cls.forEach(function(c){var o=document.createElement('option');o.value=c;o.textContent=c;cc.appendChild(o);});
-  var clv=el('cal-flv');clv.innerHTML='<option value="">All Levels</option>';LEVELS.forEach(function(l){var o=document.createElement('option');o.value=l;o.textContent=l;clv.appendChild(o);});
-  var lt=el('lg-tl');lt.innerHTML='<option value="">All TLs</option>';active.forEach(function(t){var o=document.createElement('option');o.value=t.n;o.textContent=t.n;lt.appendChild(o);});
-  var adt=el('adsh-tl');adt.innerHTML='<option value="">All TLs</option>';active.forEach(function(t){var o=document.createElement('option');o.value=t.n;o.textContent=t.n;adt.appendChild(o);});
-}
-
-function navTo(pg,btn){
-  document.querySelectorAll('.pg').forEach(function(p){p.className='pg';});
-  document.querySelectorAll('.nb').forEach(function(b){b.className=b.className.replace(' on','');});
-  var p=el('pg-'+pg);if(p)p.className='pg on';
-  if(btn)btn.className=(btn.className.indexOf(' on')<0?btn.className+' on':btn.className);
-  if(pg==='asgn')afInit();
-  if(pg==='tldash')renderTLDash();
-  if(pg==='adash')renderAdminDash();
-  el('sidebar').classList.remove('open');
-}
-
-function renderDashboard(){
-  var active=LOG.filter(function(a){return a.st==='Active'||a.st==='Notification Pending';});
-  var stfAsgn=0;active.forEach(function(a){stfAsgn+=a.team.length;});
-  el('st-act').textContent=active.length;
-  el('st-stf').textContent=stfAsgn;
-  el('st-pnd').textContent=LOG.filter(function(a){return a.st==='Notification Pending';}).length;
-  el('st-ovr').textContent=LOG.filter(function(a){return a.st==='Overdue';}).length;
-  var h='';
-  LOG.slice().reverse().slice(0,6).forEach(function(a){
-    var ic=a.st==='Completed'?'&#9989;':a.st==='Overdue'?'&#128308;':a.st==='Notification Pending'?'&#128231;':'&#9679;';
-    h+='<div style="padding:10px 0;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">'+
-      '<div><span style="margin-right:8px">'+ic+'</span><b>'+a.cl+'</b> &mdash; '+a.ds+'</div>'+
-      '<div style="display:flex;align-items:center;gap:10px">'+stBadge(a.st)+'<span style="font-size:12px;color:var(--mu)">'+a.tl+'</span>'+
-      '<button class="btn bg" style="padding:4px 10px;font-size:12px" onclick="showDetail(\''+a.id+'\')">View</button></div></div>';
-  });
-  el('dash-recent').innerHTML=h||'<p style="color:var(--mu)">No assignments yet.</p>';
-}
-
-function showDetail(id){
-  var a=LOG.find(function(x){return x.id===id;});if(!a)return;
-  CURRENT_DET=id;
-  var h='<div style="background:var(--nv);color:var(--wh);border-radius:var(--rs);padding:16px 18px;margin-bottom:18px">'+
-    '<div style="font-size:12px;opacity:.6;margin-bottom:2px">'+a.id+'</div>'+
-    '<div style="font-family:\'DM Serif Display\',serif;font-size:20px">'+a.cl+'</div>'+
-    '<div style="font-size:14px;opacity:.8;margin-top:4px">'+a.ds+'</div></div>'+
-    '<div style="font-size:13px;line-height:2.2">'+
-    '<b>TL:</b> '+a.tl+' &nbsp;|&nbsp; <b>Travel:</b> '+a.tr+'<br>'+
-    '<b>Period:</b> '+fmtD(a.os)+' to '+fmtD(a.oe)+'<br>'+
-    '<b>Status:</b> '+stBadge(a.st)+
-    (a.tlHrs?'<br><b>TL Hours Spent:</b> '+a.tlHrs+' hrs':'')+
-    (a.nt?'<br><b>Notes:</b> '+a.nt:'')+
-    '</div>'+
-    '<div style="margin-top:18px"><div style="font-size:12px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Team ('+a.team.length+' members)</div>'+
-    a.team.map(function(m){return '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--bd)"><div><div style="font-weight:600">'+m.n+'</div><div style="font-size:12px;color:var(--mu)">'+fmtD(m.ss)+' to '+fmtD(m.se)+' &mdash; '+m.dy+' days</div></div>'+lvBadge(m.lv)+'</div>';}).join('')+
-    '</div>';
-  el('det-body').innerHTML=h;
-  var foot='<button class="btn bg" data-close="ov-det">Close</button>';
-  if(a.st!=='Completed'){
-    foot+='<button class="btn bg" id="det-ext">Extend Dates</button>';
-    if(a.st==='Notification Pending'){
-      foot+='<button class="btn bgr" id="det-notify">&#128231; Send Notifications</button>';
+// Enter key on login
+document.addEventListener('keydown', function(e) {
+  if (e.key==='Enter') {
+    if (document.getElementById('login-screen').style.display!=='none') {
+      if (activeTab==='tl') loginTL(); else loginAdmin();
     }
-    foot+='<button class="btn brd" id="det-done">Mark Complete</button>';
-  } else {
-    foot+='<button class="btn bo" id="det-reopen">&#9654; Reopen Assignment</button>';
   }
-  el('det-foot').innerHTML=foot;
-  var dc=el('det-done');if(dc)dc.addEventListener('click',markComplete);
-  var de=el('det-ext');if(de)de.addEventListener('click',extendDates);
-  var dn=el('det-notify');if(dn)dn.addEventListener('click',sendNotifications);
-  var dr=el('det-reopen');if(dr)dr.addEventListener('click',reopenAssignment);
-  document.querySelectorAll('[data-close]').forEach(function(b){b.addEventListener('click',function(){closeOv(this.getAttribute('data-close'));});});
-  openOv('ov-det');
-}
-
-function markComplete(){
-  var a=LOG.find(function(x){return x.id===CURRENT_DET;});if(!a)return;
-  var hrs=prompt('Enter TL hours spent on this assignment (for costing):','0');
-  if(hrs===null)return;
-  a.st='Completed';a.tlHrs=parseInt(hrs)||0;
-  closeOv('ov-det');showToast(a.id+' marked as Completed!');
-  refreshAll();
-}
-
-function reopenAssignment(){
-  var a=LOG.find(function(x){return x.id===CURRENT_DET;});if(!a)return;
-  if(!confirm('Reopen '+a.id+' - '+a.cl+'? This will make the assignment active again and staff will be blocked in the calendar.'))return;
-  a.st='Active';a.tlHrs=0;
-  closeOv('ov-det');showToast(a.id+' reopened successfully!');
-  refreshAll();
-}
-
-function extendDates(){
-  var a=LOG.find(function(x){return x.id===CURRENT_DET;});if(!a)return;
-  var newEnd=prompt('Enter new end date (YYYY-MM-DD):',a.oe);
-  if(!newEnd||newEnd<=a.oe){showToast('Invalid date. Must be after current end date.');return;}
-  var conflicts=[];
-  a.team.forEach(function(m){
-    LOG.forEach(function(other){
-      if(other.id===a.id)return;
-      other.team.forEach(function(om){
-        if(om.n===m.n&&other.st!=='Completed'&&!(newEnd<om.ss||a.oe>om.se)){
-          conflicts.push({staff:m.n,assignment:other.id,client:other.cl});
-        }
-      });
-    });
-  });
-  if(conflicts.length){
-    var msg='Extension Conflict Detected!\n\nConflicting staff:\n';
-    conflicts.forEach(function(c){msg+='\n- '+c.staff+' already assigned to '+c.client+' ('+c.assignment+')';});
-    msg+='\n\nOffice Manager has been notified. Proceed anyway?';
-    if(!confirm(msg))return;
-  }
-  a.oe=newEnd;
-  closeOv('ov-det');showToast(a.id+' extended to '+fmtD(newEnd)+'!');
-  refreshAll();
-}
-
-function sendNotifications(){
-  var a=LOG.find(function(x){return x.id===CURRENT_DET;});if(!a)return;
-  showPop('Send Notifications for '+a.id,
-    '<p style="color:var(--mu);font-size:14px;margin-bottom:14px">Send assignment details to the team for <b>'+a.cl+'</b>?</p>'+
-    a.team.map(function(m){return '<div style="padding:8px 0;border-bottom:1px solid var(--bd);font-size:14px"><b>'+m.n+'</b> '+lvBadge(m.lv)+'<div style="font-size:12px;color:var(--mu)">'+fmtD(m.ss)+' to '+fmtD(m.se)+' &mdash; '+m.dy+' days</div></div>';}).join(''),
-    'Send to All Staff','Cancel',
-    function(){
-      a.st='Active';
-      closeOv('ov-pop');closeOv('ov-det');
-      showToast('Notifications sent! '+a.id+' is now Active.');
-      refreshAll();
-    },
-    function(){closeOv('ov-pop');}
-  );
-}
-
-function refreshAll(){
-  renderDashboard();renderCal();renderLog();renderTLDash();renderAdminDash();fillAllDropdowns();
-}
-
-function renderMpick(){
-  el('mpick-yr-lbl').textContent=mpickY;
-  var h='';
-  MONTHS.forEach(function(m,i){
-    var isCur=mpickY===calY&&i===calM;
-    var isPast=mpickY<ty||(mpickY===ty&&i<tm);
-    h+='<button class="mpick-m'+(isCur?' cur':'')+(isPast?' past':'')+'" data-y="'+mpickY+'" data-m="'+i+'">'+m.substr(0,3)+'</button>';
-  });
-  el('mpick-grid').innerHTML=h;
-  el('mpick-grid').querySelectorAll('.mpick-m').forEach(function(b){
-    b.addEventListener('click',function(e){e.stopPropagation();calY=parseInt(this.getAttribute('data-y'));calM=parseInt(this.getAttribute('data-m'));el('cal-mpick').className='mpick hide';renderCal();});
-  });
-}
-
-function renderCal(){
-  el('cal-month-btn').textContent=MONTHS[calM]+' '+calY;
-  var ftl=el('cal-ftl').value,flv=el('cal-flv').value,fcl=el('cal-fcl').value;
-  var daysInMonth=new Date(calY,calM+1,0).getDate();
-  var wdays=[];for(var d=1;d<=daysInMonth;d++){if(new Date(calY,calM,d).getDay()!==0)wdays.push(d);}
-  var filtered=LOG.filter(function(a){return(!ftl||a.tl===ftl)&&(!fcl||a.cl===fcl);});
-  if(calView==='client')renderCalClient(filtered,wdays,flv);
-  else if(calView==='staff')renderCalStaff(filtered,wdays,flv,ftl);
-  else renderCalTL(filtered,wdays);
-}
-
-function cols(wdays){return 'grid-template-columns:180px repeat('+wdays.length+',1fr)';}
-
-function calHead(wdays){
-  var h='<div class="gantt-head" style="'+cols(wdays)+'"><div class="gcell name">Name</div>';
-  wdays.forEach(function(d){var isT=(calY===ty&&calM===tm&&d===today.getDate());h+='<div class="gcell" style="text-align:center;font-size:11px;'+(isT?'background:#fee2e2;color:#991b1b;font-weight:700;':'')+'">'+d+'</div>';});
-  return h+'</div>';
-}
-
-function barClass(a){return a.st==='Completed'?'done':a.st==='Overdue'?'over':'own';}
-
-function renderCalClient(data,wdays,flv){
-  var h='<div style="min-width:900px;">'+calHead(wdays);
-  if(!data.length){h+='<div style="padding:40px;text-align:center;color:var(--mu)">No assignments found.</div></div>';el('cal-body').innerHTML=h;return;}
-  data.forEach(function(a){
-    h+='<div class="gantt-row" style="'+cols(wdays)+'"><div class="gcell name" style="cursor:pointer" onclick="showDetail(\''+a.id+'\')"><div style="font-weight:700;font-size:13px">'+a.cl+'</div><div style="font-size:11px;color:var(--mu)">'+a.tl+'</div></div>';
-    var as=new Date(a.os),ae=new Date(a.oe);
-    wdays.forEach(function(d){var cd=new Date(calY,calM,d);var inR=cd>=as&&cd<=ae;h+='<div class="gcell" style="padding:0">'+(inR?'<div class="gbar '+barClass(a)+'" onclick="showDetail(\''+a.id+'\')" style="margin:12px 2px">'+a.cl.substring(0,10)+'</div>':'')+'</div>';});
-    h+='</div>';
-    var tf=flv?a.team.filter(function(m){return m.lv===flv;}):a.team;
-    tf.forEach(function(m){
-      h+='<div class="gantt-row" style="'+cols(wdays)+';background:#fafaf8"><div class="gcell name" style="padding-left:20px">'+lvBadge(m.lv)+' <span style="font-size:12px">'+m.n+'</span></div>';
-      var ms=new Date(m.ss),me=new Date(m.se);
-      wdays.forEach(function(d){var cd=new Date(calY,calM,d);var inR=cd>=ms&&cd<=me;h+='<div class="gcell" style="padding:0">'+(inR?'<div class="gbar '+(m.ptl!==a.tl?'ext':'own')+'" style="margin:8px 2px;height:20px"></div>':'')+'</div>';});
-      h+='</div>';
-    });
-  });
-  el('cal-body').innerHTML=h+'</div>';
-}
-
-function renderCalStaff(data,wdays,flv,ftl){
-  var h='<div style="min-width:900px;">'+calHead(wdays);
-  var sf=STAFF.filter(function(s){return s.st==='Active'&&(!flv||s.lv===flv)&&(!ftl||s.tl===ftl);});
-  if(!sf.length){h+='<div style="padding:40px;text-align:center;color:var(--mu)">No staff found.</div></div>';el('cal-body').innerHTML=h;return;}
-  sf.forEach(function(s){
-    h+='<div class="gantt-row" style="'+cols(wdays)+'"><div class="gcell name"><div style="font-weight:600;font-size:13px">'+s.n+'</div>'+lvBadge(s.lv)+'</div>';
-    wdays.forEach(function(d){
-      var cd=new Date(calY,calM,d);var bar='';
-      data.forEach(function(a){a.team.forEach(function(m){if(m.n===s.n){var ms=new Date(m.ss),me=new Date(m.se);if(cd>=ms&&cd<=me){bar='<div class="gbar '+(m.ptl!==a.tl?'ext':barClass(a))+'" onclick="showDetail(\''+a.id+'\')" style="margin:10px 2px" title="'+a.cl+'">'+a.cl.substring(0,8)+'</div>';}}});});
-      h+='<div class="gcell" style="padding:0">'+bar+'</div>';
-    });
-    h+='</div>';
-  });
-  el('cal-body').innerHTML=h+'</div>';
-}
-
-function renderCalTL(data,wdays){
-  var h='<div style="min-width:900px;">'+calHead(wdays);
-  var tlsShown=[];data.forEach(function(a){if(tlsShown.indexOf(a.tl)<0)tlsShown.push(a.tl);});
-  if(!tlsShown.length){h+='<div style="padding:40px;text-align:center;color:var(--mu)">No assignments found.</div></div>';el('cal-body').innerHTML=h;return;}
-  tlsShown.forEach(function(tln){
-    h+='<div class="gantt-row" style="'+cols(wdays)+';background:var(--cr)"><div class="gcell name" style="font-weight:700;font-size:14px;color:var(--nv)">'+tln+'</div>';
-    wdays.forEach(function(){h+='<div class="gcell"></div>';});h+='</div>';
-    data.filter(function(a){return a.tl===tln;}).forEach(function(a){
-      h+='<div class="gantt-row" style="'+cols(wdays)+'"><div class="gcell name" style="padding-left:16px;cursor:pointer" onclick="showDetail(\''+a.id+'\')"><div style="font-size:13px;font-weight:600">'+a.cl+'</div><div style="font-size:11px;color:var(--mu)">'+a.team.length+' staff</div></div>';
-      var as=new Date(a.os),ae=new Date(a.oe);
-      wdays.forEach(function(d){var cd=new Date(calY,calM,d);var inR=cd>=as&&cd<=ae;h+='<div class="gcell" style="padding:0">'+(inR?'<div class="gbar '+barClass(a)+'" onclick="showDetail(\''+a.id+'\')" style="margin:10px 2px">'+a.cl.substring(0,8)+'</div>':'')+'</div>';});
-      h+='</div>';
-    });
-  });
-  el('cal-body').innerHTML=h+'</div>';
-}
-
-function renderLog(){
-  var from=el('lg-from').value,to=el('lg-to').value,ftl=el('lg-tl').value,fst=el('lg-st').value;
-  var filtered=LOG.filter(function(a){return(!ftl||a.tl===ftl)&&(!fst||a.st===fst)&&(!from||a.oe>=from)&&(!to||a.os<=to);});
-  var h='';
-  filtered.forEach(function(a){
-    h+='<div class="log-row"><div style="display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:10px">'+
-      '<div><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:4px"><span style="font-size:12px;color:var(--mu)">'+a.id+'</span>'+stBadge(a.st)+(a.tr==='Yes'?'<span class="b b-yes" style="font-size:10px">Travel</span>':'')+'</div>'+
-      '<div style="font-size:16px;font-weight:700;color:var(--nv)">'+a.cl+'</div>'+
-      '<div style="font-size:13px;color:var(--mu)">'+a.ds+'</div>'+
-      '<div style="font-size:12px;color:var(--mu);margin-top:4px">TL: '+a.tl+' &nbsp;|&nbsp; '+fmtD(a.os)+' to '+fmtD(a.oe)+(a.tlHrs?' &nbsp;|&nbsp; TL Hours: '+a.tlHrs+'h':'')+'</div></div>'+
-      '<div style="display:flex;gap:8px;flex-wrap:wrap">'+
-        (a.st==='Notification Pending'?'<button class="btn bgr" style="font-size:12px" onclick="CURRENT_DET=\''+a.id+'\';sendNotifications()">&#128231; Notify</button>':'')+
-        (a.st==='Completed'?'<button class="btn bo" style="font-size:12px" onclick="CURRENT_DET=\''+a.id+'\';reopenAssignment()">Reopen</button>':'')+
-        '<button class="btn bg" style="font-size:12px" onclick="showDetail(\''+a.id+'\')">View Details</button>'+
-      '</div></div>'+
-      '<div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:8px">'+
-        a.team.map(function(m){return '<div style="background:var(--cr);border-radius:var(--rs);padding:6px 12px;font-size:12px">'+lvBadge(m.lv)+' <b>'+m.n+'</b> <span style="color:var(--mu)">'+m.dy+'d</span></div>';}).join('')+
-      '</div></div>';
-  });
-  el('lg-body').innerHTML=h||'<div style="text-align:center;padding:40px;color:var(--mu)">No assignments found for this period.</div>';
-}
-
-function renderTLDash(){
-  el('tld-sub').textContent=WHO==='admin'?'Firm-wide team overview.':'Your team and assignment overview.';
-  var myAsgn=LOG.filter(function(a){return WHO==='admin'||a.tl===TLNAME;});
-  var myTeam=STAFF.filter(function(s){return s.st==='Active'&&(WHO==='admin'||s.tl===TLNAME);});
-  var assignedNames=[];
-  myAsgn.filter(function(a){return a.st==='Active'||a.st==='Notification Pending';}).forEach(function(a){a.team.forEach(function(m){if(assignedNames.indexOf(m.n)<0)assignedNames.push(m.n);});});
-  var avail=myTeam.filter(function(s){return assignedNames.indexOf(s.n)<0;}).length;
-  var assigned=myTeam.filter(function(s){return assignedNames.indexOf(s.n)>=0;}).length;
-  el('tld-stats').innerHTML=
-    '<div class="stat g"><div class="sv">'+avail+'</div><div class="sl">Available</div></div>'+
-    '<div class="stat bl"><div class="sv">'+assigned+'</div><div class="sl">Assigned</div></div>'+
-    '<div class="stat a"><div class="sv">'+myAsgn.filter(function(a){return a.st==='Notification Pending';}).length+'</div><div class="sl">Notif. Pending</div></div>';
-  var th='';
-  myTeam.slice(0,10).forEach(function(s){
-    var isAsgn=assignedNames.indexOf(s.n)>=0;var curA=null;
-    if(isAsgn)myAsgn.forEach(function(a){a.team.forEach(function(m){if(m.n===s.n&&(a.st==='Active'||a.st==='Notification Pending'))curA=a;});});
-    var isExt=curA&&curA.tl!==s.tl;
-    th+='<div class="team-row"><div style="display:flex;align-items:center;gap:10px">'+
-      '<div class="sdot '+(isAsgn?(isExt?'do':'db'):'dg')+'"></div>'+
-      '<div><div style="font-weight:600;font-size:14px">'+s.n+'</div>'+lvBadge(s.lv)+'</div></div>'+
-      '<div style="text-align:right;font-size:12px">'+(isAsgn?'<div style="color:'+(isExt?'#d97706':'#1a3060')+';font-weight:600">'+curA.cl+'</div><div style="color:var(--mu)">till '+fmtD(curA.oe)+'</div>':'<span style="color:#16a34a;font-weight:600">Available</span>')+'</div></div>';
-  });
-  el('tld-team').innerHTML=th||'<p style="color:var(--mu)">No team members found.</p>';
-  var ah='';
-  myAsgn.filter(function(a){return a.st!=='Completed';}).slice(0,6).forEach(function(a){
-    ah+='<div style="padding:12px 0;border-bottom:1px solid var(--bd)">'+
-      '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">'+
-        '<div><div style="font-weight:700">'+a.cl+'</div><div style="font-size:12px;color:var(--mu)">'+a.ds.substring(0,35)+'</div><div style="font-size:12px;color:var(--mu);margin-top:2px">'+fmtD(a.os)+' - '+fmtD(a.oe)+' | '+a.team.length+' staff</div></div>'+
-        '<div style="display:flex;gap:6px;flex-wrap:wrap">'+stBadge(a.st)+
-          (a.st==='Notification Pending'?'<button class="btn bgr" style="font-size:11px;padding:4px 8px" onclick="CURRENT_DET=\''+a.id+'\';sendNotifications()">Notify</button>':'')+
-          '<button class="btn bg" style="font-size:11px;padding:4px 8px" onclick="showDetail(\''+a.id+'\')">View</button>'+
-        '</div></div></div>';
-  });
-  el('tld-asgn').innerHTML=ah||'<p style="color:var(--mu)">No active assignments.</p>';
-  var alerts='';
-  myAsgn.filter(function(a){return a.st==='Notification Pending';}).forEach(function(a){
-    alerts+='<div class="alert-row"><span style="font-size:18px">&#128231;</span><div style="flex:1"><div style="font-weight:600">Notification Pending &mdash; '+a.cl+'</div><div style="font-size:13px;color:var(--mu)">'+a.id+' | '+a.team.length+' staff not yet notified</div></div><button class="btn bgr" style="font-size:12px" onclick="CURRENT_DET=\''+a.id+'\';sendNotifications()">Send Now</button></div>';
-  });
-  myAsgn.filter(function(a){return a.st==='Overdue';}).forEach(function(a){
-    alerts+='<div class="alert-row"><span style="font-size:18px">&#128308;</span><div style="flex:1"><div style="font-weight:600;color:#dc2626">Overdue &mdash; '+a.cl+'</div><div style="font-size:13px;color:var(--mu)">Was due '+fmtD(a.oe)+'</div></div><button class="btn bg" style="font-size:12px" onclick="showDetail(\''+a.id+'\')">View</button></div>';
-  });
-  el('tld-alerts').innerHTML=alerts||'<div style="color:var(--mu);text-align:center;padding:20px">&#10003; No alerts. Everything is on track!</div>';
-}
-
-function renderAdminDash(){
-  var from=el('ad-from').value,to=el('ad-to').value,ftl=el('adsh-tl').value;
-  var all=LOG.filter(function(a){return(!ftl||a.tl===ftl)&&(!from||a.oe>=from)&&(!to||a.os<=to);});
-  var active=all.filter(function(a){return a.st==='Active';});
-  var pend=all.filter(function(a){return a.st==='Notification Pending';});
-  var over=all.filter(function(a){return a.st==='Overdue';});
-  var comp=all.filter(function(a){return a.st==='Completed';});
-  el('adsh-stats').innerHTML=
-    '<div class="stat g"><div class="sv">'+active.length+'</div><div class="sl">Active</div></div>'+
-    '<div class="stat a"><div class="sv">'+pend.length+'</div><div class="sl">Notif. Pending</div></div>'+
-    '<div class="stat rd"><div class="sv">'+over.length+'</div><div class="sl">Overdue</div></div>'+
-    '<div class="stat bl"><div class="sv">'+comp.length+'</div><div class="sl">Completed</div></div>';
-
-  // Overdue
-  var oh='';
-  over.forEach(function(a){
-    oh+='<div class="adsh-row"><div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px">'+
-      '<div><div style="font-weight:700;color:#dc2626;font-size:15px">'+a.cl+' &mdash; '+a.ds+'</div>'+
-        '<div style="font-size:12px;color:var(--mu);margin-top:2px">TL: '+a.tl+' | Was due: '+fmtD(a.oe)+' | '+a.team.length+' staff</div></div>'+
-      '<div style="display:flex;gap:8px">'+
-        '<button class="btn bg" style="font-size:12px" onclick="showDetail(\''+a.id+'\')">View</button>'+
-        '<button class="btn brd" style="font-size:12px" onclick="CURRENT_DET=\''+a.id+'\';markComplete()">Mark Complete</button>'+
-      '</div></div></div>';
-  });
-  el('adsh-over').innerHTML=oh||'<div style="text-align:center;padding:20px;color:var(--mu)">&#10003; No overdue assignments.</div>';
-
-  // Notification Pending
-  var ph='';
-  pend.forEach(function(a){
-    ph+='<div class="adsh-row"><div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px">'+
-      '<div><div style="font-weight:700;font-size:15px">'+a.cl+' &mdash; '+a.ds+'</div>'+
-        '<div style="font-size:12px;color:var(--mu);margin-top:2px">TL: '+a.tl+' | '+fmtD(a.os)+' to '+fmtD(a.oe)+' | '+a.team.length+' staff</div></div>'+
-      '<div style="display:flex;gap:8px">'+
-        '<button class="btn bg" style="font-size:12px" onclick="showDetail(\''+a.id+'\')">View</button>'+
-        '<button class="btn bgr" style="font-size:12px" onclick="CURRENT_DET=\''+a.id+'\';sendNotifications()">&#128231; Send Notifications</button>'+
-      '</div></div></div>';
-  });
-  el('adsh-pend').innerHTML=ph||'<div style="text-align:center;padding:20px;color:var(--mu)">&#10003; No pending notifications.</div>';
-
-  // Active
-  var ah='';
-  active.forEach(function(a){
-    var totalD=workDays(a.os,a.oe);
-    var elapsed=workDays(a.os,today.toISOString().split('T')[0]);
-    var pct=totalD>0?Math.min(100,Math.round(elapsed/totalD*100)):0;
-    ah+='<div class="adsh-row">'+
-      '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px">'+
-        '<div><div style="font-weight:700;font-size:15px">'+a.cl+'</div>'+
-          '<div style="font-size:13px;color:var(--mu)">'+a.ds+'</div>'+
-          '<div style="font-size:12px;color:var(--mu);margin-top:2px">TL: '+a.tl+' | '+fmtD(a.os)+' &rarr; '+fmtD(a.oe)+' | '+a.team.length+' staff'+(a.tr==='Yes'?' | Travel':'')+'</div></div>'+
-        '<div style="display:flex;gap:8px;flex-wrap:wrap">'+
-          '<button class="btn bg" style="font-size:12px" onclick="showDetail(\''+a.id+'\')">View</button>'+
-          '<button class="btn brd" style="font-size:12px" onclick="CURRENT_DET=\''+a.id+'\';markComplete()">Complete</button>'+
-        '</div></div>'+
-      '<div class="prog-bar"><div class="prog-fill" style="width:'+pct+'%"></div></div>'+
-      '<div style="font-size:11px;color:var(--mu);margin-top:4px">'+pct+'% of assignment period elapsed</div>'+
-    '</div>';
-  });
-  el('adsh-active').innerHTML=ah||'<div style="text-align:center;padding:20px;color:var(--mu)">No active assignments found.</div>';
-
-  // Completed
-  var ch='';
-  comp.forEach(function(a){
-    var totalHrs=a.team.reduce(function(sum,m){return sum+m.dy*8;},0);
-    ch+='<div class="adsh-row"><div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:10px">'+
-      '<div><div style="font-weight:700;font-size:15px">'+a.cl+' &mdash; '+a.ds+'</div>'+
-        '<div style="font-size:12px;color:var(--mu);margin-top:2px">TL: '+a.tl+' | '+fmtD(a.os)+' to '+fmtD(a.oe)+' | '+a.team.length+' staff</div>'+
-        '<div style="font-size:12px;color:var(--mu)">TL Hours: <b>'+a.tlHrs+'h</b> &nbsp;|&nbsp; Total Staff Hours: <b>'+totalHrs+'h</b></div></div>'+
-      '<div style="display:flex;gap:8px">'+
-        '<button class="btn bg" style="font-size:12px" onclick="showDetail(\''+a.id+'\')">View</button>'+
-        '<button class="btn bo" style="font-size:12px" onclick="CURRENT_DET=\''+a.id+'\';reopenAssignment()">Reopen</button>'+
-      '</div></div></div>';
-  });
-  el('adsh-comp').innerHTML=ch||'<div style="text-align:center;padding:20px;color:var(--mu)">No completed assignments in this period.</div>';
-}
-
-function renderStaff(data){
-  var tb=el('staff-tb');
-  if(!data.length){tb.innerHTML='<tr><td colspan="9" style="text-align:center;padding:40px;color:var(--mu)">No staff found.</td></tr>';return;}
-  tb.innerHTML=data.map(function(s){
-    var i=STAFF.indexOf(s);
-    return '<tr><td><b>'+s.n+'</b></td><td>'+s.g+'</td><td>'+lvBadge(s.lv)+'</td>'+
-      '<td style="font-size:13px;color:var(--mu)">'+s.em+'</td><td>'+s.tl+'</td>'+
-      '<td><span class="b '+(s.tr==='Yes'?'b-yes':'b-no')+'">'+s.tr+'</span></td>'+
-      '<td style="font-size:13px">'+s.cp+'d/'+(s.cp*8)+'h</td>'+
-      '<td><span class="b '+(s.st==='Active'?'b-act':'b-ina')+'">'+s.st+'</span></td>'+
-      '<td><div style="display:flex;gap:6px">'+
-        '<button class="btn bg" style="padding:5px 10px;font-size:12px" onclick="openStaffModal('+i+')">Edit</button>'+
-        '<button class="btn bg" style="padding:5px 10px;font-size:12px" onclick="toggleStaff('+i+')">'+(s.st==='Active'?'Deactivate':'Activate')+'</button>'+
-      '</div></td></tr>';
-  }).join('');
-}
-
-function filterStaff(){
-  var q=el('s-q').value.toLowerCase(),fl=el('s-flv').value,fs=el('s-fst').value,fg=el('s-fgd').value;
-  renderStaff(STAFF.filter(function(s){return(!q||s.n.toLowerCase().includes(q)||s.em.toLowerCase().includes(q))&&(!fl||s.lv===fl)&&(!fs||s.st===fs)&&(!fg||s.g===fg);}));
-}
-
-function openStaffModal(idx){
-  el('ms-title').textContent=idx<0?'Add New Staff':'Edit Staff';
-  el('ms-idx').value=idx;el('ms-err').style.display='none';
-  var s=idx>=0?STAFF[idx]:{n:'',g:'',lv:'',em:'',ph:'',tr:'',cp:6,tl:'',st:'Active'};
-  el('ms-nm').value=s.n;el('ms-gd').value=s.g;el('ms-lv').value=s.lv;
-  el('ms-em').value=s.em;el('ms-ph').value=s.ph||'';el('ms-tr').value=s.tr;
-  el('ms-cp').value=s.cp||6;el('ms-tl').value=s.tl||'';el('ms-st').value=s.st;
-  openOv('ov-staff');
-}
-
-function saveStaff(){
-  var n=el('ms-nm').value.trim(),g=el('ms-gd').value,lv=el('ms-lv').value,em=el('ms-em').value.trim(),tr=el('ms-tr').value,tl=el('ms-tl').value;
-  if(!n||!g||!lv||!em||!tr||!tl){el('ms-err').style.display='block';return;}
-  var s={n:n,g:g,lv:lv,em:em,ph:el('ms-ph').value.trim(),tr:tr,cp:parseInt(el('ms-cp').value)||6,tl:tl,st:el('ms-st').value};
-  var i=parseInt(el('ms-idx').value);
-  if(i<0)STAFF.push(s);else STAFF[i]=s;
-  closeOv('ov-staff');renderStaff(STAFF);fillAllDropdowns();
-  showToast(i<0?'Staff added!':'Staff updated!');
-}
-
-function toggleStaff(i){
-  var ns=STAFF[i].st==='Active'?'Inactive':'Active';
-  if(ns==='Inactive'&&!confirm('Deactivate '+STAFF[i].n+'?'))return;
-  STAFF[i].st=ns;renderStaff(STAFF);showToast(STAFF[i].n+' marked '+ns+'.');
-}
-
-function renderTL(data){
-  var tb=el('tl-tb');
-  if(!data.length){tb.innerHTML='<tr><td colspan="7" style="text-align:center;padding:40px;color:var(--mu)">No TLs found.</td></tr>';return;}
-  tb.innerHTML=data.map(function(t){
-    var i=TLS.indexOf(t),ts=STAFF.filter(function(s){return s.tl===t.n&&s.st==='Active';}).length;
-    return '<tr><td><b>'+t.n+'</b></td>'+
-      '<td><span style="font-weight:700;color:var(--nv);background:var(--cr);padding:3px 10px;border-radius:6px;font-size:13px">'+t.i+'</span></td>'+
-      '<td style="font-size:13px;color:var(--mu)">'+t.em+'</td><td style="font-size:13px">'+(t.ph||'--')+'</td>'+
-      '<td><b>'+ts+'</b> staff</td>'+
-      '<td><span class="b '+(t.st==='Active'?'b-act':'b-ina')+'">'+t.st+'</span></td>'+
-      '<td><div style="display:flex;gap:6px">'+
-        '<button class="btn bg" style="padding:5px 10px;font-size:12px" onclick="openTLModal('+i+')">Edit</button>'+
-        '<button class="btn bg" style="padding:5px 10px;font-size:12px" onclick="toggleTL('+i+')">'+(t.st==='Active'?'Deactivate':'Activate')+'</button>'+
-      '</div></td></tr>';
-  }).join('');
-}
-
-function filterTL(){
-  var q=el('tl-q').value.toLowerCase(),fs=el('tl-fst').value;
-  renderTL(TLS.filter(function(t){return(!q||t.n.toLowerCase().includes(q))&&(!fs||t.st===fs);}));
-}
-
-function openTLModal(idx){
-  el('mt-title').textContent=idx<0?'Add New Team Leader':'Edit Team Leader';
-  el('mt-idx').value=idx;el('mt-err').style.display='none';
-  var t=idx>=0?TLS[idx]:{n:'',i:'',em:'',ph:'',st:'Active'};
-  el('mt-nm').value=t.n;el('mt-in').value=t.i||'';el('mt-em').value=t.em;el('mt-ph').value=t.ph||'';el('mt-st').value=t.st;
-  openOv('ov-tl');
-}
-
-function saveTL(){
-  var n=el('mt-nm').value.trim(),ini=el('mt-in').value.trim().toUpperCase(),em=el('mt-em').value.trim();
-  if(!n||!ini||!em){el('mt-err').style.display='block';return;}
-  var t={n:n,i:ini,em:em,ph:el('mt-ph').value.trim(),st:el('mt-st').value};
-  var i=parseInt(el('mt-idx').value);
-  if(i<0)TLS.push(t);else TLS[i]=t;
-  closeOv('ov-tl');renderTL(TLS);fillAllDropdowns();
-  showToast(i<0?'TL added!':'TL updated!');
-}
-
-function toggleTL(i){
-  if(!confirm((TLS[i].st==='Active'?'Deactivate ':'Activate ')+TLS[i].n+'?'))return;
-  TLS[i].st=TLS[i].st==='Active'?'Inactive':'Active';renderTL(TLS);showToast(TLS[i].n+' updated.');
-}
-
-function afID(){return 'YCRJ-'+ty+'-'+String(ASGN_CTR).padStart(3,'0');}
-
-function afInit(){
-  el('af-sec').className='';el('fp-sec').className='hide';
-  el('af-tl').innerHTML='<option value="">-- Select TL --</option>';
-  TLS.filter(function(t){return t.st==='Active';}).forEach(function(t){var o=document.createElement('option');o.value=t.n;o.textContent=t.n;if(WHO==='tl'&&t.n===TLNAME)o.selected=true;el('af-tl').appendChild(o);});
-  CA={id:afID(),cl:'',ds:'',sd:'',ed:'',dy:0,hr:0,tr:'',td:'',nt:'',tl:WHO==='tl'?TLNAME:'',gd:'',req:{},pk:{}};
-  el('sm-id').textContent=CA.id;
-  el('af-cl').value='';el('af-ds').value='';el('af-sd').value='';el('af-ed').value='';
-  el('af-tr').value='';el('af-nt').value='';el('af-gd').value='';el('af-cc').textContent='0';
-  el('af-dy').textContent='--';el('af-hr').textContent='--';
-  el('af-tdw').className='fi hide';
-  afRenderLevels();afUpdateSummary();
-}
-
-function afCalc(){
-  var s=el('af-sd').value,e=el('af-ed').value;
-  if(!s||!e||s>e){el('af-dy').textContent='--';el('af-hr').textContent='--';CA.dy=0;CA.hr=0;return;}
-  var d=workDays(s,e);
-  el('af-dy').textContent=d+' days';el('af-hr').textContent=(d*8)+' hrs';
-  CA.dy=d;CA.hr=d*8;CA.sd=s;CA.ed=e;
-}
-
-function afRenderLevels(){
-  var s=el('af-sd').value,e=el('af-ed').value,g=el('af-gd').value,tr=el('af-tr').value;
-  var h='';
-  LEVELS.forEach(function(lv){
-    var cnt=CA.req[lv]||0;
-    var avl=getAvail(lv,s,e,g,tr).length;
-    var hasD=s&&e;
-    var ahtml=hasD
-      ?'<span style="font-size:12px;padding:3px 10px;border-radius:20px;background:'+(avl===0?'#fee2e2':avl<=cnt&&cnt>0?'#fef3c7':'#dcfce7')+';color:'+(avl===0?'#991b1b':avl<=cnt&&cnt>0?'#92400e':'#166534')+';font-weight:600">'+(avl===0?'None':avl)+' available</span>'
-      :'<span style="font-size:12px;color:var(--mu)">Select dates first</span>';
-    h+='<div style="display:flex;align-items:center;justify-content:space-between;padding:11px 0;border-bottom:1px solid var(--bd)">'+
-      '<div><div style="display:flex;align-items:center;gap:8px">'+lvBadge(lv)+'<span style="font-size:14px;font-weight:500">'+lv+'</span></div><div style="margin-top:5px">'+ahtml+'</div></div>'+
-      '<div style="display:flex;align-items:center;gap:10px">'+
-        '<button class="af-minus" data-lv="'+lv+'" style="width:32px;height:32px;border-radius:50%;border:1.5px solid var(--bd);background:var(--wh);cursor:pointer;font-size:18px;color:var(--nv)">&#8722;</button>'+
-        '<span style="font-family:\'DM Serif Display\',serif;font-size:22px;color:var(--nv);min-width:24px;text-align:center">'+cnt+'</span>'+
-        '<button class="af-plus" data-lv="'+lv+'" style="width:32px;height:32px;border-radius:50%;border:none;background:var(--nv);cursor:pointer;font-size:18px;color:var(--wh)">&#43;</button>'+
-      '</div></div>';
-  });
-  el('af-lvs').innerHTML=h;
-  document.querySelectorAll('.af-minus').forEach(function(b){b.addEventListener('click',function(){chReq(this.getAttribute('data-lv'),-1);});});
-  document.querySelectorAll('.af-plus').forEach(function(b){b.addEventListener('click',function(){chReq(this.getAttribute('data-lv'),1);});});
-  var tot=Object.values(CA.req).reduce(function(a,b){return a+b;},0);
-  el('af-tot').textContent=tot;el('sm-tm').textContent=tot+' staff';
-  afCheck();
-}
-
-function chReq(lv,d){CA.req[lv]=Math.max(0,(CA.req[lv]||0)+d);afRenderLevels();afUpdateSummary();}
-
-function afUpdateSummary(){
-  el('sm-cl').textContent=el('af-cl').value.trim()||'--';
-  var s=el('af-sd').value,e=el('af-ed').value;
-  el('sm-pr').textContent=(s&&e)?fmtD(s)+' - '+fmtD(e):'--';
-  el('sm-du').textContent=(s&&e)?CA.dy+'d / '+CA.hr+'h':'--';
-  el('sm-tr').textContent=el('af-tr').value||'--';
-  afCheck();
-}
-
-function afCheck(){
-  var ok=el('af-tl').value&&el('af-cl').value.trim()&&el('af-ds').value.trim()&&
-         el('af-sd').value&&el('af-ed').value&&el('af-sd').value<=el('af-ed').value&&
-         el('af-tr').value&&Object.values(CA.req).reduce(function(a,b){return a+b;},0)>0;
-  el('af-go').disabled=!ok;
-  el('af-go').style.opacity=ok?'1':'0.4';
-  el('af-go').style.cursor=ok?'pointer':'not-allowed';
-  el('af-hint').style.display=ok?'none':'block';
-}
-
-function getAvail(lv,s,e,g,tr){
-  if(!s||!e)return[];
-  return STAFF.filter(function(sf){
-    if(sf.st!=='Active')return false;
-    if(sf.lv!==lv)return false;
-    if(g&&sf.g!==g)return false;
-    if(tr==='Yes'&&sf.tr!=='Yes')return false;
-    if(Object.values(CA.pk).some(function(p){return p&&p.n===sf.n;}))return false;
-    return!LOG.some(function(a){return a.team.some(function(m){return m.n===sf.n&&a.st!=='Completed'&&!(e<m.ss||s>m.se);});});
-  });
-}
-
-function afProceed(){
-  CA.tl=el('af-tl').value;CA.cl=el('af-cl').value.trim();CA.ds=el('af-ds').value.trim();
-  CA.sd=el('af-sd').value;CA.ed=el('af-ed').value;CA.tr=el('af-tr').value;
-  CA.td=el('af-td').value.trim();CA.nt=el('af-nt').value.trim();CA.gd=el('af-gd').value;CA.pk={};
-  el('fp-recap').innerHTML=
-    '<div><div style="font-size:10px;opacity:.5;text-transform:uppercase;letter-spacing:1px">Client</div><div style="font-weight:600">'+CA.cl+'</div></div>'+
-    '<div><div style="font-size:10px;opacity:.5;text-transform:uppercase;letter-spacing:1px">Assignment</div><div style="font-weight:600">'+CA.ds+'</div></div>'+
-    '<div><div style="font-size:10px;opacity:.5;text-transform:uppercase;letter-spacing:1px">Period</div><div style="font-weight:600">'+fmtD(CA.sd)+' to '+fmtD(CA.ed)+'</div></div>'+
-    '<div><div style="font-size:10px;opacity:.5;text-transform:uppercase;letter-spacing:1px">Raising TL</div><div style="font-weight:600">'+CA.tl+'</div></div>';
-  buildSlots();
-  el('af-sec').className='hide';el('fp-sec').className='';
-  el('fp-confirm').className='card hide';
-}
-
-function buildSlots(){
-  var con=el('fp-slots');con.innerHTML='';var si=0;
-  LEVELS.forEach(function(lv){
-    var cnt=CA.req[lv]||0;
-    for(var i=0;i<cnt;i++){si++;var sk=lv+'_'+i;var div=document.createElement('div');div.id='sc-'+sk;div.className='card';div.style.marginBottom='20px';div.innerHTML=buildSlotHTML(sk,lv,si,cnt>1?i+1:null);con.appendChild(div);wireSlot(sk,lv,si,cnt>1?i+1:null);}
-  });
-  checkSlots();
-}
-
-function buildSlotHTML(sk,lv,si,sub){
-  var lbl=sub?'Slot '+si+' &mdash; '+lv+' ('+sub+')':'Slot '+si+' &mdash; '+lv;
-  var staff=getAvail(lv,CA.sd,CA.ed,CA.gd,CA.tr);var pk=CA.pk[sk];
-  var rows=staff.length===0
-    ?'<tr><td colspan="4" style="text-align:center;padding:20px;color:var(--mu)">No available staff matching criteria.</td></tr>'
-    :staff.map(function(sf,idx){
-      var ext=sf.tl!==CA.tl;
-      return '<tr><td><div style="display:flex;align-items:center;gap:10px">'+
-        '<div style="width:36px;height:36px;border-radius:50%;background:var(--nv);color:var(--wh);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px">'+sf.n.charAt(0)+'</div>'+
-        '<div><div style="font-weight:600;font-size:14px">'+sf.n+'</div>'+(ext?'<div style="font-size:11px;color:#d97706;font-weight:600">&#9888; Primary TL: '+sf.tl+'</div>':'<div style="font-size:11px;color:var(--mu)">Primary TL: '+sf.tl+'</div>')+'</div></div></td>'+
-        '<td>'+sf.g+'</td><td><span class="b '+(sf.tr==='Yes'?'b-yes':'b-no')+'">'+sf.tr+'</span></td>'+
-        '<td><button class="btn bn pick-btn" data-sk="'+sk+'" data-lv="'+lv+'" data-idx="'+idx+'" style="padding:5px 14px;font-size:13px">Pick</button></td></tr>';
-    }).join('');
-  var pkHTML=pk?'<div style="background:#dcfce7;border-radius:var(--rs);padding:13px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:14px"><div><div style="font-weight:700;color:#166534">&#10003; '+pk.n+' selected</div><div style="font-size:12px;color:#166534;margin-top:2px">'+fmtD(pk.ss)+' to '+fmtD(pk.se)+' &mdash; '+pk.dy+' days</div></div><button class="btn bg clr-btn" data-sk="'+sk+'" style="font-size:12px;padding:5px 10px">Change</button></div>':'';
-  var dtHTML=pk?'<div style="background:var(--cr);border-radius:var(--rs);padding:14px;margin-top:10px"><div style="font-size:12px;font-weight:600;color:var(--mu);text-transform:uppercase;letter-spacing:.6px;margin-bottom:10px">Set dates for '+pk.n+'</div><div class="r2"><div class="fi"><label>Start Date</label><input type="date" id="ss-'+sk+'" value="'+CA.sd+'" min="'+CA.sd+'" max="'+CA.ed+'"></div><div class="fi"><label>End Date</label><input type="date" id="se-'+sk+'" value="'+CA.ed+'" min="'+CA.sd+'" max="'+CA.ed+'"></div></div><div style="font-size:13px;color:var(--nv);font-weight:600;margin-top:8px" id="sd-'+sk+'">'+workDays(CA.sd,CA.ed)+' working days / '+(workDays(CA.sd,CA.ed)*8)+' hours</div></div>':'';
-  return '<div class="ch">'+lvBadge(lv)+'<span style="margin-left:6px;font-weight:600">'+lbl+'</span>'+(pk?'<span class="b b-act">&#10003; Filled</span>':'<span style="font-size:12px;color:var(--mu)">Pending</span>')+'</div>'+
-    '<div class="cb">'+pkHTML+(!pk?'<div class="tw"><table><thead><tr><th>Staff</th><th>Gender</th><th>Travel</th><th></th></tr></thead><tbody>'+rows+'</tbody></table></div>':'')+dtHTML+'</div>';
-}
-
-function wireSlot(sk,lv,si,sub){
-  var card=el('sc-'+sk);
-  card.querySelectorAll('.pick-btn').forEach(function(b){b.addEventListener('click',function(e){e.stopPropagation();pickStaff(this.getAttribute('data-sk'),this.getAttribute('data-lv'),parseInt(this.getAttribute('data-idx')));});});
-  card.querySelectorAll('.clr-btn').forEach(function(b){b.addEventListener('click',function(){clearSlot(this.getAttribute('data-sk'));});});
-  var ss=el('ss-'+sk),se=el('se-'+sk);
-  if(ss)ss.addEventListener('change',function(){updSD(sk);});
-  if(se)se.addEventListener('change',function(){updSD(sk);});
-}
-
-function pickStaff(sk,lv,idx){
-  var staff=getAvail(lv,CA.sd,CA.ed,CA.gd,CA.tr);var sf=staff[idx];if(!sf)return;
-  if(sf.tl!==CA.tl&&!confirm(sf.n+' reports to '+sf.tl+' (different Primary TL). Proceed?'))return;
-  CA.pk[sk]={n:sf.n,lv:lv,g:sf.g,tl:sf.tl,em:sf.em,ss:CA.sd,se:CA.ed,dy:workDays(CA.sd,CA.ed)};
-  rebuildSlots();checkSlots();
-}
-
-function rebuildSlots(){
-  var si=0;
-  LEVELS.forEach(function(lv){var c=CA.req[lv]||0;for(var i=0;i<c;i++){si++;var sk=lv+'_'+i,card=el('sc-'+sk);if(card){card.innerHTML=buildSlotHTML(sk,lv,si,c>1?i+1:null);wireSlot(sk,lv,si,c>1?i+1:null);}}});
-}
-
-function clearSlot(sk){delete CA.pk[sk];rebuildSlots();checkSlots();}
-
-function updSD(sk){
-  var s=el('ss-'+sk).value,e=el('se-'+sk).value;
-  if(s&&e&&s<=e){var d=workDays(s,e);el('sd-'+sk).textContent=d+' working days / '+(d*8)+' hours';if(CA.pk[sk]){CA.pk[sk].ss=s;CA.pk[sk].se=e;CA.pk[sk].dy=d;}}
-  checkSlots();
-}
-
-function checkSlots(){
-  var tot=0,fil=0;
-  LEVELS.forEach(function(lv){var c=CA.req[lv]||0;tot+=c;for(var i=0;i<c;i++){if(CA.pk[lv+'_'+i])fil++;}});
-  if(fil===tot&&tot>0){el('fp-confirm').className='card';buildFPSummary();}else el('fp-confirm').className='card hide';
-}
-
-function buildFPSummary(){
-  var h='<div class="tw"><table><thead><tr><th>Staff</th><th>Level</th><th>Period</th><th>Days</th><th>Primary TL</th></tr></thead><tbody>';
-  Object.values(CA.pk).forEach(function(p){var ext=p.tl!==CA.tl;h+='<tr><td style="padding:11px"><b>'+p.n+'</b></td><td style="padding:11px">'+lvBadge(p.lv)+'</td><td style="padding:11px;font-size:13px">'+fmtD(p.ss)+' to '+fmtD(p.se)+'</td><td style="padding:11px;font-weight:600">'+p.dy+'d</td><td style="padding:11px">'+(ext?'<span style="color:#d97706;font-weight:600">&#9888; '+p.tl+'</span>':p.tl)+'</td></tr>';});
-  el('fp-summ').innerHTML=h+'</tbody></table></div>';
-}
-
-function afConfirm(){
-  var hasExt=Object.values(CA.pk).some(function(p){return p.tl!==CA.tl;});
-  if(hasExt)popup1();else popup2();
-}
-
-function popup1(){
-  var ext=Object.values(CA.pk).filter(function(p){return p.tl!==CA.tl;});
-  showPop('Notify Primary TL?','<p style="color:var(--mu);font-size:14px;margin-bottom:14px">These staff belong to a different Primary TL:</p>'+ext.map(function(p){return '<div style="padding:8px 0;border-bottom:1px solid var(--bd);font-size:14px"><b>'+p.n+'</b> &mdash; Primary TL: '+p.tl+'</div>';}).join(''),
-    'Yes - Send','Skip for Now',function(){showToast('Primary TL notified!');popup2();},popup2);
-}
-
-function popup2(){
-  showPop('Notify Assigned Staff?','<p style="color:var(--mu);font-size:14px;margin-bottom:14px">Send assignment details to all assigned staff?</p>'+Object.values(CA.pk).map(function(p){return '<div style="padding:8px 0;border-bottom:1px solid var(--bd);font-size:14px"><b>'+p.n+'</b> '+lvBadge(p.lv)+'<div style="font-size:12px;color:var(--mu)">'+fmtD(p.ss)+' to '+fmtD(p.se)+' &mdash; '+p.dy+' days</div></div>';}).join(''),
-    'Yes - Send to Staff','Skip for Now',function(){showToast('Staff notified!');popup3();},popup3);
-}
-
-function popup3(){
-  showPop('Notify Office Manager?','<p style="color:var(--mu);font-size:14px;margin-bottom:14px">Notify Office Manager to create the OMS task?</p><div style="background:var(--cr);border-radius:var(--rs);padding:14px;font-size:13px;line-height:1.8"><div><b>ID:</b> '+CA.id+'</div><div><b>Client:</b> '+CA.cl+'</div><div><b>Team:</b> '+Object.keys(CA.pk).length+' staff</div></div>',
-    'Yes - Notify Manager','Skip for Now',
-    function(){showToast('Manager notified!');finalizeAsgn('Active');},
-    function(){finalizeAsgn('Notification Pending');});
-}
-
-function finalizeAsgn(st){
-  var teamArr=[];
-  Object.values(CA.pk).forEach(function(p){teamArr.push({n:p.n,lv:p.lv,ss:p.ss,se:p.se,dy:p.dy,ptl:p.tl});});
-  LOG.push({id:CA.id,cl:CA.cl,ds:CA.ds,tl:CA.tl,os:CA.sd,oe:CA.ed,tr:CA.tr,nt:CA.nt,tlHrs:0,team:teamArr,st:st});
-  ASGN_CTR++;closeOv('ov-pop');showToast(CA.id+' saved!');
-  refreshAll();
-  setTimeout(function(){navTo('dash',document.querySelector('.nb'));},1500);
-}
-
-function showPop(title,body,okTxt,skipTxt,onOk,onSkip){
-  el('pop-t').textContent=title;el('pop-b').innerHTML=body;
-  el('pop-ok').textContent=okTxt;el('pop-skip').textContent=skipTxt;
-  el('pop-ok').onclick=function(){onOk();};
-  el('pop-skip').onclick=function(){onSkip();};
-  openOv('ov-pop');
-}
+});
 </script>
 </body>
 </html>
